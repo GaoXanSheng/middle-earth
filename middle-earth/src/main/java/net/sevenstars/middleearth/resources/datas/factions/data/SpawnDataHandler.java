@@ -1,14 +1,14 @@
 package net.sevenstars.middleearth.resources.datas.factions.data;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.Identifier;
 
 public class SpawnDataHandler {
     Vector2i mapViewCenter;
@@ -22,15 +22,15 @@ public class SpawnDataHandler {
         }
     }
 
-    public SpawnDataHandler(Optional<NbtCompound> spawnsNbt) {
+    public SpawnDataHandler(Optional<CompoundTag> spawnsNbt) {
         if(spawnsNbt.isEmpty()){
             return;
         }
         deserializeNbt(spawnsNbt.get());
     }
 
-    private void deserializeNbt(NbtCompound nbtCompound) {
-        NbtList compoundList = nbtCompound.getList("data").get();
+    private void deserializeNbt(CompoundTag nbtCompound) {
+        ListTag compoundList = nbtCompound.getList("data").get();
         spawns = new HashMap<>();
         for(int i = 0; i < compoundList.size(); i++){
             SpawnData spawnData = SpawnData.deserialize(compoundList.getCompound(i).get());
@@ -38,12 +38,12 @@ public class SpawnDataHandler {
         }
     }
 
-    public Optional<NbtCompound> serializeNbt() {
+    public Optional<CompoundTag> serializeNbt() {
         if((spawns == null || spawns.isEmpty()))
             return Optional.empty();
 
-        NbtCompound nbt = new NbtCompound();
-        NbtList spawnDataList = new NbtList();
+        CompoundTag nbt = new CompoundTag();
+        ListTag spawnDataList = new ListTag();
         for(SpawnData spawnData : spawns.values()){
             spawnDataList.add(SpawnData.serialize(spawnData));
         }
@@ -58,7 +58,7 @@ public class SpawnDataHandler {
     public static String getTranslatableKey(Identifier id){
         if(id == null)
             return null;
-        return "spawn.".concat(id.toTranslationKey());
+        return "spawn.".concat(id.toLanguageKey());
     }
 
     public List<SpawnData> getSpawnList(){

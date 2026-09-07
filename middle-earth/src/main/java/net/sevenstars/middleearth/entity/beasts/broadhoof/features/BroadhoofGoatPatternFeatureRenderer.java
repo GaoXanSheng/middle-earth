@@ -1,19 +1,13 @@
 package net.sevenstars.middleearth.entity.beasts.broadhoof.features;
 
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.HorseEntityModel;
-import net.minecraft.client.render.entity.state.HorseEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.passive.HorseMarking;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatEntityRenderState;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatModel;
@@ -22,9 +16,9 @@ import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatPattern;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
-public class BroadhoofGoatPatternFeatureRenderer extends FeatureRenderer<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
+public class BroadhoofGoatPatternFeatureRenderer extends RenderLayer<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
     private static final String PATH = "textures/entities/broadhoof_goat/patterns/";
-    private static final Identifier INVISIBLE_ID = Identifier.ofVanilla("invisible");
+    private static final Identifier INVISIBLE_ID = Identifier.withDefaultNamespace("invisible");
 
     private static final Map<BroadhoofGoatPattern, Identifier> TEXTURES = Maps.newEnumMap(
             Map.ofEntries(
@@ -66,21 +60,20 @@ public class BroadhoofGoatPatternFeatureRenderer extends FeatureRenderer<Broadho
                     Map.entry(BroadhoofGoatPattern.GRAY_BEARD,
                             MiddleEarth.of(PATH + "broadhoof_goat_gray_beard.png"))
 
-
             )
     );
 
-    public BroadhoofGoatPatternFeatureRenderer(FeatureRendererContext<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> featureRendererContext) {
+    public BroadhoofGoatPatternFeatureRenderer(RenderLayerParent<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> featureRendererContext) {
         super(featureRendererContext);
     }
 
-    public void render(
-            MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, BroadhoofGoatEntityRenderState state, float f, float g
+    public void submit(
+            PoseStack matrixStack, SubmitNodeCollector vertexConsumerProvider, int i, BroadhoofGoatEntityRenderState state, float f, float g
     ) {
-        Identifier identifier = (Identifier)TEXTURES.get(state.pattern);
-        if (identifier != INVISIBLE_ID && !state.invisible) {
-            VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityTranslucent(identifier));
-            this.getContextModel().render(matrixStack, vertexConsumer, i, LivingEntityRenderer.getOverlay(state, 0.0F));
+        Identifier identifier = TEXTURES.get(state.pattern);
+        if (identifier != INVISIBLE_ID && !state.isInvisible) {
+            // TODO 26.2: was translucent entity overlay; rendered as generic cutout overlay
+            RenderLayer.renderColoredCutoutModel(this.getParentModel(), identifier, matrixStack, vertexConsumerProvider, i, state, -1, 0);
         }
     }
 }

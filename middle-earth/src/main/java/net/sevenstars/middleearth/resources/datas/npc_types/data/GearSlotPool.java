@@ -1,9 +1,9 @@
 package net.sevenstars.middleearth.resources.datas.npc_types.data;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.sevenstars.api.dtos.WeightedPool;
 import net.sevenstars.middleearth.MiddleEarth;
 
@@ -40,10 +40,10 @@ public class GearSlotPool {
         return npcGearItemPool != null && !npcGearItemPool.isEmpty();
     }
 
-    public static NbtElement createNbt(GearSlotPool slotData){
+    public static Tag createNbt(GearSlotPool slotData){
         if(slotData.isPool()){
-            NbtCompound nbt = new NbtCompound();
-            NbtList nbtList = new NbtList();
+            CompoundTag nbt = new CompoundTag();
+            ListTag nbtList = new ListTag();
             for(WeightedItemData gearItemData : slotData.npcGearItemPool.elements){
                 nbtList.add(gearItemData.getNbt());
             }
@@ -61,13 +61,13 @@ public class GearSlotPool {
         return null;
     }
 
-    public static GearSlotPool readNbt(NbtElement nbt){
+    public static GearSlotPool readNbt(Tag nbt){
         if(nbt.asCompound().isPresent()){
-            NbtCompound nbtCompound = nbt.asCompound().get();
+            CompoundTag nbtCompound = nbt.asCompound().get();
             if(nbtCompound.get("pool") == null){
                 return GearSlotPool.create(new WeightedItemData(nbtCompound));
             }
-            NbtList list = nbtCompound.getList("pool").get();
+            ListTag list = nbtCompound.getList("pool").get();
             GearSlotPool gearSlotPool = GearSlotPool.create();
             for(int i = 0; i < list.size(); i++){
                 if(list.getString(i).isPresent()){

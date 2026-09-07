@@ -1,39 +1,34 @@
 package net.sevenstars.middleearth.entity.beasts.broadhoof.features;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.sevenstars.middleearth.MiddleEarth;
+import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatEntityRenderState;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatModel;
-import net.sevenstars.middleearth.entity.EntityModelLayersME;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.util.math.MatrixStack;
 
-public class BroadhoofGoatSaddleFeatureRenderer extends FeatureRenderer<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
+public class BroadhoofGoatSaddleFeatureRenderer extends RenderLayer<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
+    private static final Identifier SADDLE_TEXTURE = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/entities/broadhoof_goat/feature/broadhoof_goat_saddle.png");
     private final BroadhoofGoatSaddleModel model;
 
-    public BroadhoofGoatSaddleFeatureRenderer(FeatureRendererContext<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> context, LoadedEntityModels loader, EquipmentRenderer equipmentRenderer) {
+    public BroadhoofGoatSaddleFeatureRenderer(RenderLayerParent<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> context, EntityModelSet loader, EquipmentLayerRenderer equipmentRenderer) {
         super(context);
-
-        this.model = new BroadhoofGoatSaddleModel(loader.getModelPart(EntityModelLayersME.BROADHOOF_GOAT_SADDLE));
+        this.model = new BroadhoofGoatSaddleModel(loader.bakeLayer(EntityModelLayersME.BROADHOOF_GOAT_SADDLE));
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, BroadhoofGoatEntityRenderState state, float limbAngle, float limbDistance) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, BroadhoofGoatEntityRenderState state, float limbAngle, float limbDistance) {
         ItemStack itemStack = state.saddle;
         if(!itemStack.isEmpty()) {
-            VertexConsumer vertexConsumer = ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getArmorCutoutNoCull(Identifier.of(MiddleEarth.MOD_ID, "textures/entities/broadhoof_goat/feature/broadhoof_goat_saddle.png")), itemStack.hasGlint());
-
-            model.setAngles(state);
-            model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+            this.model.setupAnim(state);
+            // TODO 26.2: was armorCutoutNoCull + glint vertex pipeline; now generic cutout overlay
+            RenderLayer.renderColoredCutoutModel(this.model, SADDLE_TEXTURE, poseStack, submitNodeCollector, light, state, -1, 0);
         }
     }
 }

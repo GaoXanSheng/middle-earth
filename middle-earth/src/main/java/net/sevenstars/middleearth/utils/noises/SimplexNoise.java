@@ -67,7 +67,6 @@ public class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
     private static double dot(Grad g, double x, double y, double z, double w) {
         return g.x*x + g.y*y + g.z*z + g.w*w; }
 
-
     // 2D simplex noise
     public static double noise(double xin, double yin) {
         double n0, n1, n2; // Noise contributions from the three corners
@@ -121,7 +120,6 @@ public class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
         // The result is scaled to return values in the interval [-1,1].
         return 70.0 * (n0 + n1 + n2);
     }
-
 
     // 3D simplex noise
     public static double noise(double xin, double yin, double zin) {

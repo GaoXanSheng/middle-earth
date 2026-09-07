@@ -2,26 +2,18 @@ package net.sevenstars.middleearth.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.sevenstars.middleearth.MiddleEarth;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 
 @Environment(EnvType.CLIENT)
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public abstract class InGameHudMixin {
-    @Unique
-    private static final Identifier HALLUCINATION_OUTLINE = Identifier.of(MiddleEarth.MOD_ID, "textures/misc/hallucination_outline.png");
+    @Shadow @Final private Minecraft minecraft;
 
-    @Shadow @Final private MinecraftClient client;
-
-
-    @Shadow protected abstract void renderOverlay(DrawContext context, Identifier texture, float opacity);
+    // @Shadow protected abstract void renderTextureOverlay(GuiGraphicsExtractor context, Identifier texture, float opacity);
 
     //TODO broky
     /*
@@ -37,6 +29,4 @@ public abstract class InGameHudMixin {
         }
     }*/
 }
-
-
 

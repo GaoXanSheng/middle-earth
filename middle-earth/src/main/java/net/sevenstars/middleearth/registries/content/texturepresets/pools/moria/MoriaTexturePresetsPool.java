@@ -21,7 +21,6 @@ public class MoriaTexturePresetsPool {
 
     public final static TexturePresetDataPool GOBLIN;
 
-
     public static List<TexturePresetsRegistry.RegisterableNpcTextureData> fetchAll() {
         return List.of(
                 new TexturePresetsRegistry.RegisterableNpcTextureData(TexturePresetsRegistry.MORIA_GOBLIN, GOBLIN)

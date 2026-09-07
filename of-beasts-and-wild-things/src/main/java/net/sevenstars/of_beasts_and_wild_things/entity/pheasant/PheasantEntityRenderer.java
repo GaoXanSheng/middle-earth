@@ -1,20 +1,20 @@
 package net.sevenstars.of_beasts_and_wild_things.entity.pheasant;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.sevenstars.of_beasts_and_wild_things.OfBeastsAndWildThings;
 import net.sevenstars.of_beasts_and_wild_things.entity.model.EntityModelLayersWT;
 
 import java.util.Map;
 
-public class PheasantEntityRenderer extends MobEntityRenderer<PheasantEntity, PheasantEntityRenderState, PheasantEntityModel> {
+public class PheasantEntityRenderer extends MobRenderer<PheasantEntity, PheasantEntityRenderState, PheasantEntityModel> {
     private static final String PATH = "textures/entity/pheasant/";
 
-    public PheasantEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new PheasantEntityModel(context.getPart(EntityModelLayersWT.PHEASANT)), 0.2f);
+    public PheasantEntityRenderer(EntityRendererProvider.Context context) {
+        super(context, new PheasantEntityModel(context.bakeLayer(EntityModelLayersWT.PHEASANT)), 0.2f);
     }
 
     public static final Map<PheasantEntityVariant, String> LOCATION_BY_VARIANT =
@@ -26,7 +26,7 @@ public class PheasantEntityRenderer extends MobEntityRenderer<PheasantEntity, Ph
             });
 
     @Override
-    public Identifier getTexture(PheasantEntityRenderState state) {
+    public Identifier getTextureLocation(PheasantEntityRenderState state) {
         return OfBeastsAndWildThings.of(LOCATION_BY_VARIANT.get(state.variant));
     }
 
@@ -36,7 +36,7 @@ public class PheasantEntityRenderer extends MobEntityRenderer<PheasantEntity, Ph
     }
 
     public void updateRenderState(PheasantEntity pheasantEntity, PheasantEntityRenderState pheasantEntityRenderState, float f) {
-        super.updateRenderState(pheasantEntity, pheasantEntityRenderState, f);
+        super.extractRenderState(pheasantEntity, pheasantEntityRenderState, f);
         pheasantEntityRenderState.variant = pheasantEntity.getVariant();
         pheasantEntityRenderState.idleAnimationState.copyFrom(pheasantEntity.idleAnimationState);
         pheasantEntityRenderState.diggingAnimationState.copyFrom(pheasantEntity.diggingAnimationState);

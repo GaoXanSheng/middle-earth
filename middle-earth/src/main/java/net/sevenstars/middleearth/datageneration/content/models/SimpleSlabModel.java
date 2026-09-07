@@ -1,9 +1,8 @@
 package net.sevenstars.middleearth.datageneration.content.models;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.sevenstars.middleearth.block.registration.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,22 +61,22 @@ public class SimpleSlabModel {
 
             add(new Slab(Blocks.PACKED_MUD, ModBlocks.PACKED_MUD_SLAB));
 
-            add(new Slab(Blocks.BLACK_WOOL, ModBlocks.BLACK_WOOL_SLAB));
-            add(new Slab(Blocks.BLUE_WOOL, ModBlocks.BLUE_WOOL_SLAB));
-            add(new Slab(Blocks.BROWN_WOOL, ModBlocks.BROWN_WOOL_SLAB));
-            add(new Slab(Blocks.CYAN_WOOL, ModBlocks.CYAN_WOOL_SLAB));
-            add(new Slab(Blocks.GRAY_WOOL, ModBlocks.GRAY_WOOL_SLAB));
-            add(new Slab(Blocks.GREEN_WOOL, ModBlocks.GREEN_WOOL_SLAB));
-            add(new Slab(Blocks.LIGHT_BLUE_WOOL, ModBlocks.LIGHT_BLUE_WOOL_SLAB));
-            add(new Slab(Blocks.LIGHT_GRAY_WOOL, ModBlocks.LIGHT_GRAY_WOOL_SLAB));
-            add(new Slab(Blocks.LIME_WOOL, ModBlocks.LIME_WOOL_SLAB));
-            add(new Slab(Blocks.MAGENTA_WOOL, ModBlocks.MAGENTA_WOOL_SLAB));
-            add(new Slab(Blocks.ORANGE_WOOL, ModBlocks.ORANGE_WOOL_SLAB));
-            add(new Slab(Blocks.PINK_WOOL, ModBlocks.PINK_WOOL_SLAB));
-            add(new Slab(Blocks.PURPLE_WOOL, ModBlocks.PURPLE_WOOL_SLAB));
-            add(new Slab(Blocks.RED_WOOL, ModBlocks.RED_WOOL_SLAB));
-            add(new Slab(Blocks.WHITE_WOOL, ModBlocks.WHITE_WOOL_SLAB));
-            add(new Slab(Blocks.YELLOW_WOOL, ModBlocks.YELLOW_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.black(), ModBlocks.BLACK_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.blue(), ModBlocks.BLUE_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.brown(), ModBlocks.BROWN_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.cyan(), ModBlocks.CYAN_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.gray(), ModBlocks.GRAY_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.green(), ModBlocks.GREEN_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.lightBlue(), ModBlocks.LIGHT_BLUE_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.lightGray(), ModBlocks.LIGHT_GRAY_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.lime(), ModBlocks.LIME_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.magenta(), ModBlocks.MAGENTA_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.orange(), ModBlocks.ORANGE_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.pink(), ModBlocks.PINK_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.purple(), ModBlocks.PURPLE_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.red(), ModBlocks.RED_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.white(), ModBlocks.WHITE_WOOL_SLAB));
+            add(new Slab(Blocks.WOOL.yellow(), ModBlocks.YELLOW_WOOL_SLAB));
         }
     };
 }

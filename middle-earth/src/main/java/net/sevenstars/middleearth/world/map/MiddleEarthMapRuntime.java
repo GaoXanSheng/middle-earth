@@ -1,6 +1,6 @@
 package net.sevenstars.middleearth.world.map;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.utils.resources.FileUtils;
 import net.sevenstars.middleearth.world.biomes.surface.MapBasedBiomePool;
@@ -17,7 +17,6 @@ import java.util.UUID;
 public class MiddleEarthMapRuntime {
     HashMap<Vector2i, MiddleEarthMapRegion> regions;
     HashMap<UUID, Vector2i> regionByUuids;
-
 
     private static MiddleEarthMapRuntime single_instance = null;
 
@@ -119,7 +118,7 @@ public class MiddleEarthMapRuntime {
         // Create purge array
         List<Vector2i> toPurge = new ArrayList<>();
         List<Vector2i> playerCoordinates = new ArrayList<>();
-        for(ServerPlayerEntity player : middleEarthMapUtils.getPlayers()){
+        for(ServerPlayer player : middleEarthMapUtils.getPlayers()){
             playerCoordinates.add(new Vector2i(player.getBlockX(), player.getBlockZ()));
         }
 

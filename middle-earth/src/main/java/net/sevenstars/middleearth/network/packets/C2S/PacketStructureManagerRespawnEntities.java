@@ -1,20 +1,20 @@
 package net.sevenstars.middleearth.network.packets.C2S;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.special.structureManager.StructureManagerBlockEntity;
 import net.sevenstars.middleearth.network.contexts.ServerPacketContext;
 import net.sevenstars.middleearth.network.packets.ClientToServerPacket;
 
 public class PacketStructureManagerRespawnEntities extends ClientToServerPacket<PacketStructureManagerRespawnEntities> {
-    public static final Id<PacketStructureManagerRespawnEntities> ID = new Id<>(Identifier.of(MiddleEarth.MOD_ID, "structure_manager_respawn_entities"));
+    public static final Type<PacketStructureManagerRespawnEntities> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "structure_manager_respawn_entities"));
 
-    public static final PacketCodec<RegistryByteBuf, PacketStructureManagerRespawnEntities> CODEC = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, p -> p.pos,
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketStructureManagerRespawnEntities> CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, p -> p.pos,
             PacketStructureManagerRespawnEntities::new
     );
 
@@ -25,21 +25,21 @@ public class PacketStructureManagerRespawnEntities extends ClientToServerPacket<
     }
 
     @Override
-    public Id<PacketStructureManagerRespawnEntities> getId() {
+    public Type<PacketStructureManagerRespawnEntities> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, PacketStructureManagerRespawnEntities> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, PacketStructureManagerRespawnEntities> streamCodec() {
         return CODEC;
     }
 
     @Override
     public void process(ServerPacketContext context) {
         try{
-            MinecraftServer server = context.player().getServer();
+            MinecraftServer server = context.player().level().getServer();
             server.execute(() -> {
-                if(context.player().getWorld().getBlockEntity(pos) instanceof StructureManagerBlockEntity blockEntity){
+                if(context.player().level().getBlockEntity(pos) instanceof StructureManagerBlockEntity blockEntity){
                     blockEntity.respawnAllEntities();
                 }
             });

@@ -2,12 +2,11 @@ package net.sevenstars.middleearth.resources.datas.npc_types.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.world.ServerWorld;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
 
 public class MountPassengerSlotData {
     public static class Fields {
@@ -34,7 +33,7 @@ public class MountPassengerSlotData {
         return passengers;
     }
 
-    public LivingEntity createRandom(ServerWorld serverWorld, LivingEntity owner) {
+    public LivingEntity createRandom(ServerLevel serverWorld, LivingEntity owner) {
         List<MountPassengerData> weightedPassengers = new ArrayList<>();
         for (MountPassengerData weightedPassenger : passengers) {
             for(int i = 0; i < weightedPassenger.getWeight(1); i++){

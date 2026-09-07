@@ -2,7 +2,7 @@ package net.sevenstars.middleearth.entity.spider.spawn;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.entity.AnimationState;
+import net.minecraft.world.entity.AnimationState;
 import net.sevenstars.middleearth.entity.spider.scuttler.ShelobiteScuttlerRenderState;
 
 @Environment(EnvType.CLIENT)

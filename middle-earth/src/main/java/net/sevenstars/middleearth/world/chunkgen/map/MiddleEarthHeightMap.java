@@ -179,7 +179,6 @@ public class MiddleEarthHeightMap {
         return getPerlinMapHeight(x, z);
     }
 
-
     // Going to be useful for making roads with curves.
     static float getPointOnBezierCurve(float h0, float h1, float h2, float t)
     {

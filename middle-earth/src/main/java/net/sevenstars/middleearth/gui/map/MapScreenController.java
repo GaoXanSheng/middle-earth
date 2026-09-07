@@ -1,9 +1,11 @@
 package net.sevenstars.middleearth.gui.map;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.event.KeyInputHandler;
 import net.sevenstars.middleearth.gui.utils.widgets.ModWidget;
 import net.sevenstars.middleearth.network.packets.C2S.PacketTeleportToDynamicWorldCoordinate;
@@ -11,26 +13,24 @@ import net.sevenstars.middleearth.world.dimension.ModDimensions;
 import net.sevenstars.middleearth.world.map.MiddleEarthMapConfigs;
 import org.joml.Vector2d;
 
-import java.awt.event.KeyEvent;
-
 public class MapScreenController {
-    private World world;
-    private PlayerEntity player;
+    private Level world;
+    private Player player;
     private MapScreen screen;
     private boolean isInDimension;
     private boolean isFullscreen;
     private boolean hasTeleportPermission;
 
-    public MapScreenController(World world, PlayerEntity player) {
+    public MapScreenController(Level world, Player player) {
         this.world = world;
         this.player = player;
     }
 
     public boolean open(boolean canTeleport) {
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
 
-        if(world.isClient) {
-            if (mc.currentScreen == null) {
+        if(world.isClientSide()) {
+            if (mc.gui.screen() == null) {
                 screen = new MapScreen();
                 isInDimension = ModDimensions.isInMiddleEarth(world);
 
@@ -39,9 +39,9 @@ public class MapScreenController {
                 screen.hasTeleportPermission = hasTeleportPermission;
                 screen.isFullscreen = false;
 
-                screen.playerBlockPos = player.getBlockPos();
+                screen.playerBlockPos = player.blockPosition();
                 screen.controller  = this;
-                mc.setScreen(screen);
+                mc.gui.setScreen(screen);
                 return true;
             }
         }
@@ -56,31 +56,31 @@ public class MapScreenController {
             double y = mapRatio.y * MiddleEarthMapConfigs.FULL_MAP_SIZE;
 
             ClientPlayNetworking.send(new PacketTeleportToDynamicWorldCoordinate(x, y));
-            screen.close();
+            screen.onClose();
         }
     }
 
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        screen.mapWidget.mouseClicked(mouseX, mouseY, button);
-        if(KeyInputHandler.mapTeleportKey.matchesMouse(button)){
-            teleportToCursor(mouseX, mouseY);
+    public boolean mouseClicked(MouseButtonEvent event) {
+        screen.mapWidget.mouseClicked(event.x(), event.y(), event.button());
+        if(KeyInputHandler.mapTeleportKey.matchesMouse(event)){
+            teleportToCursor(event.x(), event.y());
             return true;
         }
-        if(KeyInputHandler.mapFullscreenToggle.matchesMouse(button)){
+        if(KeyInputHandler.mapFullscreenToggle.matchesMouse(event)){
             screen.isFullscreen = !screen.isFullscreen;
         }
         return true;
     }
 
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers, int mouseX, int mouseY) {
-        if(KeyInputHandler.mapTeleportKey.matchesKey(keyCode, modifiers)){
+    public boolean keyPressed(KeyEvent event, int mouseX, int mouseY) {
+        if(KeyInputHandler.mapTeleportKey.matches(event)){
             teleportToCursor(mouseX, mouseY);
             return true;
         }
-        if(KeyInputHandler.mapFullscreenToggle.matchesKey(keyCode, modifiers)){
+        if(KeyInputHandler.mapFullscreenToggle.matches(event)){
             screen.isFullscreen = !screen.isFullscreen;
         }
-        if(keyCode == KeyEvent.VK_CODE_INPUT && !ModWidget.getFocusEnabled()){
+        if(event.key() == 258 && !ModWidget.getFocusEnabled()){
             ModWidget.enableFocus(true);
             return true;
         }

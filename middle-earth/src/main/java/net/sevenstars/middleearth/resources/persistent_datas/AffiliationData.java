@@ -1,5 +1,9 @@
 package net.sevenstars.middleearth.resources.persistent_datas;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.exceptions.FactionIdentifierException;
 import net.sevenstars.middleearth.resources.datas.common.DispositionType;
@@ -7,10 +11,6 @@ import net.sevenstars.middleearth.resources.datas.factions.Faction;
 import net.sevenstars.middleearth.resources.datas.factions.FactionLookup;
 import net.sevenstars.middleearth.resources.datas.factions.data.SpawnData;
 import net.sevenstars.middleearth.world.dimension.ModDimensions;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 public class AffiliationData {
     public DispositionType dispositionType;
@@ -23,22 +23,21 @@ public class AffiliationData {
         this.spawnId = spawnId;
     }
 
-
     public DispositionType getDisposition(){
         return dispositionType;
     }
 
-    public Vec3d getSpawnMiddleEarthCoordinate(World world){
+    public Vec3 getSpawnMiddleEarthCoordinate(Level world){
         try{
             Faction foundFaction = FactionLookup.getFactionById(world,faction);
             SpawnData spawnData = foundFaction.getSpawnData().findSpawn(spawnId);
             BlockPos blockpos = spawnData.getBlockPos();
             if(!spawnData.isDynamic()){ // Return custom spawn coords
-                return blockpos.toCenterPos();
+                return Vec3.atCenterOf(blockpos);
             }
             int height = ModDimensions.getDimensionHeight(blockpos.getX(), blockpos.getZ()).y;
             blockpos = new BlockPos(blockpos.getX(), height, blockpos.getZ());
-            return blockpos.toCenterPos();
+            return Vec3.atCenterOf(blockpos);
         } catch (FactionIdentifierException e){
             MiddleEarth.LOGGER.logError("AffiliationData::getSpawnMiddleEarthCoordinate - PlayerFactionPayload couldn't be found <%s>".formatted(faction));
             return null;

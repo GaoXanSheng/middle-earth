@@ -1,11 +1,11 @@
 package net.sevenstars.middleearth.network.packets.C2S;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.special.structureManager.nest.StructureNestBlockEntity;
 import net.sevenstars.middleearth.network.contexts.ServerPacketContext;
@@ -15,14 +15,14 @@ import java.util.Optional;
 
 public class PacketStructureNestUpdateBlockEntityRequest extends ClientToServerPacket<PacketStructureNestUpdateBlockEntityRequest>
 {
-    public static final Id<PacketStructureNestUpdateBlockEntityRequest> ID = new Id<>(Identifier.of(MiddleEarth.MOD_ID, "structure_nest_update_block_entity_request"));
+    public static final Type<PacketStructureNestUpdateBlockEntityRequest> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "structure_nest_update_block_entity_request"));
 
-    public static final PacketCodec<RegistryByteBuf, PacketStructureNestUpdateBlockEntityRequest> CODEC = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, p -> p.pos,
-            PacketCodecs.optional(Identifier.PACKET_CODEC), p -> p.getStructureManagerId(),
-            PacketCodecs.optional(Identifier.PACKET_CODEC), p -> p.getStructureNestId(),
-            PacketCodecs.INTEGER, p -> p.spawnRadius,
-            PacketCodecs.BOOLEAN, p -> p.isEnabled,
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketStructureNestUpdateBlockEntityRequest> CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, p -> p.pos,
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), p -> p.getStructureManagerId(),
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), p -> p.getStructureNestId(),
+            ByteBufCodecs.INT, p -> p.spawnRadius,
+            ByteBufCodecs.BOOL, p -> p.isEnabled,
             PacketStructureNestUpdateBlockEntityRequest::new
     );
 
@@ -57,21 +57,21 @@ public class PacketStructureNestUpdateBlockEntityRequest extends ClientToServerP
     }
 
     @Override
-    public Id<PacketStructureNestUpdateBlockEntityRequest> getId() {
+    public Type<PacketStructureNestUpdateBlockEntityRequest> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, PacketStructureNestUpdateBlockEntityRequest> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, PacketStructureNestUpdateBlockEntityRequest> streamCodec() {
         return CODEC;
     }
 
     @Override
     public void process(ServerPacketContext context) {
         try{
-            MinecraftServer server = context.player().getServer();
+            MinecraftServer server = context.player().level().getServer();
             server.execute(() -> {
-                if(context.player().getWorld().getBlockEntity(pos) instanceof StructureNestBlockEntity blockEntity){
+                if(context.player().level().getBlockEntity(pos) instanceof StructureNestBlockEntity blockEntity){
                     blockEntity.setStructureManagerId(structureManagerId);
                     blockEntity.setStructureNestId(structureNestId);
                     blockEntity.setSpawnRadius(spawnRadius);

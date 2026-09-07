@@ -3,27 +3,27 @@ package net.sevenstars.middleearth.resources.datas.factions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.entity.BannerPattern;
-import net.minecraft.component.type.BannerPatternsComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryElementCodec;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.exceptions.FactionIdentifierException;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
@@ -41,7 +41,6 @@ import net.sevenstars.middleearth.resources.datas.races.RaceLookup;
 
 import java.util.*;
 
-
 public class Faction {
     private static HashMap<DispositionType, List<Integer>> FactionSelectionOrderIndexPerDisposition;
 
@@ -53,17 +52,17 @@ public class Faction {
             Codec.STRING.fieldOf("faction_type").forGetter(Faction::getFactionTypeString),
             Identifier.CODEC.optionalFieldOf("parent_faction").forGetter(Faction::getParentFactionIdentifier),
             Codec.list(Identifier.CODEC).optionalFieldOf("subfaction").forGetter(Faction::getSubfactionIds),
-            NbtCompound.CODEC.optionalFieldOf("npcs").forGetter(Faction::getNpcValues),
-            NbtCompound.CODEC.optionalFieldOf("banner").forGetter(Faction::getBannerNbt),
-            NbtCompound.CODEC.optionalFieldOf("spawns").forGetter(Faction::getSpawnDataNbt),
+            CompoundTag.CODEC.optionalFieldOf("npcs").forGetter(Faction::getNpcValues),
+            CompoundTag.CODEC.optionalFieldOf("banner").forGetter(Faction::getBannerNbt),
+            CompoundTag.CODEC.optionalFieldOf("spawns").forGetter(Faction::getSpawnDataNbt),
             Codec.list(Codec.STRING, 0, 5).optionalFieldOf("command_join").forGetter(Faction::getJoinCommands),
             Codec.list(Codec.STRING, 0, 5).optionalFieldOf("command_leave").forGetter(Faction::getLeaveCommands),
             Codec.list(InitialDiplomacy.CODEC).fieldOf("initial_diplomacy").forGetter(Faction::getInitialDiplomaciesNbtList)
     ).apply(instance, Faction::new));
 
-    public static final PacketCodec<ByteBuf, Faction> PACKET_CODEC = PacketCodecs.codec(CODEC);
-    public static final Codec<RegistryEntry<Faction>> ENTRY_CODEC = RegistryElementCodec.of(DynamicRegistriesME.FACTION, CODEC);
-    public static final PacketCodec<RegistryByteBuf, RegistryEntry<Faction>> ENTRY_PACKET_CODEC = PacketCodecs.registryEntry(DynamicRegistriesME.FACTION, PACKET_CODEC);
+    public static final StreamCodec<ByteBuf, Faction> PACKET_CODEC = ByteBufCodecs.fromCodec(CODEC);
+    public static final Codec<Holder<Faction>> ENTRY_CODEC = RegistryFileCodec.create(DynamicRegistriesME.FACTION, CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<Faction>> ENTRY_PACKET_CODEC = ByteBufCodecs.holder(DynamicRegistriesME.FACTION, PACKET_CODEC);
 
     private final Identifier id;
     private final Integer factionSelectionOrderIndex;
@@ -81,17 +80,17 @@ public class Faction {
     private List<String> joinCommands;
     private List<String> leaveCommands;
     private List<Race> races = null;
-    private List<Text> descriptions = null;
-    private Text raceList = null;
+    private List<Component> descriptions = null;
+    private Component raceList = null;
 
     public Faction(String id, Integer factionSelectionOrderIndex, Boolean joinable, String disposition, String factionType,
-                   Optional<Identifier> parentFaction, Optional<List<Identifier>> newSubFactions, Optional<NbtCompound> npcs,
-                   Optional<NbtCompound> bannerDataNbt, Optional<NbtCompound> spawnsNbt, Optional<List<String>> joinCommands, Optional<List<String>> leaveCommands, List<InitialDiplomacy> initialDiplomaciesNbt) {
+                   Optional<Identifier> parentFaction, Optional<List<Identifier>> newSubFactions, Optional<CompoundTag> npcs,
+                   Optional<CompoundTag> bannerDataNbt, Optional<CompoundTag> spawnsNbt, Optional<List<String>> joinCommands, Optional<List<String>> leaveCommands, List<InitialDiplomacy> initialDiplomaciesNbt) {
         this.id = MiddleEarth.fetchId(id);
 
         this.factionSelectionOrderIndex = factionSelectionOrderIndex; // TODO : Validation, rework this part in the future
 
-        this.translatableKey = "faction.".concat(this.id.toTranslationKey());
+        this.translatableKey = "faction.".concat(this.id.toLanguageKey());
         this.joinable = joinable;
         this.dispositionType = DispositionType.valueOf(disposition.toUpperCase());
 
@@ -107,13 +106,13 @@ public class Faction {
 
         this.npcDatasByRank = new HashMap<>();
         if(npcs.isPresent()){
-            NbtList list = npcs.get().getList("ranks").get();
+            ListTag list = npcs.get().getList("ranks").get();
             for(int i = 0; i < list.size(); i++){
-                NbtCompound rankCompound = list.getCompound(i).get();
+                CompoundTag rankCompound = list.getCompound(i).get();
                 String rankName = rankCompound.getString("rank").get().toUpperCase();
                 try{
                     NpcRank rank = NpcRank.valueOf(rankName);
-                    NbtList npcDataList = rankCompound.getList("pool").get();
+                    ListTag npcDataList = rankCompound.getList("pool").get();
                     List<Identifier> dataList = new ArrayList<>();
                     for(int j = 0; j < npcDataList.size(); j++){
                         dataList.add(MiddleEarth.fetchId(npcDataList.getString(j).get()));
@@ -139,12 +138,12 @@ public class Faction {
         verifyData();
     }
 
-    public Faction(RegistryKey<Faction> faction, Boolean joinable, DispositionType dispositionType, FactionType factionType, Identifier parentFactionId,
+    public Faction(ResourceKey<Faction> faction, Boolean joinable, DispositionType dispositionType, FactionType factionType, Identifier parentFactionId,
                    List<Identifier> subFactions, HashMap<NpcRank, List<NpcType>> npcDatas, BannerData bannerData, SpawnDataHandler spawnDataHandler,
                    List<String> joinCommand, List<String> leaveCommand,
                    List<InitialDiplomacy> initialDiplomacies)
     {
-        this.id = faction.getValue();
+        this.id = faction.identifier();
 
         if(FactionSelectionOrderIndexPerDisposition == null)
             FactionSelectionOrderIndexPerDisposition = new HashMap<>();
@@ -161,7 +160,7 @@ public class Faction {
         }
         this.initialDiplomacies = initialDiplomacies;
 
-        this.translatableKey = "faction.".concat(this.id.toTranslationKey());
+        this.translatableKey = "faction.".concat(this.id.toLanguageKey());
         this.joinable = joinable;
         this.dispositionType = dispositionType;
         this.factionType = factionType;
@@ -234,7 +233,7 @@ public class Faction {
         return Optional.of(this.parentFactionId);
     }
 
-    public Faction getParentFaction(World world){
+    public Faction getParentFaction(Level world){
         if(world == null || factionType != FactionType.SUBFACTION || parentFactionId == null)
             return null;
         try{
@@ -244,11 +243,11 @@ public class Faction {
         }
     }
 
-    public Faction getParentFaction(RegistryWrapper.WrapperLookup lookup){
+    public Faction getParentFaction(HolderLookup.Provider lookup){
         if(factionType != FactionType.SUBFACTION || parentFactionId == null)
             return null;
         try{
-            Faction test = lookup.getOrThrow(DynamicRegistriesME.FACTION).getOrThrow(RegistryKey.of(DynamicRegistriesME.FACTION, this.parentFactionId)).value();
+            Faction test = lookup.lookupOrThrow(DynamicRegistriesME.FACTION).getOrThrow(ResourceKey.create(DynamicRegistriesME.FACTION, this.parentFactionId)).value();
             return test;
         } catch (Exception e){
             return null;
@@ -260,12 +259,12 @@ public class Faction {
             return Optional.empty();
         return Optional.of(subFactions);
     }
-    private Optional<NbtCompound> getBannerNbt() {
+    private Optional<CompoundTag> getBannerNbt() {
         if(this.bannerData == null)
             return Optional.empty();
         return this.bannerData.getNbt();
     }
-    private Optional<NbtCompound> getSpawnDataNbt() {
+    private Optional<CompoundTag> getSpawnDataNbt() {
         if(this.spawnDataHandler == null)
             return Optional.empty();
 
@@ -276,17 +275,17 @@ public class Faction {
         return initialDiplomacies;
     }
 
-    public Optional<NbtCompound> getNpcValues() {
+    public Optional<CompoundTag> getNpcValues() {
         if(this.npcDatasByRank == null || this.npcDatasByRank.isEmpty())
             return Optional.empty();
-        NbtCompound nbtCompound = new NbtCompound();
-        NbtList ranks = new NbtList();
+        CompoundTag nbtCompound = new CompoundTag();
+        ListTag ranks = new ListTag();
         for(NpcRank rank : this.npcDatasByRank.keySet()){
-            NbtCompound rankNbt = new NbtCompound();
+            CompoundTag rankNbt = new CompoundTag();
             rankNbt.putString("rank", rank.toString().toUpperCase());
-            NbtList identifiers = new NbtList();
+            ListTag identifiers = new ListTag();
             for(Identifier npcDataIdentifier : this.npcDatasByRank.get(rank).stream().toList()) {
-                identifiers.add(NbtString.of(npcDataIdentifier.toString()));
+                identifiers.add(StringTag.valueOf(npcDataIdentifier.toString()));
             }
             rankNbt.put("pool", identifiers);
             ranks.add(rankNbt);
@@ -312,7 +311,7 @@ public class Faction {
         return id.toString();
     }
 
-    public NpcType getRandomGear(World world, NpcRank npcRank, Race race) {
+    public NpcType getRandomGear(Level world, NpcRank npcRank, Race race) {
         if(!this.npcDatasByRank.containsKey(npcRank))
             return null;
         List<NpcType> npcTypeList = NpcTypeLookup.getAllNpcTypesFromRace(world, getNpcPoolFromRank(npcRank), race.getId());
@@ -322,7 +321,7 @@ public class Faction {
         return npcTypeList.get(random.nextInt(0, npcTypeList.size()));
     }
 
-    public WeightedGearData getPreviewGear(World world, Race selectedRace){
+    public WeightedGearData getPreviewGear(Level world, Race selectedRace){
         if(selectedRace == null)
             return WeightedGearData.Create();
 
@@ -350,14 +349,14 @@ public class Faction {
         return bannerData.getBaseDye();
     }
 
-    public List<BannerData.BannerPatternWithColor> getBannerPatternsWithColors(World world) {
+    public List<BannerData.BannerPatternWithColor> getBannerPatternsWithColors(Level world) {
         if(bannerData == null) return null;
         return bannerData.getBannerPatternsWithColors(world);
     }
 
-    public ItemStack getBannerItem(RegistryWrapper.WrapperLookup wrapper){
+    public ItemStack getBannerItem(HolderLookup.Provider wrapper){
         if(bannerData == null) return ItemStack.EMPTY;
-        return bannerData.getBannerItem(wrapper, Text.translatable("block.%s.faction_banner".formatted(MiddleEarth.MOD_ID), getFullName()).formatted(Formatting.GOLD));
+        return bannerData.getBannerItem(wrapper, Component.translatable("block.%s.faction_banner".formatted(MiddleEarth.MOD_ID), getFullName()).withStyle(ChatFormatting.GOLD));
     }
 
     public List<Identifier> getSubFactions(){
@@ -368,7 +367,7 @@ public class Faction {
         return npcDatasByRank;
     }
 
-    public Faction getSubfaction(World world, int index){
+    public Faction getSubfaction(Level world, int index){
         if(world == null || this.subFactions == null || index >= this.subFactions.size())
             return null;
         return getSubfactionById(world, subFactions.get(index));
@@ -399,23 +398,23 @@ public class Faction {
         return id.getPath();
     }
 
-    public MutableText getFullName() {
-        return MutableText.of(new TranslatableTextContent(translatableKey, "", TranslatableTextContent.EMPTY_ARGUMENTS));
+    public MutableComponent getFullName() {
+        return MutableComponent.create(new TranslatableContents(translatableKey, "", TranslatableContents.NO_ARGS));
     }
 
-    public MutableText tryGetShortName() {
+    public MutableComponent tryGetShortName() {
         String target = translatableKey.concat(".fallback");
-        String fallback = Text.translatable(translatableKey).getString();
-        return MutableText.of(new TranslatableTextContent(target, fallback, TranslatableTextContent.EMPTY_ARGUMENTS));
+        String fallback = Component.translatable(translatableKey).getString();
+        return MutableComponent.create(new TranslatableContents(target, fallback, TranslatableContents.NO_ARGS));
     }
 
-    public Faction getSubfactionById(World world, Identifier id) {
+    public Faction getSubfactionById(Level world, Identifier id) {
         if(subFactions == null)
             return null;
-        return world.getRegistryManager().getOrThrow(DynamicRegistriesME.FACTION).get(id);
+        return world.registryAccess().lookupOrThrow(DynamicRegistriesME.FACTION).getValue(id);
     }
 
-    public List<Race> getRaces(World world) {
+    public List<Race> getRaces(Level world) {
         if(races != null) return races;
 
         List<Identifier> allRaceIds = new ArrayList<>();
@@ -434,7 +433,7 @@ public class Faction {
         return joinable;
     }
 
-    public List<Text> getDescription() {
+    public List<Component> getDescription() {
         descriptions = new ArrayList<>();
         boolean hasDescription = true;
 
@@ -442,7 +441,7 @@ public class Faction {
 
         while(hasDescription){
             String langPath = base.formatted(descriptions.size());
-            Text text = Text.translatable(langPath);
+            Component text = Component.translatable(langPath);
             if(!Objects.equals(text.getString(), langPath)){
                 descriptions.add(text);
             } else {
@@ -453,7 +452,7 @@ public class Faction {
         return descriptions;
     }
 
-    public Text getRaceListText(World world) {
+    public Component getRaceListText(Level world) {
         if(raceList == null){
             StringBuilder raceListStringBuilder = new StringBuilder();
             if(races == null)
@@ -463,7 +462,7 @@ public class Faction {
                 if(race != races.getLast())
                     raceListStringBuilder.append(", ");
             }
-            raceList = Text.literal(raceListStringBuilder.toString());
+            raceList = Component.literal(raceListStringBuilder.toString());
         }
         return raceList;
     }
@@ -474,7 +473,7 @@ public class Faction {
         return spawnDataHandler.getSpawnList().size();
     }
 
-    public BannerPatternsComponent getBannerPatternComponents(RegistryEntryLookup<BannerPattern> bannerPatternLookup) {
+    public BannerPatternLayers getBannerPatternComponents(HolderGetter<BannerPattern> bannerPatternLookup) {
         if(bannerData == null)
             return null;
         return bannerData.getBannerPatternComponents(bannerPatternLookup);

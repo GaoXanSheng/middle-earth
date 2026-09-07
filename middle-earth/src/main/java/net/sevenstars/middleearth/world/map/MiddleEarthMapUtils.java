@@ -3,7 +3,7 @@ package net.sevenstars.middleearth.world.map;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.sevenstars.middleearth.utils.resources.FileUtils;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
@@ -37,12 +37,12 @@ public class MiddleEarthMapUtils {
         maxImageCoordinateZ = (int) (initial.getHeight() * ratioZ);
     }
 
-    public List<ServerPlayerEntity> getPlayers() {
-        return server.getPlayerManager().getPlayerList();
+    public List<ServerPlayer> getPlayers() {
+        return server.getPlayerList().getPlayers();
     }
     public int getTick() {
         if(server == null) return 1;
-        return server.getTicks();
+        return server.getTickCount();
     }
 
     public Vector2d getWorldCoordinateFromInitialMap(double x, double z){

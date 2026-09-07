@@ -1,11 +1,11 @@
 package net.sevenstars.middleearth.entity.beasts.cave_troll;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.cave_troll.feature.CaveTrollDroolFeatureRenderer;
@@ -14,21 +14,21 @@ import net.sevenstars.middleearth.entity.beasts.cave_troll.feature.CaveTrollSadd
 
 import java.util.Map;
 
-public class CaveTrollRenderer extends MobEntityRenderer<CaveTrollEntity, CaveTrollEntityRenderState, CaveTrollEntityModel> {
+public class CaveTrollRenderer extends MobRenderer<CaveTrollEntity, CaveTrollEntityRenderState, CaveTrollEntityModel> {
     private static final String PATH = "textures/entities/trolls/cave/cave_troll_";
     private static final String TEXTURE_ANG = "textures/entities/trolls/cave/cave_troll_ang.png";
     private static final String TEXTURE_ANGRY_ANG = "textures/entities/trolls/cave/cave_troll_angry_ang.png";
-    public CaveTrollRenderer(EntityRendererFactory.Context context) {
-        super(context, new CaveTrollEntityModel(context.getPart(EntityModelLayersME.CAVE_TROLL)), 1.1f);
-        this.addFeature(new CaveTrollDroolFeatureRenderer(this));
-        this.addFeature(new CaveTrollSaddleFeatureRenderer(this, context.getEntityModels(), context.getEquipmentRenderer()));
-        this.addFeature(new CaveTrollHeldItemFeatureRenderer(this));
+    public CaveTrollRenderer(EntityRendererProvider.Context context) {
+        super(context, new CaveTrollEntityModel(context.bakeLayer(EntityModelLayersME.CAVE_TROLL)), 1.1f);
+        this.addLayer(new CaveTrollDroolFeatureRenderer(this));
+        this.addLayer(new CaveTrollSaddleFeatureRenderer(this, context.getModelSet(), context.getEquipmentRenderer()));
+        this.addLayer(new CaveTrollHeldItemFeatureRenderer(this));
     }
 
     @Override
-    public Identifier getTexture(CaveTrollEntityRenderState state) {
+    public Identifier getTextureLocation(CaveTrollEntityRenderState state) {
         boolean isCalm = (state.tameness > 25 || !state.isTame) && !state.isEnraged;
-        if(state.customName != null && state.customName.getString().equals("Angmarzku")) {
+        if(state.nameTag != null && state.nameTag.getString().equals("Angmarzku")) {
             return isCalm ?
                     MiddleEarth.of(TEXTURE_ANG) :
                     MiddleEarth.of(TEXTURE_ANGRY_ANG);
@@ -54,9 +54,8 @@ public class CaveTrollRenderer extends MobEntityRenderer<CaveTrollEntity, CaveTr
         return new CaveTrollEntityRenderState();
     }
 
-    @Override
     public void updateRenderState(CaveTrollEntity troll, CaveTrollEntityRenderState state, float f) {
-        super.updateRenderState(troll, state, f);
+        super.extractRenderState(troll, state, f);
         CaveTrollEntityRenderState.updateRenderState(troll, state, this.itemModelResolver);
 
         state.chaseAnimationState = troll.chaseAnimationState;
@@ -72,9 +71,9 @@ public class CaveTrollRenderer extends MobEntityRenderer<CaveTrollEntity, CaveTr
         state.isCharging = troll.isCharging();
         state.isEnraged = troll.isEnraged();
         state.variant = troll.getVariant();
-        state.isTame = troll.isTame();
+        state.isTame = troll.isTamed();
         state.conrollingPassenger = troll.getControllingPassenger();
-        state.saddle = troll.getEquippedStack(EquipmentSlot.SADDLE);
+        state.saddle = troll.getItemBySlot(EquipmentSlot.SADDLE);
         state.tameness = troll.getTameness();
     }
 }

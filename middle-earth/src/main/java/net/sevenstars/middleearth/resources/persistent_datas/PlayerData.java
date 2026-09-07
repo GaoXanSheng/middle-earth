@@ -1,8 +1,8 @@
 package net.sevenstars.middleearth.resources.persistent_datas;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 
 public class PlayerData {
     private Identifier faction;
@@ -13,8 +13,8 @@ public class PlayerData {
 
     private int delversFearCountInSeconds = 0;
 
-    public NbtCompound createNbt() {
-        NbtCompound nbtCompound = new NbtCompound();
+    public CompoundTag createNbt() {
+        CompoundTag nbtCompound = new CompoundTag();
         if(faction != null)
             nbtCompound.putString("faction", faction.toString());
         if(spawn != null)
@@ -32,19 +32,19 @@ public class PlayerData {
     }
     public PlayerData() {}
 
-    public PlayerData(NbtCompound nbtCompound) {
+    public PlayerData(CompoundTag nbtCompound) {
         if(nbtCompound.getString("faction").isPresent())
-            faction = Identifier.of(nbtCompound.getString("faction").get());
+            faction = Identifier.parse(nbtCompound.getString("faction").get());
         if(nbtCompound.getString("spawn").isPresent())
-            spawn = Identifier.of(nbtCompound.getString("spawn").get());
+            spawn = Identifier.parse(nbtCompound.getString("spawn").get());
         if(nbtCompound.getString("race").isPresent())
-            race = Identifier.of(nbtCompound.getString("race").get());
+            race = Identifier.parse(nbtCompound.getString("race").get());
         if(nbtCompound.getIntArray("posOrigin").isPresent()){
             var intArray = nbtCompound.getIntArray("posOrigin").get();
             posOrigin = new BlockPos(intArray[0], intArray[1], intArray[2]);
         }
         if(nbtCompound.getString("dimensionOrigin").isPresent())
-            dimensionOrigin = Identifier.of(nbtCompound.getString("dimensionOrigin").get());
+            dimensionOrigin = Identifier.parse(nbtCompound.getString("dimensionOrigin").get());
 
         if(nbtCompound.getInt("delversFearCountInSeconds").isPresent())
             nbtCompound.putInt("delversFearCountInSeconds", delversFearCountInSeconds);
@@ -83,7 +83,6 @@ public class PlayerData {
     public BlockPos getOriginPos(){
         return this.posOrigin;
     }
-
 
     public int getDelversFearCountInSeconds(){
         return this.delversFearCountInSeconds;

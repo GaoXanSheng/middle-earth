@@ -1,10 +1,10 @@
 package net.sevenstars.middleearth.datageneration.providers;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.special.forge.MetalTypes;
 import net.sevenstars.middleearth.datageneration.content.TranslationEntries;
@@ -22,7 +22,7 @@ public class LanguageProvider extends FabricLanguageProvider {
 
     private final Map<String, String> specialNames = new HashMap<>();
 
-    public LanguageProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+    public LanguageProvider(FabricPackOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
         super(dataOutput, "en_us", registryLookup);
 
         specialNames.put("Izheraban", "Izhêr'Aban");
@@ -50,7 +50,7 @@ public class LanguageProvider extends FabricLanguageProvider {
     }
 
     @Override
-    public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.Provider wrapperLookup, TranslationBuilder translationBuilder) {
         TranslationEntries.blockEntries.forEach(block -> {
             translateBlock(translationBuilder, block);
         });
@@ -64,11 +64,11 @@ public class LanguageProvider extends FabricLanguageProvider {
         });
 
         TranslationEntries.itemEntries.forEach(item -> {
-            translationBuilder.add(item, generateName(Registries.ITEM.getId(item).getPath()));
+            translationBuilder.add(item, generateName(BuiltInRegistries.ITEM.getKey(item).getPath()));
         });
 
         TranslationEntries.entityEntries.forEach(entityType -> {
-            translationBuilder.add(entityType, generateName(Registries.ENTITY_TYPE.getId(entityType).getPath()));
+            translationBuilder.add(entityType, generateName(BuiltInRegistries.ENTITY_TYPE.getKey(entityType).getPath()));
         });
 
         TranslationEntries.biomeEntries.forEach(name -> {
@@ -131,9 +131,9 @@ public class LanguageProvider extends FabricLanguageProvider {
 
     public void translateBlock(TranslationBuilder translationBuilder, Block block){
         if (block == null) return;
-        translationBuilder.add(block, generateName(Registries.BLOCK.getId(block).getPath()));
+        translationBuilder.add(block, generateName(BuiltInRegistries.BLOCK.getKey(block).getPath()));
         if (block.asItem() == null) return;
-        translationBuilder.add(block.asItem(), generateName(Registries.ITEM.getId(block.asItem()).getPath()));
+        translationBuilder.add(block.asItem(), generateName(BuiltInRegistries.ITEM.getKey(block.asItem()).getPath()));
     }
 
     public void createTranslation(TranslationBuilder translationBuilder, String prefix, String suffix){

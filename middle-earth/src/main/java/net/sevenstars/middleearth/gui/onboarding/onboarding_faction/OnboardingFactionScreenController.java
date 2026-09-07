@@ -1,20 +1,20 @@
 package net.sevenstars.middleearth.gui.onboarding.onboarding_faction;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntitiesME;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
@@ -40,10 +40,10 @@ import java.util.*;
 
 public class OnboardingFactionScreenController {
     public static OnboardingFactionScreenController INSTANCE;
-    private static final Text TITLE = Text.translatable("screen." + MiddleEarth.MOD_ID + ".onboarding_faction_screen");
+    private static final Component TITLE = Component.translatable("screen." + MiddleEarth.MOD_ID + ".onboarding_faction_screen");
     private static final float DEFAULT_DELAY = 3;
 
-    World world;
+    Level world;
     OnboardingFactionScreen screen;
     OnboardingFactionScreenService service;
     private float currentDelay;
@@ -60,7 +60,7 @@ public class OnboardingFactionScreenController {
     private List<SearchBarResult> searchBarResults;
     private List<AttributePoolElement> playerAttributes;
 
-    public OnboardingFactionScreenController(World world, float delay, List<AttributePoolElement> playerAttributes) {
+    public OnboardingFactionScreenController(Level world, float delay, List<AttributePoolElement> playerAttributes) {
         screen = new OnboardingFactionScreen(this);
         this.world = world;
         this.currentDelay = delay;
@@ -74,10 +74,10 @@ public class OnboardingFactionScreenController {
     }
 
     public void open(){
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if(mc.currentScreen != null)
-            mc.currentScreen.close();
-        mc.setScreen(screen);
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.gui.screen() != null)
+            mc.gui.screen().onClose();
+        mc.gui.setScreen(screen);
         if(selectedFaction == null){
             screen.elements.mapWidget.zoom(10);
             screen.elements.mapWidget.isForcingTargetMovement = true;
@@ -89,7 +89,7 @@ public class OnboardingFactionScreenController {
     }
 
     public void close(){
-        this.screen.close();
+        this.screen.onClose();
         INSTANCE = null;
     }
 
@@ -122,7 +122,7 @@ public class OnboardingFactionScreenController {
             screen.elements.npcRandomizerButton.active = true;
         }
 
-        this.screen.elements.factionName = (selectedFaction.tryGetShortName()).formatted(Formatting.BOLD).formatted(Formatting.DARK_GRAY);
+        this.screen.elements.factionName = (selectedFaction.tryGetShortName()).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.DARK_GRAY);
         if(this.selectedSubfaction != null)
             this.screen.elements.subfactionName = (selectedSubfaction.tryGetShortName());
         else
@@ -169,7 +169,6 @@ public class OnboardingFactionScreenController {
             this.screen.elements.spawnPointSelectionWidget.enableVisuals(false);
         }
 
-
         this.screen.elements.raceList.setText(List.of(getRaceText()));
         this.screen.elements.descriptionTextBlock.setText(factionToUse.getDescription());
         this.screen.elements.bannerComponents = factionToUse.getBannerPatternsWithColors(world);
@@ -187,7 +186,7 @@ public class OnboardingFactionScreenController {
     }
 
     //region [Helpers]
-    private Text getRaceText() {
+    private Component getRaceText() {
         Faction factionToUse = getCurrentFaction();
         if(factionToUse == null) return null;
         StringBuilder raceListStringBuilder = new StringBuilder();
@@ -198,7 +197,7 @@ public class OnboardingFactionScreenController {
              raceListStringBuilder.append(race.getFullName().getString());
         }
 
-        return Text.of(raceListStringBuilder.toString());
+        return Component.nullToEmpty(raceListStringBuilder.toString());
     }
 
     private Faction getCurrentFaction() {
@@ -371,7 +370,7 @@ public class OnboardingFactionScreenController {
         var idList = currentFaction.getAllNpcDatas().values().stream().flatMap(List::stream).toList();
 
         // filter list by race
-        var optionalNpcRegistry = world.getRegistryManager().getOptional(DynamicRegistriesME.NPC_TYPE);
+        var optionalNpcRegistry = world.registryAccess().lookup(DynamicRegistriesME.NPC_TYPE);
         if(optionalNpcRegistry.isEmpty())
             return;
 
@@ -387,12 +386,12 @@ public class OnboardingFactionScreenController {
             return;
 
         Identifier id = filteredList.get((new Random()).nextInt(filteredList.size()));
-        if(world instanceof ClientWorld clientWorld)
+        if(world instanceof ClientLevel clientWorld)
             this.screen.elements.npcPreviewWidget.updateEntity(id, selectedRace, clientWorld, false);
     }
 
     private boolean filterNpc(Registry<NpcType> registry, Identifier elementToFilter){
-        NpcType foundData = registry.get(elementToFilter);
+        NpcType foundData = registry.getValue(elementToFilter);
         if(foundData == null) return false;
 
         if(selectedRace == null)
@@ -489,21 +488,21 @@ public class OnboardingFactionScreenController {
         Faction faction = getCurrentFaction();
         if(faction == null) return;
 
-        Vec3d coordinate = selectedSpawn.getCoordinates();
+        Vec3 coordinate = selectedSpawn.getCoordinates();
         if(selectedSpawn.isDynamic()){
-            ClientPlayNetworking.send(new PacketTeleportToDynamicCoordinate(coordinate.getX(), coordinate.getZ(), true));
+            ClientPlayNetworking.send(new PacketTeleportToDynamicCoordinate(coordinate.x(), coordinate.z(), true));
         } else {
-            ClientPlayNetworking.send(new PacketTeleportToCustomCoordinate(coordinate.getX(), coordinate.getY(), coordinate.getZ(), true));
+            ClientPlayNetworking.send(new PacketTeleportToCustomCoordinate(coordinate.x(), coordinate.y(), coordinate.z(), true));
         }
 
         ClientPlayNetworking.send(new PacketSetRace(selectedRace.getId().toString()));
         ClientPlayNetworking.send(new PacketSetAffiliation(selectedDispositionType.name(), faction.getId().toString(), selectedSpawn.getIdentifier().toString()));
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if(player != null){
-            BlockPos overworldBlockPos = player.getBlockPos();
+            BlockPos overworldBlockPos = player.blockPosition();
             ClientPlayNetworking.send(new PacketSetSpawnData(overworldBlockPos.getX(), overworldBlockPos.getY(), overworldBlockPos.getZ()));
         }
-        screen.close();
+        screen.onClose();
     }
 
     public int getMaxSpawnAmount() {
@@ -551,14 +550,14 @@ public class OnboardingFactionScreenController {
     }
 
     private SearchBarResult getSearchBarResult(Faction faction) {
-        MutableText text = faction.tryGetShortName();
+        MutableComponent text = faction.tryGetShortName();
         Identifier factionId = faction.getId();
         SearchBarResultType type = SearchBarResultType.NORMAL;
         return new SearchBarResult(text, factionId, type, button -> selectFactionByIdentifier(factionId, null));
     }
 
     private SearchBarResult getSearchBarResult(Faction faction, Faction subfaction) {
-        MutableText text = subfaction.tryGetShortName();
+        MutableComponent text = subfaction.tryGetShortName();
         Identifier factionId = faction.getId();
         Identifier subfactionId = subfaction.getId();
         SearchBarResultType type = SearchBarResultType.SUB;
@@ -593,11 +592,11 @@ public class OnboardingFactionScreenController {
         return (Math.round(this.currentDelay * 10f) /10f);
     }
 
-    public Text getCurrentFactionFullName() {
+    public Component getCurrentFactionFullName() {
         return selectedFaction.getFullName();
     }
 
-    public void drawRaceTooltip(AbstractClientPlayerEntity player, DrawContext context, TextRenderer textRenderer, int x, int y) {
+    public void drawRaceTooltip(AbstractClientPlayer player, GuiGraphicsExtractor context, Font textRenderer, int x, int y) {
         if(selectedRace == null)
             return;
         RaceStatTooltip.draw(selectedRace, player, context, textRenderer, x, y, playerAttributes, shouldBeDetailed);

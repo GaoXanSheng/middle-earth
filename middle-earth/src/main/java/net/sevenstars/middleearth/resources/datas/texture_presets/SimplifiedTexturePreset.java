@@ -1,8 +1,8 @@
 package net.sevenstars.middleearth.resources.datas.texture_presets;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 
 public class SimplifiedTexturePreset {
@@ -15,14 +15,13 @@ public class SimplifiedTexturePreset {
     public SimplifiedTexturePreset() {
     }
 
-    public SimplifiedTexturePreset(NbtCompound source) {
+    public SimplifiedTexturePreset(CompoundTag source) {
         source.getString("base").ifPresent(value -> this.base = MiddleEarth.fetchId(value));
         source.getString("hair").ifPresent(value -> this.hair = MiddleEarth.fetchId(value));
         source.getString("feet").ifPresent(value -> this.feet = MiddleEarth.fetchId(value));
         source.getString("nose").ifPresent(value -> this.nose = MiddleEarth.fetchId(value));
         source.getString("ear").ifPresent(value -> this.ear = MiddleEarth.fetchId(value));
     }
-
 
     public static SimplifiedTexturePreset create(Identifier base) {
         SimplifiedTexturePreset texturePreset = new SimplifiedTexturePreset();
@@ -50,8 +49,7 @@ public class SimplifiedTexturePreset {
         return this;
     }
 
-
-    public NbtElement getNbt(NbtElement newNbt) {
+    public Tag getNbt(Tag newNbt) {
         if(base != null){
             newNbt.asCompound().get().putString("base", this.base.toString());
         }

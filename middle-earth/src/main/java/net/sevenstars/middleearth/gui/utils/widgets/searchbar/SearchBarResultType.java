@@ -1,12 +1,12 @@
 package net.sevenstars.middleearth.gui.utils.widgets.searchbar;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 
 public enum SearchBarResultType
 {
-    NORMAL(Identifier.of(MiddleEarth.MOD_ID, "textures/gui/widget/search_widget.png"), 0,75, 0, 89),
-    SUB(Identifier.of(MiddleEarth.MOD_ID, "textures/gui/widget/search_widget.png"), 0,103, 0, 117);
+    NORMAL(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/gui/widget/search_widget.png"), 0,75, 0, 89),
+    SUB(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/gui/widget/search_widget.png"), 0,103, 0, 117);
 
     public static final int WIDTH = 93;
     public static final int HEIGHT = 14;

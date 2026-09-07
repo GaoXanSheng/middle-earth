@@ -1,27 +1,29 @@
 package net.sevenstars.of_beasts_and_wild_things.datageneration.providers;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagKey;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.sevenstars.of_beasts_and_wild_things.OfBeastsAndWildThings;
 import net.sevenstars.of_beasts_and_wild_things.entity.EntitiesWT;
 
 import java.util.concurrent.CompletableFuture;
 
-public class EntityTagProvider extends FabricTagProvider.EntityTypeTagProvider {
+public class EntityTagProvider extends FabricTagsProvider<EntityType<?>> {
 
-    public EntityTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        super(output, registriesFuture);
+    public EntityTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, Registries.ENTITY_TYPE, registriesFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-        var swan_food = valueLookupBuilder(TagKey.of(RegistryKeys.ENTITY_TYPE, OfBeastsAndWildThings.of("swan_food")));
+    protected void addTags(HolderLookup.Provider wrapperLookup) {
+        TagKey<EntityType<?>> swan_food = TagKey.create(Registries.ENTITY_TYPE, OfBeastsAndWildThings.of("swan_food"));
 
-        swan_food.add(EntitiesWT.SNAIL);
-        swan_food.add(EntityType.TADPOLE);
+        builder(swan_food).add(BuiltInRegistries.ENTITY_TYPE.getResourceKey(EntitiesWT.SNAIL).orElseThrow());
+        builder(swan_food).add(BuiltInRegistries.ENTITY_TYPE.getResourceKey(EntityTypes.TADPOLE).orElseThrow());
     }
 }

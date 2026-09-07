@@ -23,7 +23,6 @@ public class GundabadTexturePresetsPool {
     public final static TexturePresetDataPool GOBLIN;
     public final static TexturePresetDataPool HOBGOBLIN;
 
-
     public static List<TexturePresetsRegistry.RegisterableNpcTextureData> fetchAll() {
         return List.of(
                 new TexturePresetsRegistry.RegisterableNpcTextureData(TexturePresetsRegistry.GUNDABAD_GOBLIN, GOBLIN),

@@ -1,6 +1,5 @@
 package net.sevenstars.middleearth.registries.content.biomevents.pools;
 
-import net.minecraft.entity.EntityType;
 import net.sevenstars.middleearth.registries.content.npctypes.NpcRegistry;
 import net.sevenstars.middleearth.resources.datas.biome_events.BiomeEventData;
 import net.sevenstars.middleearth.resources.datas.biome_events.data.WildSpawnEventData;
@@ -26,7 +25,6 @@ public class GondorBiomeEventPool {
                 new WildSpawnEventData(NpcRegistry.GONDOR_SOLDIER).withWeight(3).withSameNpcType(2, 256),
                 new WildSpawnEventData(NpcRegistry.GONDOR_KNIGHT).withWeight(1).withSameNpcType(0, 256)
         ));
-
 
         OSGILIATH = new BiomeEventData(false, List.of(
                 new WildSpawnEventData(NpcRegistry.MORDOR_SCOUT).withWeight(4).withSameNpcType(3, 256),

@@ -1,11 +1,9 @@
 package net.sevenstars.middleearth.mixin;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.sevenstars.middleearth.resources.datas.biome_events.BiomeEventDataLookup;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,41 +13,22 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ServerWorld.class)
+@Mixin(ServerLevel.class)
 public class ServerWorldMixin {
     @Shadow @Final
     private MinecraftServer server;
 
-    //TODO BROKY
-    /*
-    @Inject(method = "tickChunk", at = @At(value = "INVOKE",
-        target = "Lnet/minecraft/server/world/ServerWorld;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), cancellable = true)
-    private void tickChunk(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
-        if(ModDimensions.isInMiddleEarth(chunk.getWorld())) {
-            ci.cancel();
-        }
-    }*/
-
     // Reason of addition
     // MC-188578 - Sleeping in a bed in a custom dimension doesn't set time to day
     // Link : https://bugs.mojang.com/browse/MC-188578
-    @Inject(method = "wakeSleepingPlayers", at = @At("TAIL"))
+    // TODO 26.2: the world clock/day-time API has been reworked (Level#getOverworldClockTime /
+    // ServerClockManager / WORLD_CLOCK dynamic registry). Restore advancing to morning when
+    // GameRules daylight cycle is on once that rework is mirrored here.
+    @Inject(method = "wakeUpAllPlayers", at = @At("TAIL"))
     private void wakeSleepingPlayers(CallbackInfo ci) {
-        ServerWorld world = (ServerWorld) (Object) this;
-
-        if (world.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
-            long currentTimeOfDay = world.getTimeOfDay() + 24000L;
-            world.setTimeOfDay(currentTimeOfDay - currentTimeOfDay % 24000L);
-        }
-
-        // The math is like vanilla (ServerWorld lines ~[310-319])
-        if (server.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE)) {
-            long currentTimeOfDay = server.getWorld(World.OVERWORLD).getTimeOfDay() + 24000L;
-            server.getWorld(World.OVERWORLD).setTimeOfDay(currentTimeOfDay - currentTimeOfDay % 24000L);
-        }
     }
 
-    @Inject(method = "spawnEntity", at = @At("TAIL"))
+    @Inject(method = "addFreshEntity", at = @At("TAIL"))
     private void onSpawn(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValue() || !(entity instanceof LivingEntity living))
             return;

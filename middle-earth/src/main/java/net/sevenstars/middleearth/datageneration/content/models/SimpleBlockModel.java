@@ -1,9 +1,8 @@
 package net.sevenstars.middleearth.datageneration.content.models;
 
+import net.minecraft.world.level.block.Block;
 import net.sevenstars.middleearth.block.registration.ModBlocks;
 import net.sevenstars.middleearth.block.registration.ModDecorativeBlocks;
-import net.minecraft.block.Block;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +12,9 @@ public class SimpleBlockModel {
 
     public record ChiseledPolishedBlock(Block base, Block origin) {}
 
-
     public static List<Block> blocks = new ArrayList<>() {
         {
             add(ModBlocks.COBBLY_DIRT);
-
 
             add(ModBlocks.SNOWY_DIRT);
 

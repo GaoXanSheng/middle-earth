@@ -1,13 +1,14 @@
 package net.sevenstars.middleearth.resources.datas.attributes;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.ai.attributes.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class AttributePool {
         return this;
     }
 
-    public AttributePool(NbtCompound compound) {
+    public AttributePool(CompoundTag compound) {
         if(compound == null) return;
         if(compound.contains("pool")){
             pool = new ArrayList<>();
@@ -38,9 +39,9 @@ public class AttributePool {
         }
     }
 
-    public NbtCompound getNbt() {
-        NbtCompound nbt = new NbtCompound();
-        NbtList list = new NbtList();
+    public CompoundTag getNbt() {
+        CompoundTag nbt = new CompoundTag();
+        ListTag list = new ListTag();
 
         for(var element : pool){
             list.add(element.createNbt());
@@ -54,17 +55,17 @@ public class AttributePool {
         boolean couldResolveOneAttribute = false;
 
         for(var element : pool){
-            var optAttributeEntry = Registries.ATTRIBUTE.getEntry(element.getIdentifier());
+            var optAttributeEntry = BuiltInRegistries.ATTRIBUTE.get(element.getIdentifier());
             if(optAttributeEntry.isPresent()){
                 var attributeEntry = optAttributeEntry.get();
 
-                var attributeInstance = entity.getAttributeInstance(attributeEntry);
+                var attributeInstance = entity.getAttribute(attributeEntry);
                 if(attributeInstance != null){
-                    attributeInstance.clearModifiers();
+                    attributeInstance.removeModifiers();
                     attributeInstance.setBaseValue(element.getValue());
                     if(element.hasModifiers()){
                         for(AttributeModifierElement modifier : element.getModifiers()){
-                            attributeInstance.addPersistentModifier(new EntityAttributeModifier(modifier.getIdentifier(), modifier.getValue(), modifier.getOperation()));
+                            attributeInstance.addPermanentModifier(new AttributeModifier(modifier.getIdentifier(), modifier.getValue(), modifier.getOperation()));
                         }
                     }
                     couldResolveOneAttribute = true;
@@ -75,8 +76,8 @@ public class AttributePool {
     }
 
     public static boolean reverse(LivingEntity entity){
-        for (var identifier : Registries.ATTRIBUTE.getIds()) {
-            var attributeInstance = entity.getAttributeInstance(Registries.ATTRIBUTE.getEntry(identifier).get());
+        for (var identifier : BuiltInRegistries.ATTRIBUTE.keySet()) {
+            var attributeInstance = entity.getAttribute(BuiltInRegistries.ATTRIBUTE.get(identifier).get());
             if (attributeInstance == null) {
                 continue;
             }
@@ -86,37 +87,37 @@ public class AttributePool {
                 continue;
 
             attributeInstance.setBaseValue(defaultBaseValue);
-            attributeInstance.clearModifiers();
+            attributeInstance.removeModifiers();
         }
         return true;
     }
 
     public static double getDefaultAttributeValue(Identifier identifier, LivingEntity entity) {
-        var defaultAttribute = Registries.ATTRIBUTE.get(identifier);
+        var defaultAttribute = BuiltInRegistries.ATTRIBUTE.getValue(identifier);
         if (defaultAttribute == null) {
             return -99;
         }
 
-        var defaultAttributeEntry = Registries.ATTRIBUTE.getEntry(identifier);
+        var defaultAttributeEntry = BuiltInRegistries.ATTRIBUTE.get(identifier);
         if (defaultAttributeEntry.isEmpty()) {
             return -99;
         }
 
-        var defaultAttributeContainer = DefaultAttributeRegistry.get((EntityType<? extends LivingEntity>) entity.getType());
+        var defaultAttributeContainer = DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) entity.getType());
         return defaultAttributeContainer.getBaseValue(defaultAttributeEntry.get());
     }
     public static double getDefaultAttributeModifiers(Identifier identifier, LivingEntity entity) {
-        var defaultAttribute = Registries.ATTRIBUTE.get(identifier);
+        var defaultAttribute = BuiltInRegistries.ATTRIBUTE.getValue(identifier);
         if (defaultAttribute == null) {
             return -99;
         }
 
-        var defaultAttributeEntry = Registries.ATTRIBUTE.getEntry(identifier);
+        var defaultAttributeEntry = BuiltInRegistries.ATTRIBUTE.get(identifier);
         if (defaultAttributeEntry.isEmpty()) {
             return -99;
         }
 
-        var defaultAttributeContainer = DefaultAttributeRegistry.get((EntityType<? extends LivingEntity>) entity.getType());
+        var defaultAttributeContainer = DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) entity.getType());
         return defaultAttributeContainer.getBaseValue(defaultAttributeEntry.get());
     }
 

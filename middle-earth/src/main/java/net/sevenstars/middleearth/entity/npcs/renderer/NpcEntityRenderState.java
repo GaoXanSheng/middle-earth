@@ -1,11 +1,10 @@
 package net.sevenstars.middleearth.entity.npcs.renderer;
 
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.AnimationState;
 
-public class NpcEntityRenderState extends BipedEntityRenderState {
+public class NpcEntityRenderState extends HumanoidRenderState {
     public float widthScale;
 
     public AnimationState aimingState = new AnimationState();

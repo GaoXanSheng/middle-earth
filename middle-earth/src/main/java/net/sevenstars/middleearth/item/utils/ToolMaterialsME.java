@@ -1,7 +1,7 @@
 package net.sevenstars.middleearth.item.utils;
 
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.ToolMaterial;
 import net.sevenstars.middleearth.utils.ItemTagsME;
 
 public class ToolMaterialsME {

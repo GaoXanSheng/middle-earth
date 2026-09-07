@@ -1,105 +1,78 @@
 package net.sevenstars.middleearth.client.renderer.handheld;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
-import net.minecraft.client.render.model.ModelBaker;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.BannerPatternsComponent;
-import net.minecraft.item.ItemDisplayContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DyeColor;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Unit;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.sevenstars.middleearth.MiddleEarthClient;
 import net.sevenstars.middleearth.client.MEModelLoader;
-import net.sevenstars.middleearth.client.ModTexturedRenderLayers;
-import net.sevenstars.middleearth.client.model.hand.HeldBannerEntityModel;
 import net.sevenstars.middleearth.client.model.hand.shields.KiteShieldEntityModel;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
 
-public class KiteShieldModelRenderer implements SpecialModelRenderer<ComponentMap> {
+public class KiteShieldModelRenderer implements SpecialModelRenderer<DataComponentMap> {
 
     private final KiteShieldEntityModel model;
+    private final SpriteGetter sprites;
 
-    public KiteShieldModelRenderer(KiteShieldEntityModel model) {
+    public KiteShieldModelRenderer(SpriteGetter sprites, KiteShieldEntityModel model) {
         this.model = model;
+        this.sprites = sprites;
     }
 
     @Override
-    public void render(@Nullable ComponentMap data, ItemDisplayContext displayContext, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean glint) {
-        BannerPatternsComponent bannerPatternsComponent = data != null ? data.getOrDefault(DataComponentTypes.BANNER_PATTERNS, BannerPatternsComponent.DEFAULT) : BannerPatternsComponent.DEFAULT;
-        DyeColor dyeColor = data != null ? data.get(DataComponentTypes.BASE_COLOR) : null;
-        boolean bl2 = !bannerPatternsComponent.layers().isEmpty() || dyeColor != null;
-        matrices.push();
+    public void submit(@Nullable DataComponentMap data, PoseStack matrices, SubmitNodeCollector collector, int light, int overlay, boolean glint, int seed) {
+        BannerPatternLayers bannerPatternsComponent = data != null ? data.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY) : BannerPatternLayers.EMPTY;
+        DyeColor dyeColor = data != null ? data.get(DataComponents.BASE_COLOR) : null;
+        boolean bl = !bannerPatternsComponent.layers().isEmpty() || dyeColor != null;
+        matrices.pushPose();
         matrices.scale(1.0F, -1.0F, -1.0F);
-        SpriteIdentifier spriteIdentifier = bl2 ? MEModelLoader.KITE_SHIELD_BASE : MEModelLoader.KITE_SHIELD_BASE_NO_PATTERN;
-        VertexConsumer vertexConsumer = spriteIdentifier.getSprite().getTextureSpecificVertexConsumer(ItemRenderer.getItemGlintConsumer(vertexConsumers, this.model.getLayer(spriteIdentifier.getAtlasId()), displayContext == ItemDisplayContext.GUI, glint));
-        this.model.getHandle().render(matrices, vertexConsumer, light, overlay);
-        if (bl2) {
-            renderCanvas(matrices, vertexConsumers, light, overlay, this.model.getPlate(), spriteIdentifier, false, (DyeColor)Objects.requireNonNullElse(dyeColor, DyeColor.WHITE), bannerPatternsComponent, glint, false);
-        } else {
-            this.model.getPlate().render(matrices, vertexConsumer, light, overlay);
-        }
-
-        matrices.pop();
+        SpriteId sprite = bl ? MEModelLoader.KITE_SHIELD_BASE : MEModelLoader.KITE_SHIELD_BASE_NO_PATTERN;
+        collector.submitModel(this.model, Unit.INSTANCE, matrices, light, overlay, -1, sprite, this.sprites, seed, null);
+        // TODO: re-port banner pattern overlay & foil layers to the 26.2 submit pipeline.
+        matrices.popPose();
     }
 
     @Override
-    public void collectVertices(Set<Vector3f> vertices) {
-        MatrixStack matrixStack = new MatrixStack();
+    public void getExtents(Consumer<Vector3fc> extents) {
+        PoseStack matrixStack = new PoseStack();
         matrixStack.scale(1.0F, -1.0F, -1.0F);
-        this.model.getRootPart().collectVertices(matrixStack, vertices);
-    }
-
-    public static void renderCanvas(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, ModelPart canvas, SpriteIdentifier baseSprite, boolean isBanner, DyeColor color, BannerPatternsComponent patterns, boolean glint, boolean solid) {
-        canvas.render(matrices, baseSprite.getVertexConsumer(vertexConsumers, RenderLayer::getEntitySolid, solid, glint), light, overlay);
-        renderLayer(matrices, vertexConsumers, light, overlay, canvas, ModTexturedRenderLayers.KITE_SHIELD_BASE, color);
-        for(int i = 0; i < 16 && i < patterns.layers().size(); ++i) {
-            BannerPatternsComponent.Layer layer = patterns.layers().get(i);
-            SpriteIdentifier spriteIdentifier = ModTexturedRenderLayers.getKiteShieldPatternTextureId(layer.pattern());
-
-            renderLayer(matrices, vertexConsumers, light, overlay, canvas, spriteIdentifier, layer.color());
-        }}
-
-    private static void renderLayer(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, ModelPart canvas, SpriteIdentifier textureId, DyeColor color) {
-        int i = color.getEntityColor();
-        canvas.render(matrices, textureId.getVertexConsumer(vertexConsumers, RenderLayer::getEntityNoOutline), light, overlay, i);
+        this.model.root().getExtentsForGui(matrixStack, extents);
     }
 
     @Nullable
     @Override
-    public ComponentMap getData(ItemStack stack) {
-        return stack.getImmutableComponents();
+    public DataComponentMap extractArgument(ItemStack stack) {
+        return stack.immutableComponents();
     }
 
     @Environment(EnvType.CLIENT)
-    public static record Unbaked() implements SpecialModelRenderer.Unbaked {
+    public static record Unbaked() implements SpecialModelRenderer.Unbaked<DataComponentMap> {
         public static final KiteShieldModelRenderer.Unbaked INSTANCE = new KiteShieldModelRenderer.Unbaked();
         public static final MapCodec<KiteShieldModelRenderer.Unbaked> CODEC;
 
         public Unbaked() {
         }
 
-        public MapCodec<KiteShieldModelRenderer.Unbaked> getCodec() {
+        public MapCodec<KiteShieldModelRenderer.Unbaked> type() {
             return CODEC;
         }
 
-        public SpecialModelRenderer<?> bake(LoadedEntityModels entityModels) {
-            return new KiteShieldModelRenderer(new KiteShieldEntityModel(entityModels.getModelPart(MiddleEarthClient.KITE_SHIELD_LAYER)));
+        public SpecialModelRenderer<DataComponentMap> bake(BakingContext context) {
+            return new KiteShieldModelRenderer(context.sprites(), new KiteShieldEntityModel(context.entityModelSet().bakeLayer(MiddleEarthClient.KITE_SHIELD_LAYER)));
         }
 
         static {

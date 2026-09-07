@@ -182,7 +182,6 @@ public class RohanTexturePresetsPool {
     }
     // endregion
 
-
     // region [DATAS]
     static {
         COMMON = new TexturePresetDataPool(new HashMap<>(){{

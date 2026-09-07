@@ -1,11 +1,11 @@
 package net.sevenstars.middleearth.item.items.weapons;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 import net.sevenstars.middleearth.item.utils.WeaponTypesME;
-import net.minecraft.item.ToolMaterial;
 
 public class CustomLongswordWeaponItem extends ReachWeaponItem {
-    public CustomLongswordWeaponItem(ToolMaterial toolMaterial, Item.Settings settings) {
+    public CustomLongswordWeaponItem(ToolMaterial toolMaterial, Item.Properties settings) {
         super(toolMaterial, WeaponTypesME.LONGSWORD, settings);
         // Keep in case of pvp re-balancing feedbacks
         /*.component(DataComponentTypes.BLOCKS_ATTACKS,

@@ -2,12 +2,11 @@ package net.sevenstars.middleearth.world.features.platedfood;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public class PlatedFoodFeatureConfig implements FeatureConfig {
+public class PlatedFoodFeatureConfig implements FeatureConfiguration {
     public static final Codec<PlatedFoodFeatureConfig> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     BlockState.CODEC.fieldOf("plate").forGetter(config -> config.plate),

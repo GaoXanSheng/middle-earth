@@ -1,19 +1,19 @@
 package net.sevenstars.api.dtos;
 
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 
 public class WeightedIdentifier extends WeightedItem<Identifier> {
-    public WeightedIdentifier(NbtElement element){
+    public WeightedIdentifier(Tag element){
         super(element);
 
         if(element.asString().isPresent()){
-            this.item = Identifier.of(element.asString().get());
+            this.item = Identifier.parse(element.asString().get());
         } else if(element.asCompound().isPresent()) {
             var potentialId = element.asCompound().get().getString("id");
-            potentialId.ifPresent(integer -> this.item = Identifier.of(potentialId.get()));
+            potentialId.ifPresent(integer -> this.item = Identifier.parse(potentialId.get()));
         }
     }
     public WeightedIdentifier(Identifier value) {
@@ -25,8 +25,8 @@ public class WeightedIdentifier extends WeightedItem<Identifier> {
     public static WeightedIdentifier fromIdentifier(Identifier id){
         return new WeightedIdentifier(id, 1);
     }
-    public static WeightedIdentifier fromKey(RegistryKey key){
-        return new WeightedIdentifier(key.getValue(), 1);
+    public static WeightedIdentifier fromKey(ResourceKey key){
+        return new WeightedIdentifier(key.identifier(), 1);
     }
 
     @Override
@@ -36,10 +36,10 @@ public class WeightedIdentifier extends WeightedItem<Identifier> {
     }
 
     @Override
-    public NbtElement getNbt(){
-        NbtElement newNbt = super.getNbt();
+    public Tag getNbt(){
+        Tag newNbt = super.getNbt();
         if(newNbt == null)
-            return NbtString.of(item.toString());
+            return StringTag.valueOf(item.toString());
 
         newNbt.asCompound().get().putString("id", this.item.toString());
         return newNbt;

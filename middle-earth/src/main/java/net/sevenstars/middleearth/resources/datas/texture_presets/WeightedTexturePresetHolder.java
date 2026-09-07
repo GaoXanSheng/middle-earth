@@ -1,12 +1,12 @@
 package net.sevenstars.middleearth.resources.datas.texture_presets;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.util.Identifier;
 import net.sevenstars.api.dtos.WeightedItem;
 import net.sevenstars.api.dtos.WeightedPool;
 import net.sevenstars.middleearth.resources.datas.common.CharacterMaterialTypes;
 import net.sevenstars.middleearth.resources.datas.common.CharacterPatternTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.api.dtos.WeightedIdentifier;
 
 import java.util.*;
@@ -17,7 +17,7 @@ public class WeightedTexturePresetHolder extends WeightedItem<TexturePreset> {
         this.item = new TexturePreset();
     }
 
-    public WeightedTexturePresetHolder(NbtCompound compound) {
+    public WeightedTexturePresetHolder(CompoundTag compound) {
         super(compound);
 
         this.item = new TexturePreset(compound);
@@ -29,12 +29,11 @@ public class WeightedTexturePresetHolder extends WeightedItem<TexturePreset> {
         return this;
     }
 
-
     @Override
-    public NbtElement getNbt(){
-        NbtElement nbt = super.getNbt();
+    public Tag getNbt(){
+        Tag nbt = super.getNbt();
         if(nbt == null){
-            nbt = new NbtCompound();
+            nbt = new CompoundTag();
         }
         return item.getNbt(nbt.asCompound().get());
     }

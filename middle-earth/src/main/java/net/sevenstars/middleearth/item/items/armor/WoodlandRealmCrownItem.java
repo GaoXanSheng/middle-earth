@@ -1,19 +1,21 @@
 package net.sevenstars.middleearth.item.items.armor;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.UseCooldownComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.EquipmentType;
-import net.minecraft.particle.*;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.item.DataComponentTypesME;
 import net.sevenstars.middleearth.item.dataComponents.CooldownDataComponent;
@@ -28,14 +30,14 @@ public class WoodlandRealmCrownItem extends CustomHelmetItem {
     private SeasonDataComponent.Season season = SeasonDataComponent.Season.DEAD;
     private boolean initialized = false;
 
-    public WoodlandRealmCrownItem(ExtendedArmorMaterial material, Settings settings) {
-        super(material, settings.armor(material.material(), EquipmentType.HELMET).maxCount(1));
+    public WoodlandRealmCrownItem(ExtendedArmorMaterial material, Properties settings) {
+        super(material, settings.humanoidArmor(material.material(), ArmorType.HELMET).stacksTo(1));
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
+    public void inventoryTick(ItemStack stack, ServerLevel world, Entity entity, @Nullable EquipmentSlot slot) {
         super.inventoryTick(stack, world, entity, slot);
-        RegistryEntry<Biome> biomeEntry = world.getBiome(entity.getBlockPos());
+        Holder<Biome> biomeEntry = world.getBiome(entity.blockPosition());
 
         int cooldown = 5;
         if(stack.get(DataComponentTypesME.COOLDOWN) != null) {
@@ -44,15 +46,15 @@ public class WoodlandRealmCrownItem extends CustomHelmetItem {
             stack.set(DataComponentTypesME.COOLDOWN, new CooldownDataComponent(cooldown));
         }
 
-        if(cooldown <= 0 && biomeEntry.getKey().isPresent()) {
+        if(cooldown <= 0 && biomeEntry.unwrapKey().isPresent()) {
             SeasonDataComponent.Season newSeason = SeasonDataComponent.Season.SUMMER;
-            if(biomeEntry.isIn(BiomeTagsME.SPRING)) {
+            if(biomeEntry.is(BiomeTagsME.SPRING)) {
                 newSeason = SeasonDataComponent.Season.SPRING;
-            } else if(biomeEntry.isIn(BiomeTagsME.AUTUMN)) {
+            } else if(biomeEntry.is(BiomeTagsME.AUTUMN)) {
                 newSeason = SeasonDataComponent.Season.AUTUMN;
-            } else if(biomeEntry.isIn(BiomeTagsME.WINTER)) {
+            } else if(biomeEntry.is(BiomeTagsME.WINTER)) {
                 newSeason = SeasonDataComponent.Season.WINTER;
-            } else if(biomeEntry.isIn(BiomeTagsME.DEAD)) {
+            } else if(biomeEntry.is(BiomeTagsME.DEAD)) {
                 newSeason = SeasonDataComponent.Season.DEAD;
             }
 
@@ -60,30 +62,30 @@ public class WoodlandRealmCrownItem extends CustomHelmetItem {
                 initialized = true;
                 LivingEntity livingEntity = (LivingEntity) entity;
                 stack.set(DataComponentTypesME.COOLDOWN, new CooldownDataComponent(35));
-                double scale = 1.8f * livingEntity.getAttributeValue(EntityAttributes.SCALE);
-                Vec3d pos = entity.getPos().add(0, 1.8f * scale, 0).add(0, -1.1f, 0);
+                double scale = 1.8f * livingEntity.getAttributeValue(Attributes.SCALE);
+                Vec3 pos = entity.position().add(0, 1.8f * scale, 0).add(0, -1.1f, 0);
 
                 if(season.equals(SeasonDataComponent.Season.DEAD) && !newSeason.equals(SeasonDataComponent.Season.WINTER)) {
-                    world.spawnParticles(ParticleTypes.COMPOSTER, pos.getX(), pos.getY(), pos.getZ(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
+                    world.sendParticles(ParticleTypes.COMPOSTER, pos.x(), pos.y(), pos.z(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
                 } else if(season.equals(SeasonDataComponent.Season.SPRING)) {
-                    world.spawnParticles(ParticleTypes.CHERRY_LEAVES, pos.getX(), pos.getY(), pos.getZ(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
+                    world.sendParticles(ParticleTypes.CHERRY_LEAVES, pos.x(), pos.y(), pos.z(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
                 } else if(season.equals(SeasonDataComponent.Season.SUMMER)) {
-                    int leavesColor = world.getBiome(entity.getBlockPos()).value().getFoliageColor();
-                    TintedParticleEffect tintedParticleEffect = TintedParticleEffect.create(ParticleTypes.TINTED_LEAVES, leavesColor);
-                    world.spawnParticles((ParticleEffect)tintedParticleEffect, pos.getX(), pos.getY(), pos.getZ(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
+                    int leavesColor = world.getBiome(entity.blockPosition()).value().getFoliageColor();
+                    ColorParticleOption tintedParticleEffect = ColorParticleOption.create(ParticleTypes.TINTED_LEAVES, leavesColor);
+                    world.sendParticles((ParticleOptions)tintedParticleEffect, pos.x(), pos.y(), pos.z(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
                 } else if(season.equals(SeasonDataComponent.Season.AUTUMN)) {
-                    TintedParticleEffect tintedParticleEffect = TintedParticleEffect.create(ParticleTypes.TINTED_LEAVES, 8930366);
-                    world.spawnParticles((ParticleEffect)tintedParticleEffect, pos.getX(), pos.getY(), pos.getZ(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
+                    ColorParticleOption tintedParticleEffect = ColorParticleOption.create(ParticleTypes.TINTED_LEAVES, 8930366);
+                    world.sendParticles((ParticleOptions)tintedParticleEffect, pos.x(), pos.y(), pos.z(), 9, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 1);
                 } else if(season.equals(SeasonDataComponent.Season.WINTER)) {
-                    world.spawnParticles(ParticleTypes.SNOWFLAKE, pos.getX(), pos.getY(), pos.getZ(), 12, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 0.05f);
+                    world.sendParticles(ParticleTypes.SNOWFLAKE, pos.x(), pos.y(), pos.z(), 12, OFFSET_XZ, OFFSET_Y, OFFSET_XZ, 0.05f);
                 }
 
                 String itemModelName = "woodland_realm_crown";
                 if(newSeason != SeasonDataComponent.Season.DEAD) {
                     itemModelName += "_" + newSeason;
                 }
-                Identifier newItemModel = Identifier.of(MiddleEarth.MOD_ID, itemModelName.toLowerCase());
-                stack.set(DataComponentTypes.ITEM_MODEL, newItemModel);
+                Identifier newItemModel = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, itemModelName.toLowerCase());
+                stack.set(DataComponents.ITEM_MODEL, newItemModel);
                 stack.set(DataComponentTypesME.SEASON_DATA, new SeasonDataComponent(newSeason));
             }
             season = newSeason;

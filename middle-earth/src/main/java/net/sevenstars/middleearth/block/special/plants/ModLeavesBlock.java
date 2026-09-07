@@ -1,94 +1,94 @@
 package net.sevenstars.middleearth.block.special.plants;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.TintedParticleLeavesBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.tick.ScheduledTickView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.TintedParticleLeavesBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.sevenstars.middleearth.block.registration.ModNatureBlocks;
 import net.sevenstars.middleearth.block.registration.WoodBlockSets;
 
 public class ModLeavesBlock extends TintedParticleLeavesBlock {
     final protected boolean castShadow;
 
-    public ModLeavesBlock(float f, Settings settings, boolean castShadow) {
+    public ModLeavesBlock(float f, Properties settings, boolean castShadow) {
         super(f, settings);
         this.castShadow = castShadow;
     }
 
     @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        world.setBlockState(pos, updateDistanceFromLogs(state, world, pos), Block.NOTIFY_ALL);
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+        world.setBlock(pos, updateDistance(state, world, pos), Block.UPDATE_ALL);
     }
 
     @Override
-    protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, Random random) {
+    protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         int i;
-        if (state.get(WATERLOGGED)) {
-            tickView.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        if (state.getValue(WATERLOGGED)) {
+            tickView.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
-        if ((i = getDistanceFromLog(neighborState) + 1) != 1 || state.get(DISTANCE) != i) {
-            tickView.scheduleBlockTick(pos, this, 1);
+        if ((i = getDistanceAt(neighborState) + 1) != 1 || state.getValue(DISTANCE) != i) {
+            tickView.scheduleTick(pos, this, 1);
         }
         return state;
     }
 
-    private static BlockState updateDistanceFromLogs(BlockState state, WorldAccess world, BlockPos pos) {
+    private static BlockState updateDistance(BlockState state, LevelAccessor world, BlockPos pos) {
         int i = 7;
-        BlockPos.Mutable mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         for(int x = -1; x <= 1; x++) {
             for(int y = -1; y <= 1; y++) {
                 for(int z = -1; z <= 1; z++) {
                     if(x == 0 && y == 0 && z == 0) continue;
-                    mutable.set(pos, x, y, z);
-                    i = Math.min(i, getDistanceFromLog(world.getBlockState(mutable)) + 1);
+                    mutable.setWithOffset(pos, x, y, z);
+                    i = Math.min(i, getDistanceAt(world.getBlockState(mutable)) + 1);
                     if (i == 1) break;
                 }
             }
         }
 
-        return state.with(DISTANCE, i);
+        return state.setValue(DISTANCE, i);
     }
 
-    private static int getDistanceFromLog(BlockState state) {
-        return LeavesBlock.getOptionalDistanceFromLog(state).orElse(7);
+    private static int getDistanceAt(BlockState state) {
+        return LeavesBlock.getOptionalDistanceAt(state).orElse(7);
     }
 
     @Override
-    protected int getOpacity(BlockState state) {
-        if(castShadow) return super.getOpacity(state);
+    protected int getLightDampening(BlockState state) {
+        if(castShadow) return super.getLightDampening(state);
         return 0;
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        BlockState blockState = (this.getDefaultState().with(PERSISTENT, true)).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
-        return updateDistanceFromLogs(blockState, ctx.getWorld(), ctx.getBlockPos());
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
+        BlockState blockState = (this.defaultBlockState().setValue(PERSISTENT, true)).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+        return updateDistance(blockState, ctx.getLevel(), ctx.getClickedPos());
     }
 
     @Override
-    protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (stack.isOf(Items.BONE_MEAL) && state.isOf(WoodBlockSets.MALLORN_SET.leaves)) {
-            world.setBlockState(pos, ModNatureBlocks.FLOWERING_MALLORN_LEAVES.getDefaultState());
-            return ActionResult.SUCCESS;
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (stack.is(Items.BONE_MEAL) && state.is(WoodBlockSets.MALLORN_SET.leaves)) {
+            world.setBlockAndUpdate(pos, ModNatureBlocks.FLOWERING_MALLORN_LEAVES.defaultBlockState());
+            return InteractionResult.SUCCESS;
         }
-        return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
+        return super.useItemOn(stack, state, world, pos, player, hand, hit);
     }
 }

@@ -1,7 +1,7 @@
 package net.sevenstars.middleearth.mixin;
 
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
-import net.minecraft.component.ComponentChanges;
+import net.minecraft.core.component.DataComponentPatch;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ComponentsIngredientMixin {
 
     @Accessor("components")
-    ComponentChanges getComponentChanges();
+    DataComponentPatch getComponentChanges();
 }

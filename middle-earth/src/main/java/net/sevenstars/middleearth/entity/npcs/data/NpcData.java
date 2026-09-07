@@ -2,16 +2,16 @@ package net.sevenstars.middleearth.entity.npcs.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
 import net.sevenstars.middleearth.resources.datas.common.EntityCategories;
 import net.sevenstars.middleearth.resources.datas.npc_types.NpcType;
@@ -20,11 +20,11 @@ import java.util.Optional;
 
 public class NpcData {
     public static final Codec<NpcData> CODEC;
-    public static final PacketCodec<RegistryByteBuf, NpcData> PACKET_CODEC;
+    public static final StreamCodec<RegistryFriendlyByteBuf, NpcData> PACKET_CODEC;
 
-    private RegistryEntry<NpcType> type;
+    private Holder<NpcType> type;
     private EntityCategories category;
-    private final SpawnReason spawnReason;
+    private final EntitySpawnReason spawnReason;
     private final Optional<BlockPos> structureManagerPos;
 
     static {
@@ -35,22 +35,22 @@ public class NpcData {
                 BlockPos.CODEC.optionalFieldOf("StructureManagerPos").forGetter((data) -> data.structureManagerPos)
         ).apply(instance, NpcData::new));
 
-        PACKET_CODEC = PacketCodec.tuple(
-                PacketCodecs.optional(PacketCodecs.registryEntry(DynamicRegistriesME.NPC_TYPE)), NpcData::getOptionalType,
-                PacketCodecs.optional(PacketCodecs.STRING), NpcData::getOptionalCategory,
-                PacketCodecs.optional(PacketCodecs.STRING), NpcData::getOptionalSpawnReason,
-                PacketCodecs.optional(BlockPos.PACKET_CODEC), NpcData::getOptionalStructureManagerPos,
+        PACKET_CODEC = StreamCodec.composite(
+                ByteBufCodecs.optional(ByteBufCodecs.holderRegistry(DynamicRegistriesME.NPC_TYPE)), NpcData::getOptionalType,
+                ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8), NpcData::getOptionalCategory,
+                ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8), NpcData::getOptionalSpawnReason,
+                ByteBufCodecs.optional(BlockPos.STREAM_CODEC), NpcData::getOptionalStructureManagerPos,
                 NpcData::new);
     }
 
-    public NpcData(Optional<RegistryEntry<NpcType>> type, Optional<String> category, Optional<String> spawnReason, Optional<BlockPos> structureManagerPos) {
+    public NpcData(Optional<Holder<NpcType>> type, Optional<String> category, Optional<String> spawnReason, Optional<BlockPos> structureManagerPos) {
         this.type = type.orElse(null);
         this.category = category.map(value -> parseEnum(EntityCategories.class, value)).orElse(null);
-        this.spawnReason = spawnReason.map(value -> parseEnum(SpawnReason.class, value)).orElse(null);
+        this.spawnReason = spawnReason.map(value -> parseEnum(EntitySpawnReason.class, value)).orElse(null);
         this.structureManagerPos = structureManagerPos == null ||  structureManagerPos.isEmpty() ? Optional.empty() : structureManagerPos;
     }
 
-    public NpcData(RegistryEntry<NpcType> type, EntityCategories category, SpawnReason spawnReason, Optional<BlockPos> structureManagerPos) {
+    public NpcData(Holder<NpcType> type, EntityCategories category, EntitySpawnReason spawnReason, Optional<BlockPos> structureManagerPos) {
         this.type = type;
         this.category = category;
         this.spawnReason = spawnReason;
@@ -65,7 +65,7 @@ public class NpcData {
     }
 
     // [BUILDERS]
-    public NpcData withType(RegistryEntry<NpcType> type) {
+    public NpcData withType(Holder<NpcType> type) {
         return new NpcData(type, category, spawnReason, structureManagerPos);
     }
 
@@ -73,30 +73,30 @@ public class NpcData {
         return new NpcData(this.type, category, this.spawnReason, this.structureManagerPos);
     }
 
-    public NpcData withSpawnReason(SpawnReason spawnReason) {
+    public NpcData withSpawnReason(EntitySpawnReason spawnReason) {
         return new NpcData(this.type, this.category, spawnReason, this.structureManagerPos);
     }
 
     public NpcData withStructureManagerPos(BlockPos structureManagerPos) {
         return new NpcData(this.type, this.category, this.spawnReason, Optional.of(structureManagerPos));
     }
-    public NpcData withType(World world, Identifier npcDataIdentifier) {
+    public NpcData withType(Level world, Identifier npcDataIdentifier) {
         if(npcDataIdentifier == null || world == null)
             return this;
 
-        Registry<NpcType> registry = world.getRegistryManager().getOrThrow(DynamicRegistriesME.NPC_TYPE);
-        NpcType npcType = registry.get(npcDataIdentifier);
+        Registry<NpcType> registry = world.registryAccess().lookupOrThrow(DynamicRegistriesME.NPC_TYPE);
+        NpcType npcType = registry.getValue(npcDataIdentifier);
         if(npcType == null)
             return this;
-        return this.withType(registry.getEntry(npcType));
+        return this.withType(registry.wrapAsHolder(npcType));
     }
 
     public Identifier getNpcTypeId() {
         if(type == null){
             return null;
         }
-        return type.getKey()
-                .map(RegistryKey::getValue)
+        return type.unwrapKey()
+                .map(ResourceKey::identifier)
                 .orElse(null);
     }
 
@@ -106,12 +106,11 @@ public class NpcData {
         return type.value().getFactionIdentifier();
     }
 
-
     public EntityCategories getCategory() {
         return category;
     }
 
-    public SpawnReason getSpawnReason() {
+    public EntitySpawnReason getSpawnReason() {
         return spawnReason;
     }
 
@@ -121,10 +120,9 @@ public class NpcData {
         return type.value();
     }
 
-    private Optional<RegistryEntry<NpcType>> getOptionalType() {
+    private Optional<Holder<NpcType>> getOptionalType() {
         return type != null ? Optional.of(type) : Optional.empty();
     }
-
 
     private Optional<String> getOptionalCategory() {
         return category != null ? Optional.of(category.name()) : Optional.empty();
@@ -140,7 +138,6 @@ public class NpcData {
     public BlockPos getStructureManagerPos() {
         return structureManagerPos.orElse(null);
     }
-
 
     private static <E extends Enum<E>> E parseEnum(Class<E> type, String value) {
         try {

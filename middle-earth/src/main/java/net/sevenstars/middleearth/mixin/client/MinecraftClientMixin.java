@@ -2,13 +2,9 @@ package net.sevenstars.middleearth.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.sevenstars.middleearth.config.ModClientConfigs;
 import net.sevenstars.middleearth.world.dimension.ModDimensions;
 import org.spongepowered.asm.mixin.Final;
@@ -20,15 +16,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public abstract class MinecraftClientMixin {
     @Shadow @Final
-    public GameOptions options;
+    public Options options;
 
-    @Inject(method = "setWorld", at = @At("HEAD"))
-    private void resetGlintInNether(ClientWorld world, CallbackInfo ci) {
+    @Inject(method = "updateLevelInEngines", at = @At("HEAD"))
+    private void resetGlintInNether(ClientLevel world, CallbackInfo ci) {
         if (ModClientConfigs.DISABLE_GLINT && world != null && ModDimensions.isInMiddleEarth(world)) {
-            this.options.getGlintStrength().setValue(0.0);
+            this.options.glintStrength().set(0.0);
         }
     }
 }

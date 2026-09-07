@@ -2,8 +2,8 @@ package net.sevenstars.middleearth.datageneration;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.registry.RegistryBuilder;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.sevenstars.middleearth.datageneration.providers.BlockLootTableProvider;
 import net.sevenstars.middleearth.datageneration.providers.DataWorldGenerator;
 import net.sevenstars.middleearth.datageneration.providers.EnchantmentProvider;
@@ -69,40 +69,40 @@ public class DataGeneration implements DataGeneratorEntrypoint {
     }
 
     @Override
-    public void buildRegistry(RegistryBuilder registryBuilder) {
+    public void buildRegistry(RegistrySetBuilder registryBuilder) {
         DataGeneratorEntrypoint.super.buildRegistry(registryBuilder);
-        registryBuilder.addRegistry(RegistryKeys.BIOME, ModBiomes::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.BIOME, ModCaveBiomes::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ModTreeConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ModVegetationConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, BoulderConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, OreConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, CavesConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ModMiscConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, MushroomTreeConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.CONFIGURED_FEATURE, ChainConfiguredFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, ModTreePlacedFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, ModVegetationPlacedFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, BoulderPlacedFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, OrePlacedFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, CavesPlacedFeatures::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.PLACED_FEATURE, ModMiscPlacedFeatures::bootstrap);
+        registryBuilder.add(Registries.BIOME, ModBiomes::bootstrap);
+        registryBuilder.add(Registries.BIOME, ModCaveBiomes::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, ModTreeConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, ModVegetationConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, BoulderConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, OreConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, CavesConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, ModMiscConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, MushroomTreeConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.CONFIGURED_FEATURE, ChainConfiguredFeatures::bootstrap);
+        registryBuilder.add(Registries.PLACED_FEATURE, ModTreePlacedFeatures::bootstrap);
+        registryBuilder.add(Registries.PLACED_FEATURE, ModVegetationPlacedFeatures::bootstrap);
+        registryBuilder.add(Registries.PLACED_FEATURE, BoulderPlacedFeatures::bootstrap);
+        registryBuilder.add(Registries.PLACED_FEATURE, OrePlacedFeatures::bootstrap);
+        registryBuilder.add(Registries.PLACED_FEATURE, CavesPlacedFeatures::bootstrap);
+        registryBuilder.add(Registries.PLACED_FEATURE, ModMiscPlacedFeatures::bootstrap);
 
-        registryBuilder.addRegistry(DynamicRegistriesME.SKIN_MATERIAL, CharacterMaterialsRegistryME::bootstrapSkins);
-        registryBuilder.addRegistry(DynamicRegistriesME.SKIN_PATTERN, CharacterPatternsRegistryME::bootstrapSkins);
+        registryBuilder.add(DynamicRegistriesME.SKIN_MATERIAL, CharacterMaterialsRegistryME::bootstrapSkins);
+        registryBuilder.add(DynamicRegistriesME.SKIN_PATTERN, CharacterPatternsRegistryME::bootstrapSkins);
 
-        registryBuilder.addRegistry(DynamicRegistriesME.HAIR_MATERIAL, CharacterMaterialsRegistryME::bootstrapHairs);
-        registryBuilder.addRegistry(DynamicRegistriesME.HAIR_PATTERN, CharacterPatternsRegistryME::bootstrapHairs);
+        registryBuilder.add(DynamicRegistriesME.HAIR_MATERIAL, CharacterMaterialsRegistryME::bootstrapHairs);
+        registryBuilder.add(DynamicRegistriesME.HAIR_PATTERN, CharacterPatternsRegistryME::bootstrapHairs);
 
-        registryBuilder.addRegistry(DynamicRegistriesME.EYE_MATERIAL, CharacterMaterialsRegistryME::bootstrapEyes);
-        registryBuilder.addRegistry(DynamicRegistriesME.EYE_PATTERN, CharacterPatternsRegistryME::bootstrapEyes);
+        registryBuilder.add(DynamicRegistriesME.EYE_MATERIAL, CharacterMaterialsRegistryME::bootstrapEyes);
+        registryBuilder.add(DynamicRegistriesME.EYE_PATTERN, CharacterPatternsRegistryME::bootstrapEyes);
 
         // Mod Dynamic
         DynamicRegistriesME.prepareBoostrap(registryBuilder);
 
         // Vanilla registries
-        registryBuilder.addRegistry(RegistryKeys.TRIM_MATERIAL, SmithingTrimMaterialsME::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.TRIM_PATTERN, SmithingTrimPatternsME::bootstrap);
-        registryBuilder.addRegistry(RegistryKeys.ENCHANTMENT, EnchantmentsME::bootstrap);
+        registryBuilder.add(Registries.TRIM_MATERIAL, SmithingTrimMaterialsME::bootstrap);
+        registryBuilder.add(Registries.TRIM_PATTERN, SmithingTrimPatternsME::bootstrap);
+        registryBuilder.add(Registries.ENCHANTMENT, EnchantmentsME::bootstrap);
     }
 }

@@ -9,12 +9,14 @@ import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import net.fabricmc.fabric.impl.recipe.ingredient.builtin.ComponentsIngredient;
-import net.minecraft.component.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.equipment.trim.ArmorTrim;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.core.component.*;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.compat.REICommonPluginME;
 import net.sevenstars.middleearth.gui.artisantable.ArtisanTableInputsShape;
@@ -35,12 +37,12 @@ public class ArtisanTableDisplay extends BasicDisplay {
                     EntryIngredient.codec().listOf().fieldOf("outputs").forGetter(ArtisanTableDisplay::getOutputEntries),
                     Codec.STRING.fieldOf("category").forGetter(ArtisanTableDisplay::getCategory)
             ).apply(instance, ArtisanTableDisplay::new)),
-            PacketCodec.tuple(
-                    EntryIngredient.streamCodec().collect(PacketCodecs.toList()),
+            StreamCodec.composite(
+                    EntryIngredient.streamCodec().apply(ByteBufCodecs.list()),
                     ArtisanTableDisplay::getInputEntries,
-                    EntryIngredient.streamCodec().collect(PacketCodecs.toList()),
+                    EntryIngredient.streamCodec().apply(ByteBufCodecs.list()),
                     ArtisanTableDisplay::getOutputEntries,
-                    PacketCodecs.STRING,
+                    ByteBufCodecs.STRING_UTF8,
                     ArtisanTableDisplay::getCategory,
                     ArtisanTableDisplay::new
             )
@@ -63,12 +65,12 @@ public class ArtisanTableDisplay extends BasicDisplay {
             ComponentsIngredient customIngredient = (ComponentsIngredient) ingredient.getCustomIngredient();
             if(customIngredient != null) {
                 ComponentsIngredientMixin ingredientComponentsAccessor = (ComponentsIngredientMixin) customIngredient;
-                ComponentChanges changedComponents = ingredientComponentsAccessor.getComponentChanges();
-                if(changedComponents != null && changedComponents.get(DataComponentTypes.TRIM).isPresent()) {
-                    ArmorTrim trim = changedComponents.get(DataComponentTypes.TRIM).get();
-                    if(trim.pattern().matchesId(MiddleEarth.of("smithing_part"))) {
-                        ItemStack stackComponentsSmithing = new ItemStack(customIngredient.getMatchingItems().toList().getFirst());
-                        stackComponentsSmithing.set(DataComponentTypes.TRIM, trim);
+                DataComponentPatch changedComponents = ingredientComponentsAccessor.getComponentChanges();
+                if(changedComponents != null) {
+                    ArmorTrim trim = changedComponents.split().added().get(DataComponents.TRIM);
+                    if(trim != null && trim.pattern().is(MiddleEarth.of("smithing_part"))) {
+                        ItemStack stackComponentsSmithing = new ItemStack(customIngredient.items().toList().getFirst().value());
+                        stackComponentsSmithing.set(DataComponents.TRIM, trim);
                         EntryIngredient entryIngredient = EntryIngredients.of(stackComponentsSmithing);
                         inputs.set(index, entryIngredient);
                     }

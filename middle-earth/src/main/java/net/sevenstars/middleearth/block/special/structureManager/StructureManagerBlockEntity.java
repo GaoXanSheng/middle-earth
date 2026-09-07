@@ -1,24 +1,24 @@
 package net.sevenstars.middleearth.block.special.structureManager;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.registration.ModBlockEntities;
 import net.sevenstars.middleearth.block.special.structureManager.features.SpawnNestManager;
@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class StructureManagerBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory {
+public class StructureManagerBlockEntity extends BlockEntity implements ExtendedMenuProvider<StructureManagerScreenData> {
     private static final String ID = "structure_manager";
 
     private enum SyncedData {
@@ -64,9 +64,9 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
     private boolean registered = false;
 
     @Override
-    public void markRemoved() {
+    public void setRemoved() {
         StructureManagerService.unregister(this);
-        super.markRemoved();
+        super.setRemoved();
     }
 
     public StructureManagerBlockEntity(BlockPos pos, BlockState state) {
@@ -89,47 +89,47 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
     }
 
     @Override
-    public Text getDisplayName() {
-        return Text.translatable("screen.%s.%s".formatted(MiddleEarth.MOD_ID, ID));
+    public Component getDisplayName() {
+        return Component.translatable("screen.%s.%s".formatted(MiddleEarth.MOD_ID, ID));
     }
 
     @Override
-    public Object getScreenOpeningData(ServerPlayerEntity serverPlayerEntity) {
-        return new StructureManagerScreenData(this.pos, this.enabled, this.toInitialize, Optional.ofNullable(this.structureManagerIdentifier));
+    public StructureManagerScreenData getScreenOpeningData(ServerPlayer serverPlayerEntity) {
+        return new StructureManagerScreenData(this.worldPosition, this.enabled, this.toInitialize, Optional.ofNullable(this.structureManagerIdentifier));
     }
     @Override
-    public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Nullable
     @Override
-    public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+    public AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
         return new StructureManagerScreenHandler(syncId, playerInventory,
-                new StructureManagerScreenData(this.pos, this.enabled, this.toInitialize, Optional.ofNullable(this.structureManagerIdentifier))
+                new StructureManagerScreenData(this.worldPosition, this.enabled, this.toInitialize, Optional.ofNullable(this.structureManagerIdentifier))
         );
     }
 
-    public static void tickEvent(World world, BlockPos blockPos, BlockState blockState, StructureManagerBlockEntity entity) {
+    public static void tickEvent(Level world, BlockPos blockPos, BlockState blockState, StructureManagerBlockEntity entity) {
         entity.tickEvent(world, blockPos, blockState);
     }
 
     @Override
-    protected void writeData(WriteView view) {
-        super.writeData(view);
+    protected void saveAdditional(ValueOutput view) {
+        super.saveAdditional(view);
         view.putBoolean(SyncedData.ENABLED.name, this.enabled);
         view.putBoolean(SyncedData.TO_INITIALIZE.name, this.toInitialize);
         if(structureManagerIdentifier != null)
-            view.put(SyncedData.IDENTIFIER.name, Identifier.CODEC, this.structureManagerIdentifier);
+            view.store(SyncedData.IDENTIFIER.name, Identifier.CODEC, this.structureManagerIdentifier);
         if(structureNestList != null)
-            view.put(SyncedData.SPAWN_NEST_LIST.name, StructureNestList.CODEC, this.structureNestList);
+            view.store(SyncedData.SPAWN_NEST_LIST.name, StructureNestList.CODEC, this.structureNestList);
     }
 
     @Override
-    protected void readData(ReadView view) {
-        super.readData(view);
-        this.enabled = view.getBoolean(SyncedData.ENABLED.name, false);
-        this.toInitialize = view.getBoolean(SyncedData.TO_INITIALIZE.name, false);
+    protected void loadAdditional(ValueInput view) {
+        super.loadAdditional(view);
+        this.enabled = view.getBooleanOr(SyncedData.ENABLED.name, false);
+        this.toInitialize = view.getBooleanOr(SyncedData.TO_INITIALIZE.name, false);
         view.read(SyncedData.IDENTIFIER.name, Identifier.CODEC)
                 .ifPresent(x -> structureManagerIdentifier = x);
         view.read(SyncedData.SPAWN_NEST_LIST.name, StructureNestList.CODEC)
@@ -137,10 +137,9 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
     }
     // endregion
 
-
     @Override
-    public void setWorld(World world) {
-        super.setWorld(world);
+    public void setLevel(Level world) {
+        super.setLevel(world);
         worldWasSet = true;
     }
 
@@ -149,8 +148,8 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
             return;
         for(SpawnNestManager nest : structureNestList.getManagers()){
             for(UUID uuid : nest.getEntityUuids()){
-                if(world.getEntity(uuid) instanceof LivingEntity livingEntity){
-                    livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10*20));
+                if(level.getEntity(uuid) instanceof LivingEntity livingEntity){
+                    livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 10*20));
                 }
             }
         }
@@ -159,10 +158,10 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
     public void respawnAllEntities() {
         if(structureNestList == null)
             return;
-        if(world == null || world.isClient)
+        if(level == null || level.isClientSide())
             return;
         for(var nest : structureNestList.getManagers()){
-            nest.forceRespawn(managerData, (ServerWorld) world, pos);
+            nest.forceRespawn(managerData, (ServerLevel) level, worldPosition);
         }
     }
 
@@ -177,22 +176,22 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
     }
 
     public static void triggerDeathSignal(BlockPos pos, LivingEntity entity) {
-        if(entity.getWorld().isClient)
+        if(entity.level().isClientSide())
             return;
-        StructureManagerBlockEntity blockEntity = (StructureManagerBlockEntity) entity.getWorld().getBlockEntity(pos);
+        StructureManagerBlockEntity blockEntity = (StructureManagerBlockEntity) entity.level().getBlockEntity(pos);
         if(blockEntity != null && !blockEntity.isRemoved()){
             blockEntity.structureNestList.computeDeath(entity);
-            blockEntity.world.markDirty(pos);
+            blockEntity.level.blockEntityChanged(pos);
         }
     }
 
-    private void tickEvent(World world, BlockPos blockPos, BlockState blockState) {
-        if(!world.isClient && worldWasSet){
+    private void tickEvent(Level world, BlockPos blockPos, BlockState blockState) {
+        if(!world.isClientSide() && worldWasSet){
             tryToInitializeManager(world);
             this.worldWasSet = false;
         }
 
-        if (!world.isClient && !this.registered) {
+        if (!world.isClientSide() && !this.registered) {
             StructureManagerService.register(this);
             this.registered = true;
         }
@@ -200,12 +199,12 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
         if(!enabled)
             return;
 
-        ServerWorld serverWorld = (ServerWorld) world;
+        ServerLevel serverWorld = (ServerLevel) world;
         if(structureNestList == null)
             return;
 
-        long timeOfDay = serverWorld.getTime() % 24000;
-        long gameTick = serverWorld.getTime();
+        long timeOfDay = serverWorld.getGameTime() % 24000;
+        long gameTick = serverWorld.getGameTime();
         if((timeOfDay > 0 && timeOfDay < 11000) || (timeOfDay > 12000 && timeOfDay < 23000) && wellnessChecked)
             wellnessChecked = false;
 
@@ -222,8 +221,8 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
             wellnessChecked = true;
     }
 
-    private void tryToInitializeManager(World world){
-        if(world.isClient)
+    private void tryToInitializeManager(Level world){
+        if(world.isClientSide())
             return;
         if(!toInitialize || enabled)
             return;
@@ -257,13 +256,13 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
     }
 
     private void updateListeners() {
-        this.markDirty();
-        this.world.updateListeners(this.getPos(), this.getCachedState(), this.getCachedState(), Block.NOTIFY_ALL);
+        this.setChanged();
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
     }
 
     public void fetchBeds(){
         // TODO : Fetch all beds surrounding the nodes, making sure there's no duplicate
-        StructureManagerData managerData = getWorld().getRegistryManager().getOptional(DynamicRegistriesME.STRUCTURE_MANAGER_DATA).get().get(structureManagerIdentifier);
+        StructureManagerData managerData = getLevel().registryAccess().lookup(DynamicRegistriesME.STRUCTURE_MANAGER_DATA).get().getValue(structureManagerIdentifier);
         for(SpawnNestManager data : structureNestList.getManagers()) {
             SpawnNestNodeData nodeData = managerData.getNpcSpawnNest(data.getId());
             if(nodeData == null)

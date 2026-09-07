@@ -1,44 +1,50 @@
 package net.sevenstars.middleearth.recipe;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.item.DataComponentTypesME;
 import net.sevenstars.middleearth.item.dataComponents.MountArmorAddonComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
 import net.sevenstars.middleearth.utils.ItemTagsME;
 
-public class MountArmorSideSkullAddonRecipe extends SpecialCraftingRecipe {
-    public MountArmorSideSkullAddonRecipe(CraftingRecipeCategory category) {
-        super(category);
+public class MountArmorSideSkullAddonRecipe extends CustomRecipe {
+
+    private static final MountArmorSideSkullAddonRecipe INSTANCE = new MountArmorSideSkullAddonRecipe();
+    public static final MapCodec<MountArmorSideSkullAddonRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, MountArmorSideSkullAddonRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final RecipeSerializer<MountArmorSideSkullAddonRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+
+    public MountArmorSideSkullAddonRecipe() {
     }
 
     @Override
-    public boolean matches(CraftingRecipeInput input, World world) {
+    public boolean matches(CraftingInput input, Level world) {
         ItemStack itemStackArmor = ItemStack.EMPTY;
         ItemStack itemStackString = ItemStack.EMPTY;
         ItemStack itemStackSkull= ItemStack.EMPTY;
 
         for(int i = 0; i < input.size(); ++i) {
-            ItemStack itemStack2 = input.getStackInSlot(i);
+            ItemStack itemStack2 = input.getItem(i);
             if (!itemStack2.isEmpty()) {
-                if (itemStack2.isIn(ItemTagsME.WARG_ARMORS)) {
+                if (itemStack2.is(ItemTagsME.WARG_ARMORS)) {
                     if (!itemStackArmor.isEmpty()) {
                         return false;
                     }
                     itemStackArmor = itemStack2;
                 }
-                else if (itemStack2.isOf(Items.STRING)) {
+                else if (itemStack2.is(Items.STRING)) {
                     if (!itemStackString.isEmpty()) {
                         return false;
                     }
                     itemStackString = itemStack2;
                 }
-                else if (itemStack2.isOf(Items.SKELETON_SKULL)) {
+                else if (itemStack2.is(Items.SKELETON_SKULL)) {
                     if (!itemStackSkull.isEmpty()) {
                         return false;
                     }
@@ -50,13 +56,13 @@ public class MountArmorSideSkullAddonRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public ItemStack craft(CraftingRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack assemble(CraftingInput input) {
         ItemStack itemStack = ItemStack.EMPTY;
 
         for(int i = 0; i < input.size(); ++i) {
-            ItemStack itemStack2 = input.getStackInSlot(i);
+            ItemStack itemStack2 = input.getItem(i);
             if (!itemStack2.isEmpty()) {
-                if (itemStack2.isIn(ItemTagsME.WARG_ARMORS)) {
+                if (itemStack2.is(ItemTagsME.WARG_ARMORS)) {
                     if (!itemStack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
@@ -78,7 +84,7 @@ public class MountArmorSideSkullAddonRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public RecipeSerializer<? extends SpecialCraftingRecipe> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return ModRecipeSerializer.CUSTOM_MOUNT_ARMOR_SIDE_SKULL_ADDON;
     }
 }

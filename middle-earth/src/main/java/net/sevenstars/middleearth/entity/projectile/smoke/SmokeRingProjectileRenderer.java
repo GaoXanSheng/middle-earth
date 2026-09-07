@@ -1,67 +1,68 @@
 package net.sevenstars.middleearth.entity.projectile.smoke;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.sevenstars.middleearth.MiddleEarth;
 import org.joml.Matrix4f;
-import net.minecraft.client.render.RenderLayer;
 import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public class SmokeRingProjectileRenderer extends EntityRenderer<SmokeRingProjectileEntity, SmokeRingProjectileRenderState> {
-    private final Sprite[] frames;
+    private final TextureAtlasSprite[] frames;
 
-    private static final Identifier SPRITES_ATLAS_ID = Identifier.of(MiddleEarth.MOD_ID, "sprites");
+    private static final Identifier SPRITES_ATLAS_ID = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "sprites");
     private static final String SPRITE_PATH_PREFIX = "sprites/smoke_ring/big_smoke_ring_";
     private static final int FRAME_COUNT = 12;
     private static final int FAILED_FIRST_FRAME = 7;
     private static final int FAILED_FRAME_COUNT = 5;
     private static final float SMOKE_RING_SIZE = 1.0f;
 
-    public SmokeRingProjectileRenderer(EntityRendererFactory.Context context) {
+    public SmokeRingProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
         frames = loadFrames();
     }
 
     @Override
-    public void render(
+    public void submit(
             SmokeRingProjectileRenderState state,
-            MatrixStack matrices,
-            VertexConsumerProvider vertexConsumers,
-            int light) {
-        matrices.push();
+            PoseStack matrices,
+            SubmitNodeCollector submitNodeCollector,
+            CameraRenderState cameraRenderState) {
+        matrices.pushPose();
         matrices.translate(0, 0.2, 0);
-        matrices.multiply(state.orientationQuat);
+        matrices.mulPose(state.orientationQuat);
 
         int firstFrame = state.failed ? FAILED_FIRST_FRAME : 0;
         int frameCount = state.failed ? FAILED_FRAME_COUNT : frames.length;
-        int frame = firstFrame + Math.min((int) (state.age / state.maxLifespan * frameCount), frameCount - 1);
-        Sprite sprite = frames[frame];
+        int frame = firstFrame + Math.min((int) (state.ageInTicks / state.maxLifespan * frameCount), frameCount - 1);
+        TextureAtlasSprite sprite = frames[frame];
 
+        float minU = sprite.getU0();
+        float maxU = sprite.getU1();
+        float minV = sprite.getV0();
+        float maxV = sprite.getV1();
 
-        Matrix4f matrix = matrices.peek().getPositionMatrix();
-        VertexConsumer vc = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(sprite.getAtlasId()));
+        int overlay = net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
+        int light = state.lightCoords;
 
-        float minU = sprite.getMinU();
-        float maxU = sprite.getMaxU();
-        float minV = sprite.getMinV();
-        float maxV = sprite.getMaxV();
+        submitNodeCollector.submitCustomGeometry(matrices, RenderTypes.entityTranslucent(sprite.atlasLocation()), (pose, vc) -> {
+            drawQuad(vc, pose.pose(), SMOKE_RING_SIZE, minU, maxU, minV, maxV, light, overlay);
+        });
 
-        int overlay = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
-
-        drawQuad(vc, matrix, SMOKE_RING_SIZE, minU, maxU, minV, maxV, light, overlay);
-
-        matrices.pop();
+        matrices.popPose();
+        super.submit(state, matrices, submitNodeCollector, cameraRenderState);
     }
 
     @Override
@@ -74,24 +75,24 @@ public class SmokeRingProjectileRenderer extends EntityRenderer<SmokeRingProject
     }
 
     @Override
-    public void updateRenderState(
+    public void extractRenderState(
             SmokeRingProjectileEntity entity,
             SmokeRingProjectileRenderState state,
             float tickDelta) {
-        super.updateRenderState(entity, state, tickDelta);
+        super.extractRenderState(entity, state, tickDelta);
 
         state.maxLifespan = entity.getMaxLifespanTicks();
         state.failed = entity.isFailed();
         this.updateOrientationQuaternion(entity, state, tickDelta);
     }
 
-    private Sprite[] loadFrames() {
-        SpriteAtlasTexture atlas = (SpriteAtlasTexture) MinecraftClient.getInstance().getTextureManager().getTexture(
+    private TextureAtlasSprite[] loadFrames() {
+        TextureAtlas atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(
                 SPRITES_ATLAS_ID);
 
-        Sprite[] sprites = new Sprite[FRAME_COUNT];
+        TextureAtlasSprite[] sprites = new TextureAtlasSprite[FRAME_COUNT];
         for (int i = 0; i < FRAME_COUNT; i++) {
-            Identifier spriteId = Identifier.of(MiddleEarth.MOD_ID, SPRITE_PATH_PREFIX + i);
+            Identifier spriteId = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, SPRITE_PATH_PREFIX + i);
             sprites[i] = atlas.getSprite(spriteId);
         }
         return sprites;
@@ -108,26 +109,26 @@ public class SmokeRingProjectileRenderer extends EntityRenderer<SmokeRingProject
             int light,
             int overlay) {
         float half = size / 2f;
-        vc.vertex(matrix, -half, -half, 0).color(255, 255, 255, 255).texture(minU, minV).overlay(
-                overlay).light(light).normal(0, 0, 1);
-        vc.vertex(matrix, -half, +half, 0).color(255, 255, 255, 255).texture(minU, maxV).overlay(
-                overlay).light(light).normal(0, 0, 1);
-        vc.vertex(matrix, +half, +half, 0).color(255, 255, 255, 255).texture(maxU, maxV).overlay(
-                overlay).light(light).normal(0, 0, 1);
-        vc.vertex(matrix, +half, -half, 0).color(255, 255, 255, 255).texture(maxU, minV).overlay(
-                overlay).light(light).normal(0, 0, 1);
+        vc.addVertex(matrix, -half, -half, 0).setColor(255, 255, 255, 255).setUv(minU, minV).setOverlay(
+                overlay).setLight(light).setNormal(0, 0, 1);
+        vc.addVertex(matrix, -half, +half, 0).setColor(255, 255, 255, 255).setUv(minU, maxV).setOverlay(
+                overlay).setLight(light).setNormal(0, 0, 1);
+        vc.addVertex(matrix, +half, +half, 0).setColor(255, 255, 255, 255).setUv(maxU, maxV).setOverlay(
+                overlay).setLight(light).setNormal(0, 0, 1);
+        vc.addVertex(matrix, +half, -half, 0).setColor(255, 255, 255, 255).setUv(maxU, minV).setOverlay(
+                overlay).setLight(light).setNormal(0, 0, 1);
     }
 
     private void updateOrientationQuaternion(
             SmokeRingProjectileEntity entity,
             SmokeRingProjectileRenderState state,
             float tickDelta) {
-        float yawRad = (float) Math.toRadians(-MathHelper.lerp(tickDelta,
-                entity.lastYaw,
-                entity.getYaw()));
-        float pitchRad = (float) Math.toRadians(MathHelper.lerp(tickDelta,
-                entity.lastPitch,
-                entity.getPitch()));
+        float yawRad = (float) Math.toRadians(-Mth.lerp(tickDelta,
+                entity.yRotO,
+                entity.getYRot()));
+        float pitchRad = (float) Math.toRadians(Mth.lerp(tickDelta,
+                entity.xRotO,
+                entity.getXRot()));
         state.orientationQuat = new Quaternionf().rotateYXZ(yawRad, pitchRad, 0f);
     }
 }

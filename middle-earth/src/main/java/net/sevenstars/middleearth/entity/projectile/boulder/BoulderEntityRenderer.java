@@ -1,28 +1,12 @@
 package net.sevenstars.middleearth.entity.projectile.boulder;
 
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayers;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
 public class BoulderEntityRenderer extends EntityRenderer<BoulderEntity, EntityRenderState> {
-    private final BlockRenderManager blockRenderManager;
-    public BoulderEntityRenderer(EntityRendererFactory.Context ctx) {
+    public BoulderEntityRenderer(EntityRendererProvider.Context ctx) {
         super(ctx);
-        this.blockRenderManager = ctx.getBlockRenderManager();
     }
 
     @Override
@@ -34,7 +18,6 @@ public class BoulderEntityRenderer extends EntityRenderer<BoulderEntity, EntityR
     public Identifier getTexture(EntityRenderState state) {
         return Identifier.of("minecraft", "textures/block/stone.png");
     }
-
 
     public void render(BoulderEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         if(entity.getOwner() == null) {

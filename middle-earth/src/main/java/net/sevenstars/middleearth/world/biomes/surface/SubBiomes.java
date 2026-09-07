@@ -1,15 +1,14 @@
 package net.sevenstars.middleearth.world.biomes.surface;
 
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.sevenstars.middleearth.world.biomes.MEBiomeKeys;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SubBiomes {
-    public static HashMap<RegistryKey<Biome>, SubBiome> subBiomesMap;
+    public static HashMap<ResourceKey<Biome>, SubBiome> subBiomesMap;
 
     public static void loadSubBiomes() {
         subBiomesMap = new HashMap<>();
@@ -173,7 +172,6 @@ public class SubBiomes {
                 .addSubBiomeData(-1.0f, -0.31f, MEBiomeKeys.MORDOR_ASHEN_FOREST)
                 .addSubBiomeData(0.29f, 2.01f, MEBiomeKeys.MORDOR_HILL, true));
 
-
         subBiomesMap.put(MEBiomeKeys.EASTERN_RHOVANION, new SubBiome()
                 .addSubBiomeData(-1.0f, -0.35f, MEBiomeKeys.EASTERN_RHOVANION_FOREST)
                 .addSubBiomeData(0.34f, 2.01f, MEBiomeKeys.EASTERN_RHOVANION_FOREST));
@@ -193,7 +191,7 @@ public class SubBiomes {
                 .addSubBiomeData(0.36f, 1.0f, MEBiomeKeys.HARAD_WOODS));
     }
 
-    public static boolean isSubBiome(RegistryKey<Biome> biomeRegistryKey) {
+    public static boolean isSubBiome(ResourceKey<Biome> biomeRegistryKey) {
         AtomicBoolean containsBiome = new AtomicBoolean(false);
         subBiomesMap.forEach((key, value) -> {
             if(value.containsSubBiome(biomeRegistryKey)) {
@@ -203,12 +201,12 @@ public class SubBiomes {
         return containsBiome.get();
     }
 
-    public static SubBiome getSubBiome(RegistryKey<Biome> biomeRegistryKey) {
+    public static SubBiome getSubBiome(ResourceKey<Biome> biomeRegistryKey) {
         return subBiomesMap.get(biomeRegistryKey);
     }
 
-    public static SubBiome getSubBiomeFromChild(RegistryKey<Biome> biomeRegistryKey) {
-        for(Map.Entry<RegistryKey<Biome>, SubBiome> entry : subBiomesMap.entrySet()) {
+    public static SubBiome getSubBiomeFromChild(ResourceKey<Biome> biomeRegistryKey) {
+        for(Map.Entry<ResourceKey<Biome>, SubBiome> entry : subBiomesMap.entrySet()) {
             if(entry.getValue().containsSubBiome(biomeRegistryKey)) {
                 return entry.getValue();
             }

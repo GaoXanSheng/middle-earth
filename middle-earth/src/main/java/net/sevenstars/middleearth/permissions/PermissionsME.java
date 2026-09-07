@@ -1,10 +1,12 @@
 package net.sevenstars.middleearth.permissions;
 
-import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PermissionsME {
-    public static boolean checkMapTeleport(ServerPlayerEntity player) {
-        return Permissions.check(player, "middle-earth.map-teleport", 2);
+    public static boolean checkMapTeleport(ServerPlayer player) {
+        if (player.level().getServer() != null) {
+            return player.level().getServer().getPlayerList().isOp(player.nameAndId());
+        }
+        return false;
     }
 }

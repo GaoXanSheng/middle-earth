@@ -6,44 +6,43 @@ import net.sevenstars.middleearth.network.packets.ClientToServerPacket;
 import net.sevenstars.middleearth.resources.datas.races.RaceLookup;
 import net.sevenstars.middleearth.resources.datas.races.RaceUtil;
 import net.sevenstars.api.utils.IdentifierUtil;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
 
 public class PacketSetRace extends ClientToServerPacket<PacketSetRace>
 {
-    public static final Id<PacketSetRace> ID = new Id<>(Identifier.of(MiddleEarth.MOD_ID, "packet_set_race"));
+    public static final Type<PacketSetRace> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "packet_set_race"));
 
-    public static final PacketCodec<RegistryByteBuf, PacketSetRace> CODEC = PacketCodec.tuple(
-            PacketCodecs.STRING, p -> p.race,
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketSetRace> CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, p -> p.race,
             PacketSetRace::new
     );
 
     private final String race;
-
 
     public PacketSetRace(String race){
         this.race = race;
     }
 
     @Override
-    public Id<PacketSetRace> getId() {
+    public Type<PacketSetRace> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, PacketSetRace> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, PacketSetRace> streamCodec() {
         return CODEC;
     }
 
     @Override
     public void process(ServerPacketContext context) {
-        MinecraftServer server = context.player().getServer();
+        MinecraftServer server = context.player().level().getServer();
         server.execute(() -> {
             try{
-                RaceUtil.updateRace(context.player(), RaceLookup.getRace(context.player().getWorld(), MiddleEarth.fetchId(race)), true);
+                RaceUtil.updateRace(context.player(), RaceLookup.getRace(context.player().level(), MiddleEarth.fetchId(race)), true);
             } catch (Exception e){
                 MiddleEarth.LOGGER.logError("PacketSetRace::Tried setting race for player.", e);
             }

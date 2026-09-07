@@ -1,17 +1,13 @@
 package net.sevenstars.middleearth.entity.beasts.broadhoof;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.render.entity.feature.HorseMarkingFeatureRenderer;
-import net.minecraft.client.render.entity.feature.SaddleFeatureRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.passive.HorseColor;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.SimpleEquipmentLayer;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.features.BroadhoofGoatBeadsFeatureRenderer;
@@ -20,37 +16,31 @@ import net.sevenstars.middleearth.entity.beasts.broadhoof.features.BroadhoofGoat
 
 import java.util.Map;
 
-public class BroadhoofGoatRenderer extends MobEntityRenderer<BroadhoofGoatEntity, BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
+public class BroadhoofGoatRenderer extends MobRenderer<BroadhoofGoatEntity, BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
     private static final String PATH = "textures/entities/broadhoof_goat/";
     private static final float SIZE = 1f;
 
-    public BroadhoofGoatRenderer(EntityRendererFactory.Context context) {
-        super(context, new BroadhoofGoatModel(context.getPart(EntityModelLayersME.BROADHOOF_GOAT)), 0.8f);
-        this.addFeature(new BroadhoofGoatPatternFeatureRenderer(this));
-        this.addFeature(new BroadhoofGoatBeadsFeatureRenderer(this));
-        this.addFeature(
-                new SaddleFeatureRenderer<>(
+    public BroadhoofGoatRenderer(EntityRendererProvider.Context context) {
+        super(context, new BroadhoofGoatModel(context.bakeLayer(EntityModelLayersME.BROADHOOF_GOAT)), 0.8f);
+        this.addLayer(new BroadhoofGoatPatternFeatureRenderer(this));
+        this.addLayer(new BroadhoofGoatBeadsFeatureRenderer(this));
+        this.addLayer(
+                new SimpleEquipmentLayer<>(
                         this,
                         context.getEquipmentRenderer(),
-                        new BroadhoofGoatModel(context.getPart(EntityModelLayersME.BROADHOOF_GOAT_ARMOR)),
-                        EquipmentModel.LayerType.HORSE_BODY,
-                        broadhoofGoatEntityRenderState -> broadhoofGoatEntityRenderState.armor
-
+                        EquipmentClientInfo.LayerType.HORSE_BODY,
+                        broadhoofGoatEntityRenderState -> broadhoofGoatEntityRenderState.armor,
+                        new BroadhoofGoatModel(context.bakeLayer(EntityModelLayersME.BROADHOOF_GOAT_ARMOR)),
+                        new BroadhoofGoatModel(context.bakeLayer(EntityModelLayersME.BROADHOOF_GOAT_ARMOR))
                 )
         );
-        this.addFeature(new BroadhoofGoatSaddleFeatureRenderer(this, context.getEntityModels(), context.getEquipmentRenderer()));
+        this.addLayer(new BroadhoofGoatSaddleFeatureRenderer(this, context.getModelSet(), context.getEquipmentRenderer()));
     }
 
     @Override
-    public void render(BroadhoofGoatEntityRenderState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        if(state.baby) {
-            matrixStack.scale(SIZE/2, SIZE/2, SIZE/2);
-        }
-        else {
-            matrixStack.scale(SIZE, SIZE, SIZE);
-        }
-
-        super.render(state, matrixStack, vertexConsumerProvider, i);
+    protected void scale(BroadhoofGoatEntityRenderState state, PoseStack matrixStack) {
+        float f = state.isBaby ? SIZE / 2 : SIZE;
+        matrixStack.scale(f, f, f);
     }
 
     @Override
@@ -77,13 +67,12 @@ public class BroadhoofGoatRenderer extends MobEntityRenderer<BroadhoofGoatEntity
             )
     );
 
-    @Override
     public void updateRenderState(BroadhoofGoatEntity goat, BroadhoofGoatEntityRenderState state, float f) {
-        super.updateRenderState(goat, state, f);
+        super.extractRenderState(goat, state, f);
 
         state.color = goat.getGoatColor();
         state.pattern = goat.getPattern();
-        state.armor = goat.getBodyArmor().copy();
+        state.armor = goat.getBodyArmorItem().copy();
 
         state.beads = goat.getGoatBeads();
         state.horns = goat.getHorns();
@@ -94,10 +83,10 @@ public class BroadhoofGoatRenderer extends MobEntityRenderer<BroadhoofGoatEntity
 
         state.isSprinting = goat.isSprinting();
         state.isCharging = goat.isCharging();
-        state.isTame = goat.isTame();
+        state.isTame = goat.isTamed();
         state.conrollingPassenger = goat.getControllingPassenger();
-        state.saddle = goat.getEquippedStack(EquipmentSlot.SADDLE);
-        state.armor = goat.getBodyArmor();
+        state.saddle = goat.getItemBySlot(EquipmentSlot.SADDLE);
+        state.armor = goat.getBodyArmorItem();
 
         state.chargeAnimationState = goat.chargeAnimationState;
         state.startSittingAnimationState = goat.startSittingAnimationState;
@@ -110,7 +99,7 @@ public class BroadhoofGoatRenderer extends MobEntityRenderer<BroadhoofGoatEntity
     }
 
     @Override
-    public Identifier getTexture(BroadhoofGoatEntityRenderState state) {
+    public Identifier getTextureLocation(BroadhoofGoatEntityRenderState state) {
         return TEXTURES.get(state.color);
     }
 }

@@ -25,7 +25,6 @@ public class MordorTexturePresetsPool {
     public final static TexturePresetDataPool ORC;
     public final static TexturePresetDataPool BLACK_URUK;
 
-
     public static List<TexturePresetsRegistry.RegisterableNpcTextureData> fetchAll() {
         return List.of(
                 new TexturePresetsRegistry.RegisterableNpcTextureData(TexturePresetsRegistry.MORDOR_BLACK_NUMENOREAN, BLACK_NUMENOREAN),
@@ -98,7 +97,6 @@ public class MordorTexturePresetsPool {
                 TexturePreset.EMPTY_VALUE_KEY.withWeight(2),
                 WeightedIdentifier.fromKey(CharacterPatternsRegistryME.Hairs.Beard.SHORT)
             ));
-
 
         ORC_PRESET = new WeightedTexturePresetHolder()
             .withPatterns(CharacterPatternTypes.BODY, List.of(

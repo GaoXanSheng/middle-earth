@@ -1,25 +1,26 @@
 package net.sevenstars.of_beasts_and_wild_things.entity.swan;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.model.BabyModelPair;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.AdultAndBabyModelPair;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.sevenstars.of_beasts_and_wild_things.OfBeastsAndWildThings;
 import net.sevenstars.of_beasts_and_wild_things.entity.model.EntityModelLayersWT;
 
 import java.util.Map;
 
-public class SwanEntityRenderer  extends MobEntityRenderer<SwanEntity, SwanEntityRenderState, SwanEntityModel> {
+public class SwanEntityRenderer  extends MobRenderer<SwanEntity, SwanEntityRenderState, SwanEntityModel> {
     private static final String PATH = "textures/entity/swan/";
-    BabyModelPair<SwanEntityModel> babyModelPair;
+    AdultAndBabyModelPair<SwanEntityModel> babyModelPair;
 
-    public SwanEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new SwanEntityModel(context.getPart(EntityModelLayersWT.SWAN)), 0.5f);
-        babyModelPair = new BabyModelPair<>(new SwanAdultModel(context.getPart(EntityModelLayersWT.SWAN)), new SwanBabyModel(context.getPart(EntityModelLayersWT.SWAN_BABY)));
+    public SwanEntityRenderer(EntityRendererProvider.Context context) {
+        super(context, new SwanAdultModel(context.bakeLayer(EntityModelLayersWT.SWAN)), 0.5f);
+        babyModelPair = new AdultAndBabyModelPair<>(new SwanAdultModel(context.bakeLayer(EntityModelLayersWT.SWAN)), new SwanBabyModel(context.bakeLayer(EntityModelLayersWT.SWAN_BABY)));
     }
 
     public static final Map<SwanEntityVariant, String> LOCATION_BY_VARIANT =
@@ -35,14 +36,14 @@ public class SwanEntityRenderer  extends MobEntityRenderer<SwanEntity, SwanEntit
             });
 
     @Override
-    public Identifier getTexture(SwanEntityRenderState state) {
-        return state.baby ? Identifier.of(OfBeastsAndWildThings.MOD_ID, PATH + "swan_baby.png") : Identifier.of(OfBeastsAndWildThings.MOD_ID, LOCATION_BY_VARIANT.get(state.variant));
+    public Identifier getTextureLocation(SwanEntityRenderState state) {
+        return state.isBaby ? Identifier.fromNamespaceAndPath(OfBeastsAndWildThings.MOD_ID, PATH + "swan_baby.png") : Identifier.fromNamespaceAndPath(OfBeastsAndWildThings.MOD_ID, LOCATION_BY_VARIANT.get(state.variant));
     }
 
     @Override
-    public void render(SwanEntityRenderState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        this.model = babyModelPair.get(state.baby);
-        super.render(state, matrixStack, vertexConsumerProvider, i);
+    public void submit(SwanEntityRenderState state, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        this.model = babyModelPair.getModel(state.isBaby);
+        super.submit(state, matrixStack, submitNodeCollector, cameraRenderState);
     }
 
     @Override
@@ -50,9 +51,8 @@ public class SwanEntityRenderer  extends MobEntityRenderer<SwanEntity, SwanEntit
         return new SwanEntityRenderState();
     }
 
-    @Override
     public void updateRenderState(SwanEntity swan, SwanEntityRenderState swanEntityRenderState, float f) {
-        super.updateRenderState(swan, swanEntityRenderState, f);
+        super.extractRenderState(swan, swanEntityRenderState, f);
         swanEntityRenderState.variant = swan.getVariant();
         swanEntityRenderState.sleepingAnimationState = swan.sleepingAnimationState;
         swanEntityRenderState.swimmingAnimationState = swan.swimmingAnimationState;

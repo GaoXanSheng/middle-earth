@@ -2,9 +2,9 @@ package net.sevenstars.middleearth.entity.beasts.great_horn;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class GreatHornEntityRenderState extends LivingEntityRenderState {
@@ -30,14 +30,14 @@ public class GreatHornEntityRenderState extends LivingEntityRenderState {
     }
 
     public boolean hasRedNose() {
-        if(this.customName != null) {
-            String name = this.customName.getString();
+        if(this.nameTag != null) {
+            String name = this.nameTag.getString();
             return ("rudolph".equalsIgnoreCase(name) || "rudolf".equalsIgnoreCase(name));
         }
         return false;
     }
 
     public boolean isElkebies() {
-        return (this.customName != null && "elkebies".equalsIgnoreCase(this.customName.getString()));
+        return (this.nameTag != null && "elkebies".equalsIgnoreCase(this.nameTag.getString()));
     }
 }

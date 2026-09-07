@@ -1,23 +1,23 @@
 package net.sevenstars.middleearth.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemCooldowns;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.enchantments.EnchantmentsME;
 import net.sevenstars.middleearth.item.items.weapons.CustomDaggerWeaponItem;
 import net.sevenstars.middleearth.utils.IEntityDataSaver;
 import net.sevenstars.middleearth.utils.PlayerMovementData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.player.ItemCooldownManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.sevenstars.middleearth.entity.EntityAttributesME;
 import net.sevenstars.middleearth.utils.PlayerUtil;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,32 +28,32 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
 
-    @Shadow public abstract ItemCooldownManager getItemCooldownManager();
+    @Shadow public abstract ItemCooldowns getCooldowns();
 
-    @Shadow public abstract PlayerInventory getInventory();
+    @Shadow public abstract Inventory getInventory();
 
-    @Shadow protected float damageTiltYaw;
+    @Shadow protected float hurtDir;
     int climbDistance = 0;
     //TODO Shield stuff broken, most likely because of new data comps
     //@Shadow protected abstract void takeShieldHit(LivingEntity attacker);
 
     //@Shadow public abstract boolean canUseSlot(EquipmentSlot slot);
 
-    protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+    protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;resetLastAttackedTicks()V",
+    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onAttack()V",
     shift = At.Shift.AFTER), ordinal = 0)
     public float attack(float damage, Entity target) {
         float newDamage = damage;
-        ItemStack mainStack = getStackInHand(getActiveHand());
-        RegistryEntry<Enchantment> enchantmentRegistryEntry = getWorld().getRegistryManager()
-                .getOrThrow(RegistryKeys.ENCHANTMENT).getOptional(EnchantmentsME.FIRST_STRIKE).orElseThrow();
-        boolean hasEnchant = mainStack.getEnchantments().getEnchantments().contains(enchantmentRegistryEntry);
+        ItemStack mainStack = getItemInHand(getUsedItemHand());
+        Holder<Enchantment> enchantmentRegistryEntry = level().registryAccess()
+                .lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentsME.FIRST_STRIKE).orElseThrow();
+        boolean hasEnchant = mainStack.getEnchantments().keySet().contains(enchantmentRegistryEntry);
         if(hasEnchant) {
             if(target instanceof LivingEntity livingEntity) {
                 float healthRatio = livingEntity.getHealth() / livingEntity.getMaxHealth();
@@ -79,7 +79,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     }
 
     @Inject(method = "travel", at = @At("HEAD"))
-    public void travel(CallbackInfo ci, @Local Vec3d movementInput) {
+    public void travel(CallbackInfo ci, @Local Vec3 movementInput) {
         if(movementInput.length() > 0.01f) {
             PlayerMovementData.resetAFK((IEntityDataSaver) this);
         }
@@ -98,14 +98,13 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         return value;
     }*/
 
-    @Inject(method = "resetLastAttackedTicks", at = @At("HEAD"))
+    @Inject(method = "resetAttackStrengthTicker", at = @At("HEAD"))
     public void resetLastAttackedTicks(CallbackInfo ci) {
         PlayerMovementData.resetAFK((IEntityDataSaver) this);
     }
 
-
-    @Inject(method = "createPlayerAttributes", require = 1, allow = 1, at = @At("RETURN"))
-    private static void createPlayerAttributesInject(final CallbackInfoReturnable<DefaultAttributeContainer.Builder> info){
+    @Inject(method = "createAttributes", require = 1, allow = 1, at = @At("RETURN"))
+    private static void createPlayerAttributesInject(final CallbackInfoReturnable<AttributeSupplier.Builder> info){
         info.getReturnValue().add(EntityAttributesME.POWDERED_SNOW_IMMUNITY);
         info.getReturnValue().add(EntityAttributesME.DELVERS_FEAR_STRENGTH);
         info.getReturnValue().add(EntityAttributesME.CLIMBING_STRENGTH);
@@ -113,15 +112,15 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     }
 
-    @Inject(method = "isClimbing", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onClimbable", at = @At("HEAD"), cancellable = true)
     private void isClimbingInject(CallbackInfoReturnable<Boolean> cir) {
-        if ((LivingEntity)this instanceof PlayerEntity entity){
-            if(!entity.isTouchingWater() && !entity.isOnGround() && PlayerUtil.isAgainstWall(entity)){
+        if ((LivingEntity)this instanceof Player entity){
+            if(!entity.isInWater() && !entity.onGround() && PlayerUtil.isAgainstWall(entity)){
                 climbDistance += 1;
                 if(climbDistance < entity.getAttributeValue(EntityAttributesME.CLIMBING_STRENGTH)){
                     cir.setReturnValue(true);
                 }
-            } else if(entity.isOnGround()){
+            } else if(entity.onGround()){
                 climbDistance = 0;
             }
         }

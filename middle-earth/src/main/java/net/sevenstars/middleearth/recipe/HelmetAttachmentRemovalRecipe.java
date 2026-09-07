@@ -1,44 +1,50 @@
 package net.sevenstars.middleearth.recipe;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.DyedColorComponent;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.item.DataComponentTypesME;
 import net.sevenstars.middleearth.item.items.armor.CustomHelmetItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
 
+public class HelmetAttachmentRemovalRecipe extends CustomRecipe {
 
-public class HelmetAttachmentRemovalRecipe extends SpecialCraftingRecipe {
+    private static final HelmetAttachmentRemovalRecipe INSTANCE = new HelmetAttachmentRemovalRecipe();
+    public static final MapCodec<HelmetAttachmentRemovalRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, HelmetAttachmentRemovalRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final RecipeSerializer<HelmetAttachmentRemovalRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
-    public HelmetAttachmentRemovalRecipe(CraftingRecipeCategory category) {
-        super(category);
+    public HelmetAttachmentRemovalRecipe() {
     }
 
     @Override
-    public DefaultedList<ItemStack> getRecipeRemainders(CraftingRecipeInput input) {
-        DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(input.size(), ItemStack.EMPTY);
+    public NonNullList<ItemStack> getRemainingItems(CraftingInput input) {
+        NonNullList<ItemStack> defaultedList = NonNullList.withSize(input.size(), ItemStack.EMPTY);
 
         for(int i = 0; i < defaultedList.size(); ++i) {
-            ItemStack itemStack = input.getStackInSlot(i);
-            if (!itemStack.getItem().getRecipeRemainder().isEmpty()) {
-                defaultedList.set(i, new ItemStack(itemStack.getItem().getRecipeRemainder().getItem()));
+            ItemStack itemStack = input.getItem(i);
+            ItemStackTemplate remainderTemplate = itemStack.getItem().getCraftingRemainder();
+            if (remainderTemplate != null && !remainderTemplate.create().isEmpty()) {
+                defaultedList.set(i, remainderTemplate.create());
             } else if (itemStack.getItem() instanceof ShearsItem) {
                 defaultedList.set(i, itemStack.copyWithCount(1));
             }else if (itemStack.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA) != null){
-                ItemStack helmetAttachment = new ItemStack(Registries.ITEM.get(Identifier.of(MiddleEarth.MOD_ID, itemStack.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA).helmetAttachment().getName())));
+                ItemStack helmetAttachment = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, itemStack.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA).helmetAttachment().getName())));
                 helmetAttachment.set(DataComponentTypesME.HELMET_ATTACHMENT_DATA, itemStack.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA));
-                helmetAttachment.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(itemStack.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA).helmetAttachmentColor()));
+                helmetAttachment.set(DataComponents.DYED_COLOR, new DyedItemColor(itemStack.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA).helmetAttachmentColor()));
                 defaultedList.set(i, helmetAttachment);
             }
         }
@@ -46,14 +52,13 @@ public class HelmetAttachmentRemovalRecipe extends SpecialCraftingRecipe {
         return defaultedList;
     }
 
-
     @Override
-    public boolean matches(CraftingRecipeInput input, World world) {
+    public boolean matches(CraftingInput input, Level world) {
         ItemStack itemStackHelmet = ItemStack.EMPTY;
         ItemStack itemStackHood = ItemStack.EMPTY;
 
         for(int i = 0; i < input.size(); ++i) {
-            ItemStack itemStack2 = input.getStackInSlot(i);
+            ItemStack itemStack2 = input.getItem(i);
             if (!itemStack2.isEmpty()) {
                 if (itemStack2.getItem() instanceof CustomHelmetItem && itemStack2.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA) != null) {
                     if (!itemStackHelmet.isEmpty()) {
@@ -61,7 +66,7 @@ public class HelmetAttachmentRemovalRecipe extends SpecialCraftingRecipe {
                     }
                     itemStackHelmet = itemStack2;
                 } else {
-                    if (!itemStack2.isOf(Items.SHEARS)) {
+                    if (!itemStack2.is(Items.SHEARS)) {
                         return false;
                     }
                     itemStackHood = itemStack2;
@@ -72,11 +77,11 @@ public class HelmetAttachmentRemovalRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public ItemStack craft(CraftingRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack assemble(CraftingInput input) {
         ItemStack itemStack = ItemStack.EMPTY;
 
         for(int i = 0; i < input.size(); ++i) {
-            ItemStack itemStack2 = input.getStackInSlot(i);
+            ItemStack itemStack2 = input.getItem(i);
             if (!itemStack2.isEmpty()) {
                 if (itemStack2.getItem() instanceof CustomHelmetItem && itemStack2.get(DataComponentTypesME.HELMET_ATTACHMENT_DATA) != null) {
                     if (!itemStack.isEmpty()) {
@@ -85,7 +90,7 @@ public class HelmetAttachmentRemovalRecipe extends SpecialCraftingRecipe {
 
                     itemStack = itemStack2.copy();
                 } else {
-                    if (!itemStack2.isOf(Items.SHEARS)) {
+                    if (!itemStack2.is(Items.SHEARS)) {
                         return ItemStack.EMPTY;
                     }
                 }
@@ -104,7 +109,7 @@ public class HelmetAttachmentRemovalRecipe extends SpecialCraftingRecipe {
         return width * height >= 2;
     }
 
-    public RecipeSerializer<? extends SpecialCraftingRecipe> getSerializer() {
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
         return ModRecipeSerializer.CUSTOM_ARMOR_HELMET_ATTACHMENT_REMOVAL;
     }
 }

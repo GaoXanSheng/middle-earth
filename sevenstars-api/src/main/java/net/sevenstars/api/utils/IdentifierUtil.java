@@ -1,6 +1,6 @@
 package net.sevenstars.api.utils;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.api.SevenStarsApi;
 
 public class IdentifierUtil {
@@ -8,17 +8,17 @@ public class IdentifierUtil {
         if(id == null)
             return null;
         if(id.contains(":") && id.split(":").length == 2){
-            return Identifier.of(id.split(":")[0], id.split(":")[1]);
+            return Identifier.fromNamespaceAndPath(id.split(":")[0], id.split(":")[1]);
         }
-        return Identifier.of(SevenStarsApi.MOD_ID, id + "_error");
+        return Identifier.fromNamespaceAndPath(SevenStarsApi.MOD_ID, id + "_error");
     }
 
     public static Identifier build(String key, String name) {
-        return Identifier.of(key, name);
+        return Identifier.fromNamespaceAndPath(key, name);
     }
 
     public static Identifier ofVanilla(String name) {
-        return Identifier.of(name);
+        return Identifier.parse(name);
     }
 
     public static Identifier buildAggregate(String key, String... names) {

@@ -2,10 +2,10 @@ package net.sevenstars.middleearth.resources.datas.factions.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.resources.datas.common.AffinityLevel;
 import net.sevenstars.middleearth.resources.datas.factions.Faction;
@@ -25,13 +25,13 @@ public class InitialDiplomacy {
         this.affinity = AffinityLevel.valueOf(affinity);
     }
 
-    public InitialDiplomacy(RegistryKey<Faction> factionRegistryKey, AffinityLevel affinity) {
-        this.factionId = factionRegistryKey.getValue();
+    public InitialDiplomacy(ResourceKey<Faction> factionRegistryKey, AffinityLevel affinity) {
+        this.factionId = factionRegistryKey.identifier();
         this.affinity = affinity;
     }
 
-    public InitialDiplomacy(NbtElement nbtElement) {
-        NbtCompound compound = nbtElement.asCompound().get();
+    public InitialDiplomacy(Tag nbtElement) {
+        CompoundTag compound = nbtElement.asCompound().get();
         compound.get("faction");
     }
 
@@ -43,8 +43,8 @@ public class InitialDiplomacy {
         return this.affinity.toString();
     }
 
-    public NbtElement getNbt() {
-        NbtCompound compound = new NbtCompound();
+    public Tag getNbt() {
+        CompoundTag compound = new CompoundTag();
         compound.putString("faction", getFactionIdentifierForNbt());
         compound.putString("affinity", getAffinityForNbt());
         return compound;

@@ -2,9 +2,9 @@ package net.sevenstars.middleearth.resources.datas.structure_manager_datas;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
 import net.sevenstars.middleearth.resources.datas.factions.Faction;
 import net.sevenstars.middleearth.resources.datas.npc_types.NpcType;
@@ -18,7 +18,7 @@ public class StructureSpawnNestPool {
             EntityType.CODEC.fieldOf("entity_type").forGetter(StructureSpawnNestPool::getEntityType),
             Codec.INT.fieldOf("weight").forGetter(StructureSpawnNestPool::getWeight),
             Codec.INT.fieldOf("amount").forGetter(StructureSpawnNestPool::getAmount),
-            RegistryKey.createCodec(DynamicRegistriesME.FACTION).optionalFieldOf("faction_key").forGetter(StructureSpawnNestPool::getFaction),
+            ResourceKey.codec(DynamicRegistriesME.FACTION).optionalFieldOf("faction_key").forGetter(StructureSpawnNestPool::getFaction),
             Identifier.CODEC.optionalFieldOf("npc_identifier").forGetter(StructureSpawnNestPool::getNpcIdentifier),
             Codec.INT.optionalFieldOf("max_amount").forGetter(StructureSpawnNestPool::getMaxAmount)
         ).apply(instance, StructureSpawnNestPool::new));
@@ -26,11 +26,11 @@ public class StructureSpawnNestPool {
     private final EntityType<?> entityType;
     private int weight;
     private int amount;
-    private Optional<RegistryKey<Faction>> factionKey;
+    private Optional<ResourceKey<Faction>> factionKey;
     private Optional<Identifier> npcIdentifier;
     private Optional<Integer> maxAmount;
 
-    private StructureSpawnNestPool(EntityType entityType, int weight, int amount, Optional<RegistryKey<Faction>> factionKey, Optional<Identifier> npcIdentifier, Optional<Integer> maxAmount) {
+    private StructureSpawnNestPool(EntityType entityType, int weight, int amount, Optional<ResourceKey<Faction>> factionKey, Optional<Identifier> npcIdentifier, Optional<Integer> maxAmount) {
         this.entityType = entityType;
         this.weight = weight;
         this.amount = amount;
@@ -57,9 +57,9 @@ public class StructureSpawnNestPool {
         this.maxAmount = Optional.empty();
     }
 
-    public StructureSpawnNestPool SetNpcData(RegistryKey<Faction> factionKey, RegistryKey<NpcType> npc){
+    public StructureSpawnNestPool SetNpcData(ResourceKey<Faction> factionKey, ResourceKey<NpcType> npc){
         this.factionKey = Optional.of(factionKey);
-        this.npcIdentifier = Optional.of(npc.getValue());
+        this.npcIdentifier = Optional.of(npc.identifier());
         return this;
     }
     public StructureSpawnNestPool SetFixAmount(int amount){
@@ -91,7 +91,7 @@ public class StructureSpawnNestPool {
     public Optional<Identifier> getNpcIdentifier() {
         return this.npcIdentifier;
     }
-    public Optional<RegistryKey<Faction>> getFaction() {
+    public Optional<ResourceKey<Faction>> getFaction() {
         return factionKey;
     }
     public int getWeight() {

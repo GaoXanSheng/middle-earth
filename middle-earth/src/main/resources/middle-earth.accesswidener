@@ -1,6 +1,11 @@
-accessWidener v2 named
+accessWidener v2 official
 
-extendable method net/minecraft/entity/vehicle/VehicleEntity asItem ()Lnet/minecraft/item/Item;
-accessible method net/minecraft/block/AbstractCauldronBlock canBeFilledByDripstone (Lnet/minecraft/fluid/Fluid;)Z
-accessible method net/minecraft/block/entity/BlockEntityType <init> (Lnet/minecraft/block/entity/BlockEntityType$BlockEntityFactory;Ljava/util/Set;)V
-accessible class net/minecraft/client/render/item/HeldItemRenderer$HandRenderType
+accessible method net/minecraft/world/level/block/AbstractCauldronBlock canReceiveStalactiteDrip (Lnet/minecraft/world/level/material/Fluid;)Z
+accessible class net/minecraft/client/renderer/ItemInHandRenderer$HandRenderSelection
+accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
+mutable field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
+accessible field net/minecraft/world/level/block/entity/BlockEntityType validBlocks Ljava/util/Set;
+mutable field net/minecraft/world/level/block/entity/BlockEntityType validBlocks Ljava/util/Set;
+accessible field net/minecraft/client/resources/model/sprite/AtlasManager KNOWN_ATLASES Ljava/util/List;
+mutable field net/minecraft/client/resources/model/sprite/AtlasManager KNOWN_ATLASES Ljava/util/List;
+

@@ -1,43 +1,39 @@
 package net.sevenstars.middleearth.entity.beasts.warg.features;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.client.RenderUtil;
 import net.sevenstars.middleearth.entity.beasts.warg.WargEyeVariant;
 import net.sevenstars.middleearth.entity.beasts.warg.WargEntityRenderState;
 import net.sevenstars.middleearth.entity.beasts.warg.WargModel;
+
 import java.util.Map;
 
-public class WargEyesFeatureRenderer extends FeatureRenderer<WargEntityRenderState, WargModel> {
+public class WargEyesFeatureRenderer extends RenderLayer<WargEntityRenderState, WargModel> {
     private static final String PATH = "textures/entities/warg/eyes/";
-    private static final Identifier EMISSIVE_TEXTURE = Identifier.of(MiddleEarth.MOD_ID, PATH + "warg_eyes_emissive.png");
     private static final Map<WargEyeVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(WargEyeVariant.class), (map) -> {
                 map.put(WargEyeVariant.BLUE,
-                        Identifier.of(MiddleEarth.MOD_ID, PATH + "warg_eyes_blue.png"));
+                        Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, PATH + "warg_eyes_blue.png"));
                 map.put(WargEyeVariant.ORANGE,
-                        Identifier.of(MiddleEarth.MOD_ID, PATH + "warg_eyes_orange.png"));
+                        Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, PATH + "warg_eyes_orange.png"));
             });
 
-    public WargEyesFeatureRenderer(FeatureRendererContext<WargEntityRenderState, WargModel> featureRendererContext) {
+    public WargEyesFeatureRenderer(RenderLayerParent<WargEntityRenderState, WargModel> featureRendererContext) {
         super(featureRendererContext);
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, WargEntityRenderState state, float limbAngle, float limbDistance) {
-        RenderUtil.renderCutoutTexture(this.getContextModel(), matrices, vertexConsumers,
-                LOCATION_BY_VARIANT.get(state.eyeVariant), light, OverlayTexture.DEFAULT_UV);
-
-        if(state.haveEmissiveEyes) {
-            RenderUtil.renderEmissiveTexture(this.getContextModel(), matrices, vertexConsumers,
-                    EMISSIVE_TEXTURE, light, OverlayTexture.DEFAULT_UV);
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, WargEntityRenderState state, float limbAngle, float limbDistance) {
+        Identifier eyeTexture = LOCATION_BY_VARIANT.get(state.eyeVariant);
+        if(eyeTexture != null) {
+            RenderLayer.renderColoredCutoutModel(this.getParentModel(), eyeTexture, poseStack, submitNodeCollector, light, state, -1, 0);
         }
+        // TODO 26.2: emissive eye layer needs the emissive rendertype; awaiting art pass in the new submit pipeline
     }
 }

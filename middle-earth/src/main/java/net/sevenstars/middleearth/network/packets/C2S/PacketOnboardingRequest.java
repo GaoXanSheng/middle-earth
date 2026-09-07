@@ -1,39 +1,39 @@
 package net.sevenstars.middleearth.network.packets.C2S;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.config.ModServerConfigs;
 import net.sevenstars.middleearth.network.contexts.ServerPacketContext;
 import net.sevenstars.middleearth.network.packets.ClientToServerPacket;
 import net.sevenstars.middleearth.network.packets.S2C.PacketOnboardingResult;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
 import net.sevenstars.middleearth.resources.datas.attributes.AttributePoolElement;
 import net.sevenstars.middleearth.resources.persistent_datas.PlayerDataService;
 
 public class PacketOnboardingRequest extends ClientToServerPacket<PacketOnboardingRequest>
 {
-    public static final Id<PacketOnboardingRequest> ID = new Id<>(Identifier.of(MiddleEarth.MOD_ID, "packet_onboarding_request"));
+    public static final Type<PacketOnboardingRequest> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "packet_onboarding_request"));
     public static final PacketOnboardingRequest INSTANCE = new PacketOnboardingRequest();
-    public static final PacketCodec<RegistryByteBuf, PacketOnboardingRequest> CODEC = PacketCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketOnboardingRequest> CODEC = StreamCodec.unit(INSTANCE);
 
     @Override
-    public Id<PacketOnboardingRequest> getId() {
+    public Type<PacketOnboardingRequest> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, PacketOnboardingRequest> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, PacketOnboardingRequest> streamCodec() {
         return CODEC;
     }
 
     @Override
     public void process(ServerPacketContext context) {
         try{
-            context.player().getServer().execute(() -> {
-                ServerPlayerEntity player = context.player();
+            context.player().level().getServer().execute(() -> {
+                ServerPlayer player = context.player();
 
                 PacketOnboardingResult newPacket = new PacketOnboardingResult(
                         PlayerDataService.playerPassedOnboarding(context.player()),

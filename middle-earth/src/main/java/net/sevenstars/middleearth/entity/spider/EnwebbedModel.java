@@ -1,10 +1,16 @@
 package net.sevenstars.middleearth.entity.spider;
 
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 
-public class EnwebbedModel extends EntityModel<BipedEntityRenderState> {
+public class EnwebbedModel extends EntityModel<HumanoidRenderState> {
     private final ModelPart bigBody;
     private final ModelPart smallBody;
 
@@ -13,23 +19,23 @@ public class EnwebbedModel extends EntityModel<BipedEntityRenderState> {
         this.bigBody = root.getChild("big_body");
         this.smallBody = root.getChild("small_body");
     }
-    public static TexturedModelData getTexturedModelData() {
-        ModelData modelData = new ModelData();
-        ModelPartData dataRoot = modelData.getRoot();
-        ModelPartData bigBody = dataRoot.addChild("big_body", ModelPartBuilder.create().uv(0, 0)
-                .cuboid(-8.0F, -23.5F, -2.0F, 16.0F, 11.0F, 4.0F, new Dilation(1.15F)), ModelTransform.origin(0.0F, 24.0F, 0.0F));
+    public static LayerDefinition getTexturedModelData() {
+        MeshDefinition modelData = new MeshDefinition();
+        PartDefinition dataRoot = modelData.getRoot();
+        PartDefinition bigBody = dataRoot.addOrReplaceChild("big_body", CubeListBuilder.create().texOffs(0, 0)
+                .addBox(-8.0F, -23.5F, -2.0F, 16.0F, 11.0F, 4.0F, new CubeDeformation(1.15F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        ModelPartData smallBody = dataRoot.addChild("small_body", ModelPartBuilder.create().uv(0, 0)
-                .cuboid(-8.0F, -23.5F, -2.0F, 16.0F, 11.0F, 4.0F, new Dilation(0.65F)), ModelTransform.origin(0.0F, 24.0F, 0.0F));
+        PartDefinition smallBody = dataRoot.addOrReplaceChild("small_body", CubeListBuilder.create().texOffs(0, 0)
+                .addBox(-8.0F, -23.5F, -2.0F, 16.0F, 11.0F, 4.0F, new CubeDeformation(0.65F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        return TexturedModelData.of(modelData, 64, 64);
+        return LayerDefinition.create(modelData, 64, 64);
     }
 
     @Override
-    public void setAngles(BipedEntityRenderState state) {
-         boolean hasChestplate = !state.equippedChestStack.isEmpty();
-        bigBody.hidden = !hasChestplate;
-        smallBody.hidden = hasChestplate;
-        super.setAngles(state);
+    public void setupAnim(HumanoidRenderState state) {
+         boolean hasChestplate = !state.chestEquipment.isEmpty();
+        bigBody.skipDraw = !hasChestplate;
+        smallBody.skipDraw = hasChestplate;
+        super.setupAnim(state);
     }
 }

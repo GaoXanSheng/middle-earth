@@ -8,9 +8,9 @@ import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 import net.sevenstars.middleearth.block.special.forge.MetalTypes;
 import net.sevenstars.middleearth.compat.REICommonPluginME;
 import net.sevenstars.middleearth.recipe.AlloyingRecipe;
@@ -29,12 +29,12 @@ public class AlloyingDisplay extends BasicDisplay {
                     Codec.STRING.fieldOf("output").forGetter(AlloyingDisplay::getOutput),
                     Codec.INT.fieldOf("amount").forGetter(AlloyingDisplay::getAmount)
             ).apply(instance, AlloyingDisplay::new)),
-            PacketCodec.tuple(
-                    EntryIngredient.streamCodec().collect(PacketCodecs.toList()),
+            StreamCodec.composite(
+                    EntryIngredient.streamCodec().apply(ByteBufCodecs.list()),
                     AlloyingDisplay::getInputEntries,
-                    PacketCodecs.STRING,
+                    ByteBufCodecs.STRING_UTF8,
                     AlloyingDisplay::getOutput,
-                    PacketCodecs.INTEGER,
+                    ByteBufCodecs.INT,
                     AlloyingDisplay::getAmount,
                     AlloyingDisplay::new
             )

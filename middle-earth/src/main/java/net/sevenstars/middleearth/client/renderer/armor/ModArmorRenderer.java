@@ -1,51 +1,22 @@
 package net.sevenstars.middleearth.client.renderer.armor;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.component.type.DyedColorComponent;
-import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.item.utils.armor.DyeablePiecesME;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 public class ModArmorRenderer implements ArmorRenderer {
 
     public ModArmorRenderer() {
     }
 
-    static void renderArmor(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ItemStack stack, Model model, Identifier texture, boolean dyeable){
-        if(dyeable){
-            renderDyeable(matrices, vertexConsumers, light, stack, model, texture);
-            if(DyeablePiecesME.dyeablePieces.get(stack.getItem())) {
-                ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, model, Identifier.of(MiddleEarth.MOD_ID, texture.getPath().replaceAll(".png", "_overlay.png")));
-            }
-        } else {
-            ArmorRenderer.renderPart(matrices, vertexConsumers, light, stack, model, texture);
-        }
-    }
-
-    static void renderDyeable(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ItemStack stack, Model model, Identifier texture) {
-        VertexConsumer vertexConsumer = ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getArmorCutoutNoCull(texture), stack.hasGlint());
-        int color = DyedColorComponent.getColor(stack, DyedColorComponent.DEFAULT_COLOR);
-        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, color);
-    }
-
-    static void renderTranslucentPiece(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ItemStack stack, Model model, Identifier texture) {
-        VertexConsumer vertexConsumer = ItemRenderer.getArmorGlintConsumer(vertexConsumers, RenderLayer.getEntityTranslucent(texture), stack.hasGlint());
-        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 0xFFFFFFFF);
-    }
-
+    // TODO: re-port armour piece rendering to the 26.2 fabric ArmorRenderer submit pipeline
+    //       (previously: renderArmor/renderDyeable/renderTranslucentPiece helpers drawing models
+    //        via VertexConsumer through ItemRenderer.getArmorFoilBuffer and ArmorRenderer.renderPart).
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, ItemStack stack, BipedEntityRenderState bipedEntityRenderState, EquipmentSlot slot, int light, BipedEntityModel<BipedEntityRenderState> contextModel) {
-
+    public void render(PoseStack matrices, SubmitNodeCollector collector, ItemStack stack, HumanoidRenderState humanoidRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel) {
     }
 }

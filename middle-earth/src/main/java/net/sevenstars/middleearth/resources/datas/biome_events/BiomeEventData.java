@@ -2,18 +2,16 @@ package net.sevenstars.middleearth.resources.datas.biome_events;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntitiesME;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
@@ -58,8 +56,6 @@ public class BiomeEventData {
         return this;
     }
 
-
-
     private List<WildSpawnEventData> getWildSpawnEventDatas() {
         return this.wildSpawnEventDatas;
     }
@@ -73,12 +69,12 @@ public class BiomeEventData {
         return shouldSpawnDefaultWhenUnmet;
     }
 
-    public ContextualizedBiomeData findNpcData(World world, NpcEntity entity) {
+    public ContextualizedBiomeData findNpcData(Level world, NpcEntity entity) {
         List<WildSpawnEventData> weightedData = new ArrayList<>();
-        DynamicRegistryManager manager = world.getRegistryManager();
+        RegistryAccess manager = world.registryAccess();
 
         for(WildSpawnEventData data : getWildSpawnEventDatas()){
-            if(SpawnEventDataUtil.isConsideredForSpawning(data, Registries.ENTITY_TYPE.getId(EntitiesME.NPC), world, entity.getBlockPos()))
+            if(SpawnEventDataUtil.isConsideredForSpawning(data, BuiltInRegistries.ENTITY_TYPE.getKey(EntitiesME.NPC), world, entity.blockPosition()))
             {
                 int weightAmount = data.getWeight(1);
                 for(int i = 0; i < weightAmount; i ++){
@@ -89,21 +85,21 @@ public class BiomeEventData {
         if(weightedData.isEmpty())
             return null;
 
-        WildSpawnEventData spawningData = weightedData.get(Random.create().nextInt(weightedData.size()));
-        Registry<NpcType> npcDataRegistry = manager.getOrThrow(DynamicRegistriesME.NPC_TYPE);
+        WildSpawnEventData spawningData = weightedData.get(RandomSource.create().nextInt(weightedData.size()));
+        Registry<NpcType> npcDataRegistry = manager.lookupOrThrow(DynamicRegistriesME.NPC_TYPE);
         Identifier npcId = spawningData.getNpcType(null);
-        NpcType foundNpcType = (npcId != null) ? npcDataRegistry.get(npcId) : null;
+        NpcType foundNpcType = (npcId != null) ? npcDataRegistry.getValue(npcId) : null;
 
         return new ContextualizedBiomeData(foundNpcType);
     }
 
-    public boolean canSpawn(EntityType<?> type, ServerWorld world, BlockPos pos, Random random) {
+    public boolean canSpawn(EntityType<?> type, ServerLevel world, BlockPos pos, RandomSource random) {
         ChunkPos chunkPos = world.getChunk(pos).getPos();
 
         Long expiredTick = disabledChunkSpawningCache.get(chunkPos);
 
         if (expiredTick != null) {
-            if(world.getTime() >= expiredTick)
+            if(world.getGameTime() >= expiredTick)
                 disabledChunkSpawningCache.remove(chunkPos);
             else
                 return false;
@@ -112,7 +108,7 @@ public class BiomeEventData {
         List<WildSpawnEventData> weightedData = new ArrayList<>();
         boolean containEntityType = false;
         for(WildSpawnEventData data : getWildSpawnEventDatas()){
-            Identifier entityId = Registries.ENTITY_TYPE.getId(type);
+            Identifier entityId = BuiltInRegistries.ENTITY_TYPE.getKey(type);
             if(!containEntityType && MiddleEarth.compareId(data.getEntityType(), entityId))
                 containEntityType = true;
             if(SpawnEventDataUtil.isConsideredForSpawning(data, entityId, world, pos))
@@ -129,7 +125,7 @@ public class BiomeEventData {
             disableChunk(world, chunkPos);
             return false;
         }
-        WildSpawnEventData spawningData = weightedData.get(Random.create().nextInt(weightedData.size()));
+        WildSpawnEventData spawningData = weightedData.get(RandomSource.create().nextInt(weightedData.size()));
         if(spawningData.isDiscarded(random)){
             disableChunk(world, chunkPos);
             return false;
@@ -138,13 +134,12 @@ public class BiomeEventData {
         return true;
     }
 
-    private void disableChunk(ServerWorld world, ChunkPos chunkPos) {
+    private void disableChunk(ServerLevel world, ChunkPos chunkPos) {
         if(disabledChunkSpawningCache == null)
             disabledChunkSpawningCache = new HashMap<>();
         disabledChunkSpawningCache.remove(chunkPos);
-        disabledChunkSpawningCache.put(chunkPos, world.getTime() + 20 * 5);
+        disabledChunkSpawningCache.put(chunkPos, world.getGameTime() + 20 * 5);
     }
-
 
     public record ContextualizedBiomeData(NpcType npcType){
 

@@ -1,32 +1,31 @@
 package net.sevenstars.middleearth.item.items;
 
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.network.packets.S2C.PacketOpenMapScreen;
 import net.sevenstars.middleearth.permissions.PermissionsME;
 
 public class MiddleEarthMapItem extends Item {
-    public MiddleEarthMapItem(Settings settings) {
+    public MiddleEarthMapItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        if (world.isClientSide()) {
+            return InteractionResult.SUCCESS;
         }
-        if(user instanceof ServerPlayerEntity serverPlayerEntity) {
+        if(user instanceof ServerPlayer serverPlayerEntity) {
             boolean canTeleport = PermissionsME.checkMapTeleport(serverPlayerEntity);
             PacketOpenMapScreen packet = new PacketOpenMapScreen(canTeleport);
             ServerPlayNetworking.send(serverPlayerEntity, packet);
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 }

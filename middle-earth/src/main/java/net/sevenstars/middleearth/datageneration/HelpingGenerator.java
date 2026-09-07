@@ -1,7 +1,19 @@
 package net.sevenstars.middleearth.datageneration;
 
-import net.minecraft.block.*;
-import net.minecraft.registry.Registries;
+import net.minecraft.world.level.block.*;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.IronBarsBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.WallBlock;
 import net.sevenstars.middleearth.block.registration.*;
 import net.sevenstars.middleearth.block.special.*;
 import net.sevenstars.middleearth.block.special.verticalSlabs.VerticalSlabBlock;
@@ -106,7 +118,7 @@ public class HelpingGenerator {
                     case FURNITURE_BLOCKS -> furnitureBlocks(set.furnitureBlocks, set.planksBlocks.base());
                     case REDSTONE_BLOCKS -> woodRedstoneBlocks(set.redstoneBlocks, set.planksBlocks.base());
                     case LEAVES -> {
-                        if (!Objects.equals(Registries.BLOCK.getId(set.leaves).getNamespace(), "minecraft")){
+                        if (!Objects.equals(BuiltInRegistries.BLOCK.getKey(set.leaves).getNamespace(), "minecraft")){
                             if (set.setName.contains("beech")){
                                 LeavesSets.grayscaleLeaves.add(set.leaves);
                             } else {
@@ -249,14 +261,14 @@ public class HelpingGenerator {
         String blockName = block.getName().toString();
         String baseName = base.getName().toString();
 
-        if (!(Objects.equals(Registries.BLOCK.getId(block).getNamespace(), "minecraft"))){
+        if (!(Objects.equals(BuiltInRegistries.BLOCK.getKey(block).getNamespace(), "minecraft"))){
             final boolean isPillar = blockName.contains("carved_window")
                     || blockName.contains("chiseled")
                     || blockName.contains("drystone")
                     || blockName.contains("pillar");
             final boolean woodModel = (blockName.contains("_wood") && !(blockName.contains("gilded") || blockName.contains("beam"))) || blockName.contains("hyphae");
             switch (block){
-                case PillarBlock pillarBlock -> {
+                case RotatedPillarBlock pillarBlock -> {
                     if (woodModel){
                         SimpleBlockModel.woodBlocks.add(pillarBlock);
                     } else {
@@ -285,7 +297,7 @@ public class HelpingGenerator {
                         SimpleVerticalSlabModel.verticalSlabs.add(new SimpleVerticalSlabModel.VerticalSlab(base, origin, verticalSlabBlock));
                     }
                 }
-                case StairsBlock stairsBlock -> {
+                case StairBlock stairsBlock -> {
                     if (blockName.contains("stripped")){
                         SimpleStairModel.strippedStairs.add(new SimpleStairModel.Stair(base, stairsBlock));
                     } else if (woodModel){
@@ -316,7 +328,7 @@ public class HelpingGenerator {
                     FenceGates.fenceGates.add(fenceGateBlock);
                     SimpleFenceGateModel.blocks.add(new SimpleFenceGateModel.FenceGate(base, fenceGateBlock));
                 }
-                case PaneBlock paneBlock -> SimplePaneModel.panes.add(new SimplePaneModel.Pane(base, paneBlock));
+                case IronBarsBlock paneBlock -> SimplePaneModel.panes.add(new SimplePaneModel.Pane(base, paneBlock));
                 case PressurePlateBlock pressurePlateBlock -> {
                     PressurePlates.pressurePlates.add(pressurePlateBlock);
                     SimplePressurePlateModel.pressurePlates.add(new SimplePressurePlateModel.PressurePlate(base, pressurePlateBlock));
@@ -326,7 +338,7 @@ public class HelpingGenerator {
                     else Buttons.stoneButtons.add(buttonBlock);
                     SimpleButtonModel.buttons.add(new SimpleButtonModel.Button(base, buttonBlock));
                 }
-                case TrapdoorBlock trapdoorBlock -> {
+                case TrapDoorBlock trapdoorBlock -> {
                     Trapdoors.trapdoors.add(trapdoorBlock);
                     if (baseName.contains("planks")){
                         SimpleTrapDoorModel.trapdoors.add(new SimpleTrapDoorModel.Trapdoor(base, trapdoorBlock, true));

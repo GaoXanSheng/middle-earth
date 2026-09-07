@@ -1,7 +1,6 @@
 package net.sevenstars.middleearth.gui.playerbook;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class PlayerBookPageData {
     public String leftPageTitle;

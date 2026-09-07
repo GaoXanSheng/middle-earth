@@ -1,7 +1,7 @@
 package net.sevenstars.api.dtos;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 public abstract class WeightedItem<T> {
     protected int weight;
@@ -21,7 +21,7 @@ public abstract class WeightedItem<T> {
         this(item, 1);
     }
 
-    public WeightedItem(NbtElement element) {
+    public WeightedItem(Tag element) {
         this.weight = 1;
         if(element.asCompound().isPresent()){
             var potentialWeight = element.asCompound().get().getInt("weight");
@@ -39,9 +39,9 @@ public abstract class WeightedItem<T> {
 
     public abstract WeightedItem<T> withWeight(int newWeight);
 
-    public NbtElement getNbt(){
+    public Tag getNbt(){
         if(weight != 1){
-            NbtCompound compound = new NbtCompound();
+            CompoundTag compound = new CompoundTag();
             if(weight != 1)
                 compound.putInt("weight", weight);
             return compound;

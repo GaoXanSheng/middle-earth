@@ -1,9 +1,9 @@
 package net.sevenstars.middleearth.mixin;
 
-import net.minecraft.server.world.ServerChunkManager;
+import net.minecraft.server.level.ServerChunkCache;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(ServerChunkManager.class)
+@Mixin(ServerChunkCache.class)
 public class ServerChunkManagerMixin {
 
     /* // Keep this method in case of CPR for spawners chunk tick

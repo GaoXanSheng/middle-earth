@@ -1,6 +1,5 @@
 package net.sevenstars.middleearth.utils.noises;
 
-
 public class BlendedNoise {
 
     public static double noise(double x, double y){

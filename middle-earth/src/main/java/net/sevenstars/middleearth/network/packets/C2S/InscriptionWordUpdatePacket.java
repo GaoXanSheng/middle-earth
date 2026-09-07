@@ -1,10 +1,8 @@
 package net.sevenstars.middleearth.network.packets.C2S;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.special.forge.ForgeBlockEntity;
 import net.sevenstars.middleearth.gui.inscriptiontable.InscriptionTableScreenHandler;
@@ -12,10 +10,10 @@ import net.sevenstars.middleearth.network.contexts.ServerPacketContext;
 import net.sevenstars.middleearth.network.packets.ClientToServerPacket;
 
 public class InscriptionWordUpdatePacket extends ClientToServerPacket<InscriptionWordUpdatePacket> {
-    public static final Id<InscriptionWordUpdatePacket> ID = new Id<>(MiddleEarth.of("inscription_word_update_packet"));
-    public static final PacketCodec<RegistryByteBuf, InscriptionWordUpdatePacket> CODEC = PacketCodec.tuple(
-            PacketCodecs.BOOLEAN, p -> p.add,
-            PacketCodecs.STRING, p -> p.word,
+    public static final Type<InscriptionWordUpdatePacket> ID = new Type<>(MiddleEarth.of("inscription_word_update_packet"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, InscriptionWordUpdatePacket> CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL, p -> p.add,
+            ByteBufCodecs.STRING_UTF8, p -> p.word,
             InscriptionWordUpdatePacket::new
     );
 
@@ -28,20 +26,20 @@ public class InscriptionWordUpdatePacket extends ClientToServerPacket<Inscriptio
     }
 
     @Override
-    public Id<InscriptionWordUpdatePacket> getId() {
+    public Type<InscriptionWordUpdatePacket> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, InscriptionWordUpdatePacket> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, InscriptionWordUpdatePacket> streamCodec() {
         return CODEC;
     }
 
     @Override
     public void process(ServerPacketContext context) {
         try{
-            context.player().getServer().execute(() -> {
-                InscriptionTableScreenHandler screenHandler = (InscriptionTableScreenHandler) context.player().currentScreenHandler;
+            context.player().level().getServer().execute(() -> {
+                InscriptionTableScreenHandler screenHandler = (InscriptionTableScreenHandler) context.player().containerMenu;
                 screenHandler.updateWords(this.add, this.word, false);
             });
         }catch (Exception e){

@@ -2,16 +2,14 @@ package net.sevenstars.middleearth.resources.datas.biome_events.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
 import net.sevenstars.middleearth.entity.EntitiesME;
 import net.sevenstars.middleearth.registries.content.npctypes.NpcRegistry;
 import net.sevenstars.middleearth.resources.datas.npc_types.NpcType;
@@ -108,7 +106,6 @@ public class WildSpawnEventData {
     private Double discardChance = null;
     private BroadcastData broadcastData = null;
 
-
     private WildSpawnEventData(
             Identifier entityType, 
             Optional<Identifier> npcType,
@@ -145,12 +142,12 @@ public class WildSpawnEventData {
     }
 
     public WildSpawnEventData(EntityType<?> entityType){
-        this.entityType = Registries.ENTITY_TYPE.getId(entityType);
+        this.entityType = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
     }
 
-    public WildSpawnEventData(RegistryKey<NpcType> npcType){
-        this.entityType = Registries.ENTITY_TYPE.getId(EntitiesME.NPC);
-        this.npcType = npcType.getValue();
+    public WildSpawnEventData(ResourceKey<NpcType> npcType){
+        this.entityType = BuiltInRegistries.ENTITY_TYPE.getKey(EntitiesME.NPC);
+        this.npcType = npcType.identifier();
         this.sameEntityLimitation = new EntityLimitationData();
         this.sameEntityLimitation.withEntitySurfaceOnly();
         this.requireSky = true;
@@ -298,7 +295,6 @@ public class WildSpawnEventData {
     }
     // #endregion
 
-
     public Optional<Integer> getStructureManagerRadiusAvoidance() {
         return Optional.ofNullable(structureManagerRadiusAvoidance);
     }
@@ -414,7 +410,7 @@ public class WildSpawnEventData {
         return Optional.ofNullable(discardChance);
     }
 
-    public boolean isDiscarded(Random random) {
+    public boolean isDiscarded(RandomSource random) {
         if(discardChance == null)
             return false;
         double obtained = random.nextDouble();
@@ -430,7 +426,7 @@ public class WildSpawnEventData {
         return this;
     }
 
-    public void broadcastMessage(ServerWorld world, BlockPos pos){
+    public void broadcastMessage(ServerLevel world, BlockPos pos){
         if(broadcastData == null)
             return;
         broadcastData.broadcastMessage(world, pos);

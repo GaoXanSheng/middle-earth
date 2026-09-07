@@ -1,9 +1,8 @@
 package net.sevenstars.middleearth.datageneration.content.loot_tables;
 
+import net.minecraft.world.level.block.Block;
 import net.sevenstars.middleearth.block.registration.ModNatureBlocks;
 import net.sevenstars.middleearth.block.registration.WoodBlockSets;
-import net.minecraft.block.Block;
-
 import java.util.ArrayList;
 import java.util.List;
 

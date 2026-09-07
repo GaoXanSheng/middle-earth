@@ -1,10 +1,9 @@
 package net.sevenstars.middleearth.network.contexts;
 
-import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.server.level.ServerPlayer;
 import net.sevenstars.middleearth.network.connections.IConnectionToServer;
 
-public record RenderStatePacketContext(ArmedEntityRenderState renderState, ServerPlayerEntity playerEntity, IConnectionToServer connection) {
+public record RenderStatePacketContext(ArmedEntityRenderState renderState, ServerPlayer playerEntity, IConnectionToServer connection) {
 
 }

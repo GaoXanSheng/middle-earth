@@ -1,12 +1,11 @@
 package net.sevenstars.middleearth.gui.structuremanager;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.Optional;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 
 public class StructureManagerScreenData{
     private BlockPos pos;
@@ -14,7 +13,7 @@ public class StructureManagerScreenData{
     private boolean isActive;
     private boolean toInitialize;
 
-    public static final PacketCodec<? super RegistryByteBuf, StructureManagerScreenData> PACKET_CODEC;
+    public static final StreamCodec<? super RegistryFriendlyByteBuf, StructureManagerScreenData> PACKET_CODEC;
 
     public BlockPos getPos() {
         return this.pos;
@@ -52,11 +51,11 @@ public class StructureManagerScreenData{
     }
 
     static {
-        PACKET_CODEC = PacketCodec.tuple(
-                BlockPos.PACKET_CODEC, StructureManagerScreenData::getPos,
-                PacketCodecs.BOOLEAN, StructureManagerScreenData::getIsActive,
-                PacketCodecs.BOOLEAN, StructureManagerScreenData::getToInitialize,
-                PacketCodecs.optional(Identifier.PACKET_CODEC), StructureManagerScreenData::getStructureManagerIdentifierOptional,
+        PACKET_CODEC = StreamCodec.composite(
+                BlockPos.STREAM_CODEC, StructureManagerScreenData::getPos,
+                ByteBufCodecs.BOOL, StructureManagerScreenData::getIsActive,
+                ByteBufCodecs.BOOL, StructureManagerScreenData::getToInitialize,
+                ByteBufCodecs.optional(Identifier.STREAM_CODEC), StructureManagerScreenData::getStructureManagerIdentifierOptional,
                 StructureManagerScreenData::new
         );
     }

@@ -2,18 +2,22 @@ package net.sevenstars.middleearth.resources.datas.npc_types.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.DyedColorComponent;
-import net.minecraft.entity.*;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.AbstractHorseEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.*;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.sevenstars.middleearth.entity.EntitiesME;
 import net.sevenstars.middleearth.entity.beasts.AbstractBeastEntity;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
@@ -39,7 +43,6 @@ public class MountData {
             MountPassengerSlotData.CODEC.listOf().fieldOf(Fields.PASSENGER_SLOTS).forGetter(MountData::getPassengerSlots)
     ).apply(instance, MountData::new));
 
-
     private Identifier entityType;
     private Identifier npcType;
     private ItemStack armor;
@@ -58,13 +61,13 @@ public class MountData {
     }
 
     public MountData(EntityType<?> entity) {
-        this.entityType = Registries.ENTITY_TYPE.getId(entity);
+        this.entityType = BuiltInRegistries.ENTITY_TYPE.getKey(entity);
         this.armor = null;
     }
 
-    public MountData(RegistryKey<NpcType> npcType){
-        this.entityType = Registries.ENTITY_TYPE.getId(EntitiesME.NPC);
-        this.npcType = npcType.getValue();
+    public MountData(ResourceKey<NpcType> npcType){
+        this.entityType = BuiltInRegistries.ENTITY_TYPE.getKey(EntitiesME.NPC);
+        this.npcType = npcType.identifier();
     }
 
     public MountData withArmor(ItemStack armorItem){
@@ -73,14 +76,14 @@ public class MountData {
     }
 
     public MountData withArmor(Item armorItem){
-        this.armor = armorItem.getDefaultStack();
+        this.armor = armorItem.getDefaultInstance();
         return this;
     }
 
-    public MountData withColor(DyedColorComponent color){
+    public MountData withColor(DyedItemColor color){
         if(this.armor == null)
             return this;
-        this.armor.set(DataComponentTypes.DYED_COLOR, color);
+        this.armor.set(DataComponents.DYED_COLOR, color);
         return this;
     }
 
@@ -94,7 +97,6 @@ public class MountData {
         return Optional.ofNullable(armor);
     }
 
-
     private List<MountPassengerSlotData> getPassengerSlots() {
         if(passengerSlots == null)
             return new ArrayList<>();
@@ -106,29 +108,29 @@ public class MountData {
         return this;
     }
 
-    public void createEntity(ServerWorld world, LivingEntity owner) {
-        if(this.entityType == null || owner.hasVehicle() || owner.hasPassengers())
+    public void createEntity(ServerLevel world, LivingEntity owner) {
+        if(this.entityType == null || owner.isPassenger() || owner.isVehicle())
             return;
-        EntityType<?> type = Registries.ENTITY_TYPE.get(this.entityType);
-        var notLiving = type.create(world, SpawnReason.JOCKEY);
+        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(this.entityType);
+        var notLiving = type.create(world, EntitySpawnReason.JOCKEY);
         if(notLiving == null)
             return;
         if(notLiving instanceof LivingEntity entity){
-            entity.setPosition(owner.getPos());
-            entity.equipStack(EquipmentSlot.SADDLE, Items.SADDLE.asItem().getDefaultStack());
+            entity.setPos(owner.position());
+            entity.setItemSlot(EquipmentSlot.SADDLE, Items.SADDLE.asItem().getDefaultInstance());
             if(armor != null)
-                entity.equipStack(EquipmentSlot.BODY, this.armor);
+                entity.setItemSlot(EquipmentSlot.BODY, this.armor);
 
-            if (entity instanceof MobEntity mob) {
-                mob.initialize(
+            if (entity instanceof Mob mob) {
+                mob.finalizeSpawn(
                         world,
-                        world.getLocalDifficulty(owner.getBlockPos()),
-                        SpawnReason.EVENT,
+                        world.getCurrentDifficultyAt(owner.blockPosition()),
+                        EntitySpawnReason.EVENT,
                         null
                 );
             }
-            if(entity instanceof AbstractHorseEntity horse){
-                horse.setTame(true);
+            if(entity instanceof AbstractHorse horse){
+                horse.setTamed(true);
                 horse.setOwner(owner);
                 if(horse instanceof AbstractBeastEntity beast){
                     beast.tameBeast(owner);
@@ -136,8 +138,8 @@ public class MountData {
 
             }
 
-            owner.startRiding(entity, true);
-            world.spawnEntity(entity);
+            owner.startRiding(entity, true, false);
+            world.addFreshEntity(entity);
 
             if(entity instanceof NpcEntity npc && npcType != null){
                 npc.prepareNpcIdentifier(npcType);
@@ -148,7 +150,7 @@ public class MountData {
             passengerSlots.forEach(slot -> {
                LivingEntity passengerEntity = slot.createRandom(world, owner);
                if(passengerEntity != null)
-                   passengerEntity.startRiding(entity, true);
+                   passengerEntity.startRiding(entity, true, false);
             });
 
         }

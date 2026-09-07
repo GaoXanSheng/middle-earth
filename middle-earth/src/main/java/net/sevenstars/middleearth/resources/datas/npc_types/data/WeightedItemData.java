@@ -1,10 +1,10 @@
 package net.sevenstars.middleearth.resources.datas.npc_types.data;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.sevenstars.api.dtos.WeightedItem;
 import net.sevenstars.middleearth.item.utils.armor.backAttachments.BackAttachmentsME;
 import net.sevenstars.middleearth.item.utils.armor.helmetAttachments.HelmetAttachmentsME;
@@ -24,12 +24,12 @@ public class WeightedItemData extends WeightedItem<GearItemData> {
         this.item = new GearItemData(itemIdentifier);
     }
 
-    public WeightedItemData(NbtElement element){
+    public WeightedItemData(Tag element){
         super(element);
         if(element == null)
             return;
         if(element.asString().isPresent())
-            this.item = new GearItemData(Identifier.of(element.asString().get()));
+            this.item = new GearItemData(Identifier.parse(element.asString().get()));
         else if(element.asCompound().isPresent())
             this.item = new GearItemData(element.asCompound().get());
     }
@@ -99,10 +99,10 @@ public class WeightedItemData extends WeightedItem<GearItemData> {
     }
 
     @Override
-    public NbtElement getNbt() {
-        NbtElement nbt = super.getNbt();
+    public Tag getNbt() {
+        Tag nbt = super.getNbt();
         if(nbt == null)
-            nbt = new NbtCompound();
+            nbt = new CompoundTag();
         nbt = this.item.getNbt(nbt.asCompound().get());
         return nbt;
     }

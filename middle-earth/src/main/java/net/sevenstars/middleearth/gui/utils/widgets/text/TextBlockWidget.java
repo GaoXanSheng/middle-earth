@@ -1,10 +1,10 @@
 package net.sevenstars.middleearth.gui.utils.widgets.text;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.resource.language.LanguageManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.resources.language.LanguageManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.sevenstars.middleearth.gui.utils.widgets.ModWidget;
 import net.sevenstars.middleearth.utils.resources.FileUtils;
 
@@ -17,12 +17,12 @@ public class TextBlockWidget extends ModWidget {
     private int startX, startY;
     private TextAlignment textAlignment;
     private boolean isJustified = false;
-    private TextRenderer textRenderer;
+    private Font textRenderer;
     private final int spaceWidth;
     private final boolean hasNoSpace;
 
     private List<List<Word>> wordsPerLine = new ArrayList<>();
-    private List<Text> rawTexts = new ArrayList<>();
+    private List<Component> rawTexts = new ArrayList<>();
 
     public TextBlockWidget(int startX, int startY, int width, int height){
         this.startX = startX;
@@ -30,14 +30,14 @@ public class TextBlockWidget extends ModWidget {
         this.width = width;
         this.height = height;
         this.textAlignment = TextAlignment.LEFT;
-        this.textRenderer = this.client.textRenderer;
-        this.spaceWidth = this.textRenderer.getWidth(" ");
+        this.textRenderer = this.client.font;
+        this.spaceWidth = this.textRenderer.width(" ");
 
         // some languages don't use space to split words,
         // the old method would have judged the description text as a whole big word
         // with super long width, which resulted in not rendering any texts
         LanguageManager languageManager = this.client.getLanguageManager();
-        String currentLanguage = languageManager.getLanguage();
+        String currentLanguage = languageManager.getSelected();
         String[] noSpaceLanguages = {"ja_jp", "lzh", "th_th", "zh_cn", "zh_tw"};
         this.hasNoSpace = Arrays.asList(noSpaceLanguages).contains(currentLanguage) && FileUtils.isLanguageFileExist(currentLanguage);
     }
@@ -63,16 +63,16 @@ public class TextBlockWidget extends ModWidget {
         return this;
     }
 
-    public List<Text> setText(List<Text> texts){
+    public List<Component> setText(List<Component> texts){
         if(texts == null)
             return texts;
         rawTexts = texts;
         wordsPerLine.clear();
-        List<Text> textOverflow = new ArrayList<>();
+        List<Component> textOverflow = new ArrayList<>();
         int currentHeight = 0;
 
         int _spaceWidth = this.hasNoSpace ? 0 : this.spaceWidth;
-        for(Text text : texts){ // Parse through texts (1 text is 1 paragraph)
+        for(Component text : texts){ // Parse through texts (1 text is 1 paragraph)
             boolean isManipulated = false;  // Simple variable to check if the input was manipulated
             List<Word> textWords = getWordListFromText(text, this.hasNoSpace); // The text split in words
             while(!textWords.isEmpty() && currentHeight < height){ // Parse the input until it reaches the end of it or the height limit
@@ -95,7 +95,7 @@ public class TextBlockWidget extends ModWidget {
                     }
                 }
                 wordsPerLine.add(currentLineWords);
-                currentHeight += textRenderer.fontHeight;
+                currentHeight += textRenderer.lineHeight;
             }
             if (!textWords.isEmpty()) {
                 if (isManipulated) // If the text has content and was manipulated, create new text from leftovers
@@ -107,67 +107,67 @@ public class TextBlockWidget extends ModWidget {
         return textOverflow;
     }
 
-    public void draw(DrawContext context, boolean showLimit, boolean showBorders){
+    public void draw(GuiGraphicsExtractor context, boolean showLimit, boolean showBorders){
         if(showBorders) {
-            context.drawVerticalLine(startX, startY, startY + height, Colors.RED);
-            context.drawVerticalLine(startX + width, startY, startY + height, Colors.RED);
-            context.drawHorizontalLine(startX, startX + width, startY, Colors.RED);
-            context.drawHorizontalLine(startX, startX + width, startY + height, Colors.RED);
+            context.verticalLine(startX, startY, startY + height, CommonColors.RED);
+            context.verticalLine(startX + width, startY, startY + height, CommonColors.RED);
+            context.horizontalLine(startX, startX + width, startY, CommonColors.RED);
+            context.horizontalLine(startX, startX + width, startY + height, CommonColors.RED);
         }
         draw(context, showLimit);
     }
 
-    public void draw(DrawContext context, boolean showTextLimit){
+    public void draw(GuiGraphicsExtractor context, boolean showTextLimit){
         int currentHeight = 0;
         for(List<Word> words : wordsPerLine){
-            if (showTextLimit && !words.isEmpty() && currentHeight + textRenderer.fontHeight > height){
+            if (showTextLimit && !words.isEmpty() && currentHeight + textRenderer.lineHeight > height){
                 drawTextLimitLine(context, currentHeight);
             } else {
                 drawTextLine(context, words, currentHeight, false);
             }
-            currentHeight += textRenderer.fontHeight;
+            currentHeight += textRenderer.lineHeight;
         }
     }
 
-    private Text createTextFromWords(List<Word> words) {
+    private Component createTextFromWords(List<Word> words) {
         StringBuilder textContentBuilder = new StringBuilder();
         for(Word word : words) {
             textContentBuilder.append(word.content);
             if(word != words.getLast())
                 textContentBuilder.append(" ");
         }
-        return Text.literal(textContentBuilder.toString());
+        return Component.literal(textContentBuilder.toString());
     }
 
-    private void drawTextLimitLine(DrawContext context, int currentStart) {
-        Text text = Text.of("...");
-        context.drawText(textRenderer, text,
-                startX + (width / 2) - (textRenderer.getWidth(text) / 2), startY + currentStart, Colors.RED, false);
+    private void drawTextLimitLine(GuiGraphicsExtractor context, int currentStart) {
+        Component text = Component.nullToEmpty("...");
+        context.text(textRenderer, text,
+                startX + (width / 2) - (textRenderer.width(text) / 2), startY + currentStart, CommonColors.RED, false);
     }
 
-    private void drawTextLine(DrawContext context, List<Word> currentLine, int currentStart, boolean isEnd) {
+    private void drawTextLine(GuiGraphicsExtractor context, List<Word> currentLine, int currentStart, boolean isEnd) {
         if (isJustified && !isEnd) {
-            Text text = getJustifiedTextFromList(currentLine);
-            Text lastWordText = Text.literal(currentLine.getLast().content);
-            context.drawText(textRenderer, text,
-                    startX, startY + currentStart, Colors.BLACK, false);
-            context.drawText(textRenderer, lastWordText,
-                    startX + width - textRenderer.getWidth(lastWordText), startY + currentStart, Colors.BLACK, false);
+            Component text = getJustifiedTextFromList(currentLine);
+            Component lastWordText = Component.literal(currentLine.getLast().content);
+            context.text(textRenderer, text,
+                    startX, startY + currentStart, CommonColors.BLACK, false);
+            context.text(textRenderer, lastWordText,
+                    startX + width - textRenderer.width(lastWordText), startY + currentStart, CommonColors.BLACK, false);
         } else {
-            Text text = getTextFromList(currentLine);
+            Component text = getTextFromList(currentLine);
             // draw alignment
             int x = switch (textAlignment) {
                 case LEFT -> startX;
-                case CENTER -> startX + (width / 2) - (textRenderer.getWidth(text) / 2);
-                case RIGHT -> startX + (width - textRenderer.getWidth(text));
+                case CENTER -> startX + (width / 2) - (textRenderer.width(text) / 2);
+                case RIGHT -> startX + (width - textRenderer.width(text));
             };
 
-            context.drawText(textRenderer, text,
-                    x, startY + currentStart, Colors.BLACK, false);
+            context.text(textRenderer, text,
+                    x, startY + currentStart, CommonColors.BLACK, false);
         }
     }
 
-    private Text getJustifiedTextFromList(List<Word> currentLine) {
+    private Component getJustifiedTextFromList(List<Word> currentLine) {
         int currentWidth = 0;
         int _spaceWidth = this.hasNoSpace ? 0 : this.spaceWidth;
         for(Word word : currentLine){
@@ -202,10 +202,10 @@ public class TextBlockWidget extends ModWidget {
                     stringBuilder.append(" ".repeat(1 + extraSpaceAmount));
             }
         }
-        return Text.literal(stringBuilder.toString());
+        return Component.literal(stringBuilder.toString());
     }
 
-    private Text getTextFromList(List<Word> currentLine) {
+    private Component getTextFromList(List<Word> currentLine) {
         StringBuilder stringBuilder = new StringBuilder();
         for (Word word : currentLine) {
             stringBuilder.append(word.content);
@@ -213,25 +213,25 @@ public class TextBlockWidget extends ModWidget {
                 if (!hasNoSpace)
                     stringBuilder.append(" ");
         }
-        return Text.literal(stringBuilder.toString());
+        return Component.literal(stringBuilder.toString());
     }
 
-    private List<Word> getWordListFromText(Text textToSplit, boolean hasNoSpace){
+    private List<Word> getWordListFromText(Component textToSplit, boolean hasNoSpace){
         List<Word> words = new ArrayList<>();
         if (hasNoSpace) {
             for (char character : textToSplit.getString().toCharArray()) {
                 String word = String.valueOf(character);
-                words.add(new Word(word, textRenderer.getWidth(word)));
+                words.add(new Word(word, textRenderer.width(word)));
             }
         } else {
             for (String splittedWord : textToSplit.getString().split(" ")){
-                words.add(new Word(splittedWord, textRenderer.getWidth(splittedWord)));
+                words.add(new Word(splittedWord, textRenderer.width(splittedWord)));
             }
         }
         return words;
     }
 
-    public List<Text> getValue() {
+    public List<Component> getValue() {
         return rawTexts;
     }
 }

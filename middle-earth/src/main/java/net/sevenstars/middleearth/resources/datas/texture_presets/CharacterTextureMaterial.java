@@ -2,20 +2,20 @@ package net.sevenstars.middleearth.resources.datas.texture_presets;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.entry.RegistryElementCodec;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
 import net.sevenstars.middleearth.resources.datas.common.CharacterMaterialTypes;
 
 public class CharacterTextureMaterial {
 
-    public static final PacketCodec<RegistryByteBuf, CharacterTextureMaterial> PACKET_CODEC;
-    public static final Codec<RegistryEntry<CharacterTextureMaterial>> ENTRY_CODEC;
-    public static final PacketCodec<RegistryByteBuf, RegistryEntry<CharacterTextureMaterial>> ENTRY_PACKET_CODEC;
+    public static final StreamCodec<RegistryFriendlyByteBuf, CharacterTextureMaterial> PACKET_CODEC;
+    public static final Codec<Holder<CharacterTextureMaterial>> ENTRY_CODEC;
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<CharacterTextureMaterial>> ENTRY_PACKET_CODEC;
 
     public static final Codec<CharacterTextureMaterial> CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(
@@ -47,10 +47,10 @@ public class CharacterTextureMaterial {
     }
 
     static {
-        PACKET_CODEC = PacketCodec.tuple(
-                Identifier.PACKET_CODEC, CharacterTextureMaterial::getIdentifier,
-                PacketCodecs.STRING, CharacterTextureMaterial::getTypeValue, CharacterTextureMaterial::new);
-        ENTRY_CODEC = RegistryElementCodec.of(DynamicRegistriesME.SKIN_MATERIAL, CODEC);
-        ENTRY_PACKET_CODEC = PacketCodecs.registryEntry(DynamicRegistriesME.SKIN_MATERIAL, PACKET_CODEC);
+        PACKET_CODEC = StreamCodec.composite(
+                Identifier.STREAM_CODEC, CharacterTextureMaterial::getIdentifier,
+                ByteBufCodecs.STRING_UTF8, CharacterTextureMaterial::getTypeValue, CharacterTextureMaterial::new);
+        ENTRY_CODEC = RegistryFileCodec.create(DynamicRegistriesME.SKIN_MATERIAL, CODEC);
+        ENTRY_PACKET_CODEC = ByteBufCodecs.holder(DynamicRegistriesME.SKIN_MATERIAL, PACKET_CODEC);
     }
 }

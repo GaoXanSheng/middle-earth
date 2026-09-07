@@ -27,7 +27,6 @@ public class IsengardTexturePresetsPool {
     public final static TexturePresetDataPool ORC;
     public final static TexturePresetDataPool URUK_HAI;
 
-
     public static List<TexturePresetsRegistry.RegisterableNpcTextureData> fetchAll() {
         return List.of(
                 new TexturePresetsRegistry.RegisterableNpcTextureData(TexturePresetsRegistry.ISENGARD_ORC, ORC),
@@ -77,7 +76,6 @@ public class IsengardTexturePresetsPool {
                                 )
                         }
                 ));
-
 
         BLACK_NUMENOREAN_PRESET = new WeightedTexturePresetHolder()
                 .withMaterials(CharacterMaterialTypes.EYE, List.of(

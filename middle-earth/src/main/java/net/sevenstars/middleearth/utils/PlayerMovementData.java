@@ -1,13 +1,13 @@
 package net.sevenstars.middleearth.utils;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public class PlayerMovementData {
     public static final String KEY = "player_afk_data";
     public static final int MAX_AFK_TIME = 100;
 
     public static void addAFKTime(IEntityDataSaver player, int amount) {
-        NbtCompound nbt = player.getPersistentData();
+        CompoundTag nbt = player.getPersistentData();
         if(nbt.getInt(KEY).isEmpty()) return;
         int movement = nbt.getInt(KEY).get();
 
@@ -18,13 +18,13 @@ public class PlayerMovementData {
     }
 
     public static int readAFK(IEntityDataSaver player) {
-        NbtCompound nbt = player.getPersistentData();
+        CompoundTag nbt = player.getPersistentData();
 
         return nbt.getInt(KEY).get();
     }
 
     public static void resetAFK(IEntityDataSaver player){
-        NbtCompound nbt = player.getPersistentData();
+        CompoundTag nbt = player.getPersistentData();
         nbt.putInt(KEY, 0);
     }
 }

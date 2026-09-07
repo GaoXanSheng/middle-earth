@@ -2,13 +2,11 @@ package net.sevenstars.middleearth.network.packets.S2C;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.gui.inscriptiontable.InscriptionTableScreen;
 import net.sevenstars.middleearth.gui.inscriptiontable.InscriptionTableScreenHandler;
@@ -17,11 +15,11 @@ import net.sevenstars.middleearth.network.contexts.ClientPacketContext;
 import net.sevenstars.middleearth.network.packets.ServerToClientPacket;
 
 public class ShapingAnvilRecipePacket extends ServerToClientPacket<ShapingAnvilRecipePacket> {
-    public static final Id<ShapingAnvilRecipePacket> ID = new Id<>(MiddleEarth.of("shaping_anvil_recipe_packet"));
+    public static final Type<ShapingAnvilRecipePacket> ID = new Type<>(MiddleEarth.of("shaping_anvil_recipe_packet"));
 
-    public static final PacketCodec<RegistryByteBuf, ShapingAnvilRecipePacket> CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, p -> p.index,
-            ItemStack.PACKET_CODEC, p -> p.output,
+    public static final StreamCodec<RegistryFriendlyByteBuf, ShapingAnvilRecipePacket> CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, p -> p.index,
+            ItemStack.STREAM_CODEC, p -> p.output,
             ShapingAnvilRecipePacket::new
     );
 
@@ -34,20 +32,20 @@ public class ShapingAnvilRecipePacket extends ServerToClientPacket<ShapingAnvilR
     }
 
     @Override
-    public Id<ShapingAnvilRecipePacket> getId() {
+    public Type<ShapingAnvilRecipePacket> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, ShapingAnvilRecipePacket> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, ShapingAnvilRecipePacket> streamCodec() {
         return CODEC;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void process(ClientPacketContext context) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        ShapingAnvilScreen screen = (ShapingAnvilScreen)client.currentScreen;
+        Minecraft client = Minecraft.getInstance();
+        ShapingAnvilScreen screen = (ShapingAnvilScreen)client.gui.screen();
         if (screen != null) screen.addRecipe(this.index, this.output);
     }
 }

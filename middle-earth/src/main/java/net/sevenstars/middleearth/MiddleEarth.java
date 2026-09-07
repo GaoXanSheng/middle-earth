@@ -1,7 +1,7 @@
 package net.sevenstars.middleearth;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.api.utils.ModLogger;
 import net.sevenstars.middleearth.block.registration.*;
 import net.sevenstars.middleearth.commands.ModCommands;
@@ -92,6 +92,7 @@ public class MiddleEarth implements ModInitializer {
 		RegistriesME.registerToolTipAppenders();
 		RegistriesME.registerFlammableBlocks();
 		RegistriesME.registerTillableBlocks();
+		RegistriesME.registerFlattenableBlocks();
 		RegistriesME.registerAgingCopperBlocks();
 		RegistriesME.registerComposterBlocks();
 		RegistriesME.registerCauldronBehaviour();
@@ -103,8 +104,6 @@ public class MiddleEarth implements ModInitializer {
 		ModRecipeSerializer.registerRecipeSerializers();
 
 		TrackedDataHandlerRegistryME.register();
-
-
 
 		EntitiesME.registerModEntities();
 		ModEntitySpawning.addSpawns();
@@ -145,14 +144,12 @@ public class MiddleEarth implements ModInitializer {
     public static Identifier ofPrefix(Identifier base, Identifier prefixId) {
 		if(base == null)
 			return null;
-        return base.withPrefixedPath(String.format("%s/", prefixId.getPath()));
+        return base.withPrefix(String.format("%s/", prefixId.getPath()));
     }
 
     public static Identifier of(String path){
         return IdentifierUtil.build(MOD_ID, path);
     }
-
-
 
     public static Identifier of(String... names){
         return IdentifierUtil.buildAggregate(MOD_ID, names);
@@ -169,7 +166,7 @@ public class MiddleEarth implements ModInitializer {
 	}
     public static Identifier append(Identifier base, String suffix) {
         String id = base.toString();
-        return Identifier.of(id + suffix);
+        return Identifier.parse(id + suffix);
     }
 
     public static String createAggregate(char splitter, String... names){

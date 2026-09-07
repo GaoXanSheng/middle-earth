@@ -1,12 +1,12 @@
 package net.sevenstars.middleearth.gui.utils.widgets.backgrounds.types;
 
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.gui.utils.widgets.UiDirections;
-import net.minecraft.util.Identifier;
 import org.joml.Vector2i;
 
 public enum BackgroundContainerTypes {
-    FULLSCREEN_MAP(Identifier.of(MiddleEarth.MOD_ID,"textures/gui/map_background.png"), 5, 1, 209);
+    FULLSCREEN_MAP(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID,"textures/gui/map_background.png"), 5, 1, 209);
     public final Identifier textureId;
 
     public final int size;

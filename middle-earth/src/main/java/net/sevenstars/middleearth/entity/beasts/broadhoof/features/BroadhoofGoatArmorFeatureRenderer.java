@@ -1,38 +1,36 @@
 package net.sevenstars.middleearth.entity.beasts.broadhoof.features;
 
-import net.minecraft.client.render.entity.equipment.EquipmentModel;
-import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.EquippableComponent;
-import net.minecraft.registry.RegistryKey;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.Equippable;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatEntityRenderState;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatModel;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
 
-public class BroadhoofGoatArmorFeatureRenderer extends FeatureRenderer<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
-
+public class BroadhoofGoatArmorFeatureRenderer extends RenderLayer<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> {
     private final BroadhoofGoatArmorModel model;
-    private final EquipmentRenderer equipmentRenderer;
+    private final EquipmentLayerRenderer equipmentRenderer;
 
-    public BroadhoofGoatArmorFeatureRenderer(FeatureRendererContext<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> context, LoadedEntityModels loader, EquipmentRenderer equipmentRenderer) {
+    public BroadhoofGoatArmorFeatureRenderer(RenderLayerParent<BroadhoofGoatEntityRenderState, BroadhoofGoatModel> context, EntityModelSet loader, EquipmentLayerRenderer equipmentRenderer) {
         super(context);
         this.equipmentRenderer = equipmentRenderer;
-        this.model = new BroadhoofGoatArmorModel(loader.getModelPart(EntityModelLayersME.BROADHOOF_GOAT_ARMOR));
+        this.model = new BroadhoofGoatArmorModel(loader.bakeLayer(EntityModelLayersME.BROADHOOF_GOAT_ARMOR));
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, BroadhoofGoatEntityRenderState state, float limbAngle, float limbDistance) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, BroadhoofGoatEntityRenderState state, float limbAngle, float limbDistance) {
         ItemStack itemStack = state.armor;
-        EquippableComponent equippableComponent = (EquippableComponent)itemStack.get(DataComponentTypes.EQUIPPABLE);
+        Equippable equippableComponent = itemStack.get(DataComponents.EQUIPPABLE);
         if (equippableComponent != null && !equippableComponent.assetId().isEmpty()) {
-            model.setAngles(state);
-            this.equipmentRenderer.render(EquipmentModel.LayerType.HORSE_BODY, (RegistryKey)equippableComponent.assetId().get(), model, itemStack, matrices, vertexConsumers, light);
+            model.setupAnim(state);
+            this.equipmentRenderer.renderLayers(EquipmentClientInfo.LayerType.HORSE_BODY, equippableComponent.assetId().get(), model, state, itemStack, poseStack, submitNodeCollector, light, 0);
         }
     }
 }

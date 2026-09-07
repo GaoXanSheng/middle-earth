@@ -1,78 +1,68 @@
 package net.sevenstars.middleearth.entity.barrel;
 
-import net.minecraft.client.model.Model;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.state.BoatEntityRenderState;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.BoatRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import org.joml.Quaternionf;
 
-public class BarrelEntityRenderer extends EntityRenderer<BarrelEntity, BoatEntityRenderState> {
-    private static final Identifier TEXTURE = Identifier.of(MiddleEarth.MOD_ID, "textures/entities/reinforced_barrel/reinforced_barrel.png");
-    private ModelPart modelPart;
-    private final Model waterMaskModel;
+public class BarrelEntityRenderer extends EntityRenderer<BarrelEntity, BoatRenderState> {
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/entities/reinforced_barrel/reinforced_barrel.png");
+    private final ModelPart modelPart;
 
-    public BarrelEntityRenderer(EntityRendererFactory.Context context) {
+    public BarrelEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
-        modelPart = context.getPart(EntityModelLayersME.REINFORCED_BARREL);
-        this.waterMaskModel = new Model.SinglePartModel(context.getPart(EntityModelLayersME.REINFORCED_BARREL_WATER_MASK), (id) -> {
-            return RenderLayer.getWaterMask();
-        });
+        this.modelPart = context.bakeLayer(EntityModelLayersME.REINFORCED_BARREL);
         this.shadowRadius = 0.6F;
     }
 
     @Override
-    public BoatEntityRenderState createRenderState() {
-        return new BoatEntityRenderState();
+    public BoatRenderState createRenderState() {
+        return new BoatRenderState();
     }
 
     @Override
-    public void render(BoatEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        matrices.push();
+    public void submit(BoatRenderState state, PoseStack matrices, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+        matrices.pushPose();
         matrices.scale(1.35f, 1.35f, 1.35f);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - state.yaw));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180.0F));
+        matrices.mulPose(Axis.YP.rotationDegrees(180.0F - state.yRot));
+        matrices.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
-        float f = state.damageWobbleTicks;
+        float f = state.hurtTime;
         if (f > 0.0F) {
-            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(MathHelper.sin(f) * f * state.damageWobbleStrength / 10.0F * (float)state.damageWobbleSide));
+            matrices.mulPose(Axis.XP.rotationDegrees(Mth.sin(f) * f * state.damageTime / 10.0F * (float)state.hurtDir));
         }
 
-        if (!state.submergedInWater && !MathHelper.approximatelyEquals(state.bubbleWobble, 0.0F)) {
-            matrices.multiply((new Quaternionf()).setAngleAxis(state.bubbleWobble * 0.017453292F, 1.0F, 0.0F, 1.0F));
+        if (!state.isUnderWater && !Mth.equal(state.bubbleAngle, 0.0F)) {
+            matrices.mulPose((new Quaternionf()).setAngleAxis(state.bubbleAngle * 0.017453292F, 1.0F, 0.0F, 1.0F));
         }
 
         matrices.translate(0f, -1.4f, 0f);
-        modelPart.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(TEXTURE)), light, OverlayTexture.DEFAULT_UV);
-        this.renderWaterMask(state, matrices, vertexConsumers, light);
-        matrices.pop();
+        submitNodeCollector.submitModelPart(this.modelPart, matrices, RenderTypes.entityCutout(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, null);
+        matrices.popPose();
+        super.submit(state, matrices, submitNodeCollector, cameraRenderState);
     }
 
-    public void updateRenderState(BarrelEntity barrelEntity, BoatEntityRenderState boatEntityRenderState, float f) {
-        super.updateRenderState(barrelEntity, boatEntityRenderState, f);
-        boatEntityRenderState.yaw = barrelEntity.getLerpedYaw(f);
-        boatEntityRenderState.damageWobbleTicks = (float)barrelEntity.getDamageWobbleTicks() - f;
-        boatEntityRenderState.damageWobbleSide = barrelEntity.getDamageWobbleSide();
-        boatEntityRenderState.damageWobbleStrength = Math.max(barrelEntity.getDamageWobbleStrength() - f, 0.0F);
-        boatEntityRenderState.bubbleWobble = barrelEntity.lerpBubbleWobble(f);
-        boatEntityRenderState.submergedInWater = barrelEntity.isSubmergedInWater();
-        boatEntityRenderState.leftPaddleAngle = barrelEntity.lerpPaddlePhase(0, f);
-        boatEntityRenderState.rightPaddleAngle = barrelEntity.lerpPaddlePhase(1, f);
-    }
-
-    protected void renderWaterMask(BoatEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        if (!state.submergedInWater) {
-            this.waterMaskModel.render(matrices, vertexConsumers.getBuffer(this.waterMaskModel.getLayer(TEXTURE)), light, OverlayTexture.DEFAULT_UV);
-        }
-
+    @Override
+    public void extractRenderState(BarrelEntity barrelEntity, BoatRenderState boatEntityRenderState, float f) {
+        super.extractRenderState(barrelEntity, boatEntityRenderState, f);
+        boatEntityRenderState.yRot = barrelEntity.getYRot(f);
+        boatEntityRenderState.hurtTime = (float)barrelEntity.getHurtTime() - f;
+        boatEntityRenderState.hurtDir = barrelEntity.getHurtDir();
+        boatEntityRenderState.damageTime = Math.max(barrelEntity.getDamage() - f, 0.0F);
+        boatEntityRenderState.bubbleAngle = barrelEntity.getBubbleAngle(f);
+        boatEntityRenderState.isUnderWater = barrelEntity.isUnderWater();
+        boatEntityRenderState.rowingTimeLeft = barrelEntity.getRowingTime(0, f);
+        boatEntityRenderState.rowingTimeRight = barrelEntity.getRowingTime(1, f);
     }
 }

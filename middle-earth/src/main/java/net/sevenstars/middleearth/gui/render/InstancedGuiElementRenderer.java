@@ -1,15 +1,15 @@
 package net.sevenstars.middleearth.gui.render;
 
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.gui.render.state.GuiRenderState;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.sevenstars.middleearth.gui.render.states.InstancedGuiElementRenderState;
 
-public abstract class InstancedGuiElementRenderer<T extends InstancedGuiElementRenderState> extends SpecialGuiElementRenderer<T> {
+public abstract class InstancedGuiElementRenderer<T extends InstancedGuiElementRenderState> extends PictureInPictureRenderer<T> {
     private boolean usedThisFrame;
 
-    protected InstancedGuiElementRenderer(VertexConsumerProvider.Immediate vertexConsumers) {
-        super(vertexConsumers);
+    protected InstancedGuiElementRenderer() {
+        super();
     }
 
     public final boolean usedThisFrame() {
@@ -21,8 +21,8 @@ public abstract class InstancedGuiElementRenderer<T extends InstancedGuiElementR
     }
 
     @Override
-    public void renderElement(T specialGuiElementRenderState, GuiRenderState guiRenderState) {
-        super.renderElement(specialGuiElementRenderState, guiRenderState);
+    public void prepare(T specialGuiElementRenderState, GuiRenderState guiRenderState, FeatureRenderDispatcher featureRenderDispatcher, int windowScaleFactor) {
         this.usedThisFrame = true;
+        super.prepare(specialGuiElementRenderState, guiRenderState, featureRenderDispatcher, windowScaleFactor);
     }
 }

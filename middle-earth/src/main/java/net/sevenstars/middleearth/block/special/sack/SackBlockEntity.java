@@ -1,34 +1,30 @@
 package net.sevenstars.middleearth.block.special.sack;
 
-import net.minecraft.block.BarrelBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.BarrelBlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.block.entity.ViewerCountManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.ShulkerBoxScreenHandler;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.ContainerUser;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BarrelBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.registration.ModBlockEntities;
 import net.sevenstars.middleearth.gui.sack.SackScreenHandler;
@@ -36,30 +32,31 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.IntStream;
 
-public class SackBlockEntity extends LootableContainerBlockEntity implements SidedInventory {
+public class SackBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     private static final int[] AVAILABLE_SLOTS = IntStream.range(0, 9).toArray();
-    private DefaultedList<ItemStack> inventory;
-    private final ViewerCountManager stateManager;
+    private NonNullList<ItemStack> inventory;
+    private final ContainerOpenersCounter stateManager;
 
     public SackBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.SACK, pos, state);
-        this.inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
-        this.setHeldStacks(DefaultedList.ofSize(this.size(), ItemStack.EMPTY));
-        this.stateManager = new ViewerCountManager() {
-            protected void onContainerOpen(World world, BlockPos pos, BlockState state) {
+        this.inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+        this.setItems(NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY));
+        this.stateManager = new ContainerOpenersCounter() {
+            protected void onOpen(Level world, BlockPos pos, BlockState state) {
                 SackBlockEntity.this.setOpen(state, true);
             }
 
-            protected void onContainerClose(World world, BlockPos pos, BlockState state) {
+            protected void onClose(Level world, BlockPos pos, BlockState state) {
                 SackBlockEntity.this.setOpen(state, false);
             }
 
-            protected void onViewerCountUpdate(World world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
+            protected void openerCountChanged(Level world, BlockPos pos, BlockState state, int oldViewerCount, int newViewerCount) {
             }
 
-            protected boolean isPlayerViewing(PlayerEntity player) {
-                if (player.currentScreenHandler instanceof GenericContainerScreenHandler) {
-                    Inventory inventory = ((GenericContainerScreenHandler)player.currentScreenHandler).getInventory();
+            @Override
+            public boolean isOwnContainer(Player player) {
+                if (player.containerMenu instanceof ChestMenu) {
+                    Container inventory = ((ChestMenu)player.containerMenu).getContainer();
                     return inventory == SackBlockEntity.this;
                 } else {
                     return false;
@@ -69,103 +66,106 @@ public class SackBlockEntity extends LootableContainerBlockEntity implements Sid
     }
 
     @Override
-    public int size() {
+    public int getContainerSize() {
         return 9;
     }
 
     @Override
-    protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
+    protected AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
         return new SackScreenHandler(syncId, playerInventory, this);
     }
 
     @Override
-    public Text getDisplayName() {
-        return Text.translatable(MiddleEarth.of("sack").toTranslationKey("screen"));
+    public Component getDisplayName() {
+        return Component.translatable(MiddleEarth.of("sack").toLanguageKey("screen"));
     }
 
     @Override
-    protected Text getContainerName() {
-        return Text.translatable(MiddleEarth.of("sack").toTranslationKey("screen"));
+    protected Component getDefaultName() {
+        return Component.translatable(MiddleEarth.of("sack").toLanguageKey("screen"));
     }
 
-    protected void readData(ReadView view) {
-        super.readData(view);
+    protected void loadAdditional(ValueInput view) {
+        super.loadAdditional(view);
         this.readInventoryNbt(view);
     }
 
-    protected void writeData(WriteView view) {
-        super.writeData(view);
-        if (!this.writeLootTable(view)) {
-            Inventories.writeData(view, this.inventory, false);
+    protected void saveAdditional(ValueOutput view) {
+        super.saveAdditional(view);
+        if (!this.trySaveLootTable(view)) {
+            ContainerHelper.saveAllItems(view, this.inventory, false);
         }
 
     }
 
-    public void readInventoryNbt(ReadView readView) {
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-        if (!this.readLootTable(readView)) {
-            Inventories.readData(readView, this.inventory);
+    public void readInventoryNbt(ValueInput readView) {
+        this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        if (!this.tryLoadLootTable(readView)) {
+            ContainerHelper.loadAllItems(readView, this.inventory);
         }
     }
 
     @Override
-    public void onBlockReplaced(BlockPos pos, BlockState oldState) {
+    public void preRemoveSideEffects(BlockPos pos, BlockState oldState) {
         // Keep empty
     }
 
-    public void onOpen(PlayerEntity player) {
-        if (!this.removed && !player.isSpectator()) {
-            this.stateManager.openContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
+    @Override
+    public void startOpen(ContainerUser player) {
+        if (!this.remove) {
+            this.stateManager.incrementOpeners(player.getLivingEntity(), this.getLevel(), this.getBlockPos(), this.getBlockState(), player.getContainerInteractionRange());
         }
     }
 
-    public void onClose(PlayerEntity player) {
-        if (!this.removed && !player.isSpectator()) {
-            this.stateManager.closeContainer(player, this.getWorld(), this.getPos(), this.getCachedState());
+    @Override
+    public void stopOpen(ContainerUser player) {
+        if (!this.remove) {
+            this.stateManager.decrementOpeners(player.getLivingEntity(), this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
 
     public void tick() {
-        if (!this.removed) {
-            this.stateManager.updateViewerCount(this.getWorld(), this.getPos(), this.getCachedState());
+        if (!this.remove) {
+            this.stateManager.recheckOpeners(this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
     }
 
-    protected DefaultedList<ItemStack> getHeldStacks() {
+    @Override
+    public NonNullList<ItemStack> getItems() {
         return this.inventory;
     }
 
-    protected void setHeldStacks(DefaultedList<ItemStack> inventory) {
+    protected void setItems(NonNullList<ItemStack> inventory) {
         this.inventory = inventory;
     }
 
     @Nullable
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public void markDirty() {
-        super.markDirty();
-        if (world != null) {
-            world.updateListeners(pos, getCachedState(), getCachedState(), 3);
+    public void setChanged() {
+        super.setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
     }
 
-    public int[] getAvailableSlots(Direction side) {
+    public int[] getSlotsForFace(Direction side) {
         return AVAILABLE_SLOTS;
     }
 
-    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction dir) {
-        return !(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock);
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction dir) {
+        return !(Block.byItem(stack.getItem()) instanceof ShulkerBoxBlock);
     }
 
-    public boolean canExtract(int slot, ItemStack stack, Direction dir) {
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction dir) {
         return true;
     }
 
     void setOpen(BlockState state, boolean open) {
-        this.world.setBlockState(this.getPos(), (BlockState)state.with(BarrelBlock.OPEN, open), Block.NOTIFY_ALL);
+        this.level.setBlock(this.getBlockPos(), (BlockState)state.setValue(BarrelBlock.OPEN, open), Block.UPDATE_ALL);
     }
 }

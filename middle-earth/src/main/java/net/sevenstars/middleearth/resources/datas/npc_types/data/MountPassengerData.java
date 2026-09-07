@@ -2,14 +2,14 @@ package net.sevenstars.middleearth.resources.datas.npc_types.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.sevenstars.middleearth.entity.EntitiesME;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
 import net.sevenstars.middleearth.resources.datas.npc_types.NpcType;
@@ -52,12 +52,12 @@ public class MountPassengerData {
     }
 
     public MountPassengerData(EntityType<?> entityType){
-        this.entityType = Registries.ENTITY_TYPE.getId(entityType);
+        this.entityType = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
     }
 
-    public MountPassengerData(RegistryKey<NpcType> npcType){
-        this.entityType = Registries.ENTITY_TYPE.getId(EntitiesME.NPC);
-        this.npcType = npcType.getValue();
+    public MountPassengerData(ResourceKey<NpcType> npcType){
+        this.entityType = BuiltInRegistries.ENTITY_TYPE.getKey(EntitiesME.NPC);
+        this.npcType = npcType.identifier();
     }
 
     public Identifier getEntityType() {
@@ -102,23 +102,23 @@ public class MountPassengerData {
         return obtained <= discardChance;
     }
 
-    public LivingEntity createEntity(ServerWorld serverWorld, LivingEntity owner) {
-        EntityType<?> type = Registries.ENTITY_TYPE.get(this.entityType);
-        var notLiving = type.create(serverWorld, SpawnReason.NATURAL);
+    public LivingEntity createEntity(ServerLevel serverWorld, LivingEntity owner) {
+        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(this.entityType);
+        var notLiving = type.create(serverWorld, EntitySpawnReason.NATURAL);
         if(notLiving == null)
             return null;
         if(notLiving instanceof LivingEntity entity){
-            serverWorld.spawnEntity(entity);
-            entity.setPosition(owner.getPos());
+            serverWorld.addFreshEntity(entity);
+            entity.setPos(owner.position());
             if(entity instanceof NpcEntity npc){
                 npc.prepareNpcIdentifier(npcType);
                 npc.prepare();
             }
-            if (entity instanceof MobEntity mob) {
-                mob.initialize(
+            if (entity instanceof Mob mob) {
+                mob.finalizeSpawn(
                         serverWorld,
-                        serverWorld.getLocalDifficulty(owner.getBlockPos()),
-                        SpawnReason.EVENT,
+                        serverWorld.getCurrentDifficultyAt(owner.blockPosition()),
+                        EntitySpawnReason.EVENT,
                         null
                 );
             }

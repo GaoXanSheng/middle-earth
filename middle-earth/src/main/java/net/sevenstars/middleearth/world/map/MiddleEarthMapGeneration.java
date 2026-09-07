@@ -129,7 +129,6 @@ public class MiddleEarthMapGeneration {
             generateBaseEdgeImage(initialMap);
         }
 
-
         MiddleEarth.LOGGER.logInfoMsg("Validating HEIGHT generation availability;");
         if(!validateHeightDatas(initialMap)){
             MiddleEarth.LOGGER.logInfoMsg("Begin HEIGHT generation;");

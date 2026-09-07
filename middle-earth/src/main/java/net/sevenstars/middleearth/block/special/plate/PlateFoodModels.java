@@ -1,6 +1,6 @@
 package net.sevenstars.middleearth.block.special.plate;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class PlateFoodModels {
     }
 
     public static void addVanillaModel(String name) {
-        plateModels.put(Identifier.ofVanilla(name), Identifier.of(MiddleEarth.MOD_ID, "plate_" + name));
+        plateModels.put(Identifier.withDefaultNamespace(name), Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "plate_" + name));
     }
     public static void addModel(String name) {
         plateModels.put(MiddleEarth.of(name), MiddleEarth.of('_', "plate", name));

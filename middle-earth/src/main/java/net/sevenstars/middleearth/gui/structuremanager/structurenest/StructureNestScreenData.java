@@ -1,12 +1,11 @@
 package net.sevenstars.middleearth.gui.structuremanager.structurenest;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.Optional;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 
 public class StructureNestScreenData {
     private BlockPos pos;
@@ -15,7 +14,7 @@ public class StructureNestScreenData {
     private int spawnRadius;
     private boolean isEnabled;
 
-    public static final PacketCodec<? super RegistryByteBuf, StructureNestScreenData> PACKET_CODEC;
+    public static final StreamCodec<? super RegistryFriendlyByteBuf, StructureNestScreenData> PACKET_CODEC;
 
     public BlockPos getPos() {
         return this.pos;
@@ -46,7 +45,6 @@ public class StructureNestScreenData {
         this.structureNestId = structureNestId;
     }
 
-
     public StructureNestScreenData(BlockPos pos, Optional<Identifier> structureManagerId, Optional<Identifier> structureNestId, int spawnRadius, boolean isEnabled){
         this.pos = pos;
         structureManagerId.ifPresentOrElse(x -> setStructureManagerId(x), () -> setStructureManagerId(null));
@@ -56,12 +54,12 @@ public class StructureNestScreenData {
     }
 
     static {
-        PACKET_CODEC = PacketCodec.tuple(
-                BlockPos.PACKET_CODEC, StructureNestScreenData::getPos,
-                PacketCodecs.optional(Identifier.PACKET_CODEC), StructureNestScreenData::getStructureManagerIdOptional,
-                PacketCodecs.optional(Identifier.PACKET_CODEC), StructureNestScreenData::getStructureNestIdOptional,
-                PacketCodecs.INTEGER, StructureNestScreenData::getSpawnRadius,
-                PacketCodecs.BOOLEAN, StructureNestScreenData::getIsEnabled,
+        PACKET_CODEC = StreamCodec.composite(
+                BlockPos.STREAM_CODEC, StructureNestScreenData::getPos,
+                ByteBufCodecs.optional(Identifier.STREAM_CODEC), StructureNestScreenData::getStructureManagerIdOptional,
+                ByteBufCodecs.optional(Identifier.STREAM_CODEC), StructureNestScreenData::getStructureNestIdOptional,
+                ByteBufCodecs.INT, StructureNestScreenData::getSpawnRadius,
+                ByteBufCodecs.BOOL, StructureNestScreenData::getIsEnabled,
                 StructureNestScreenData::new
         );
     }

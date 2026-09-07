@@ -2,11 +2,11 @@ package net.sevenstars.middleearth.resources.datas.npc_types;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
 import net.sevenstars.api.dtos.WeightedPool;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
@@ -38,9 +38,9 @@ public class NpcType {
             Identifier.CODEC.fieldOf("race").forGetter(NpcType::getRace),
             Identifier.CODEC.fieldOf("faction").forGetter(NpcType::getFactionIdentifier),
             Identifier.CODEC.fieldOf("base_npc_texture").forGetter(NpcType::getNpcTextureDataValue),
-            NbtCompound.CODEC.fieldOf("gear").forGetter(NpcType::getGearDataValues),
-            NbtCompound.CODEC.fieldOf("npc_attributes").forGetter(NpcType::getNpcAttributePool),
-            NbtCompound.CODEC.fieldOf("combat_archetype").forGetter(NpcType::getCombatArchetypeData),
+            CompoundTag.CODEC.fieldOf("gear").forGetter(NpcType::getGearDataValues),
+            CompoundTag.CODEC.fieldOf("npc_attributes").forGetter(NpcType::getNpcAttributePool),
+            CompoundTag.CODEC.fieldOf("combat_archetype").forGetter(NpcType::getCombatArchetypeData),
             MountData.CODEC.optionalFieldOf("mount").forGetter(NpcType::getOptionalMountData),
             LootData.CODEC.optionalFieldOf("loot").forGetter(NpcType::getOptionalLootData)
     ).apply(instance, NpcType::new));
@@ -55,16 +55,16 @@ public class NpcType {
     private final MountData mountData;
     private final LootData lootData;
 
-    public NpcType(Identifier id, Identifier raceId, Identifier factionId, Identifier npcTextureKey, NbtCompound gearDatas, NbtCompound npcAttributes, NbtCompound combatArchetypeData, Optional<MountData> mount, Optional<LootData> lootData) {
+    public NpcType(Identifier id, Identifier raceId, Identifier factionId, Identifier npcTextureKey, CompoundTag gearDatas, CompoundTag npcAttributes, CompoundTag combatArchetypeData, Optional<MountData> mount, Optional<LootData> lootData) {
         this.id = id;
         this.raceId = raceId;
         this.factionId = factionId;
         this.npcTextureKey = npcTextureKey;
 
-        NbtList npcGears = gearDatas.getList("pool").get();
+        ListTag npcGears = gearDatas.getList("pool").get();
         List<WeightedGearData> weightedGearData = new ArrayList<>();
         for(int j = 0; j < npcGears.size(); j++) {
-            NbtCompound compound = npcGears.getCompound(j).get();
+            CompoundTag compound = npcGears.getCompound(j).get();
             weightedGearData.add(WeightedGearData.readNbt(compound));
         }
         this.gearDatas = new WeightedPool<>(weightedGearData);
@@ -80,15 +80,15 @@ public class NpcType {
         this.mountData = mount.orElse(null);
         this.lootData = lootData.orElse(null);
     }
-    public NpcType(Identifier id, RegistryKey<Race> race, RegistryKey<Faction> faction, RegistryKey<TexturePresetDataPool> npcTextureKey, List<WeightedGearData> weightedGearData, HashMap<EntityCategories, AttributePool> npcAttributePools, CombatArchetypeData combatArchetypeData, LootData lootData) {
+    public NpcType(Identifier id, ResourceKey<Race> race, ResourceKey<Faction> faction, ResourceKey<TexturePresetDataPool> npcTextureKey, List<WeightedGearData> weightedGearData, HashMap<EntityCategories, AttributePool> npcAttributePools, CombatArchetypeData combatArchetypeData, LootData lootData) {
         this(id, race, faction, npcTextureKey, weightedGearData, npcAttributePools, combatArchetypeData, null, lootData);
     }
 
-    public NpcType(Identifier id, RegistryKey<Race> race, RegistryKey<Faction> faction, RegistryKey<TexturePresetDataPool> npcTextureKey, List<WeightedGearData> weightedGearData, HashMap<EntityCategories, AttributePool> npcAttributePools, CombatArchetypeData combatArchetypeData, MountData mount, LootData lootData) {
+    public NpcType(Identifier id, ResourceKey<Race> race, ResourceKey<Faction> faction, ResourceKey<TexturePresetDataPool> npcTextureKey, List<WeightedGearData> weightedGearData, HashMap<EntityCategories, AttributePool> npcAttributePools, CombatArchetypeData combatArchetypeData, MountData mount, LootData lootData) {
         this.id = id;
-        this.raceId = race.getValue();
-        this.factionId = faction.getValue();
-        this.npcTextureKey = npcTextureKey.getValue();
+        this.raceId = race.identifier();
+        this.factionId = faction.identifier();
+        this.npcTextureKey = npcTextureKey.identifier();
         this.gearDatas = new WeightedPool<>(weightedGearData);
         this.npcAttributePools = npcAttributePools;
         this.combatArchetypeData = combatArchetypeData;
@@ -107,7 +107,7 @@ public class NpcType {
         return factionId;
     }
 
-    private NbtCompound getCombatArchetypeData() {
+    private CompoundTag getCombatArchetypeData() {
         return combatArchetypeData.getNbt();
     }
 
@@ -121,10 +121,9 @@ public class NpcType {
         return lootData;
     }
 
-
-    private NbtCompound getGearDataValues() {
-        NbtCompound nbt = new NbtCompound();
-        NbtList gears = new NbtList();
+    private CompoundTag getGearDataValues() {
+        CompoundTag nbt = new CompoundTag();
+        ListTag gears = new ListTag();
         for(WeightedGearData weightedGearData : this.gearDatas.elements){
             gears.add(weightedGearData.getNbt());
         }
@@ -133,7 +132,7 @@ public class NpcType {
     }
 
     public String getName(){
-        return id.toTranslationKey("npc_data");
+        return id.toLanguageKey("npc_data");
     }
 
     public WeightedGearData getGear() {
@@ -142,10 +141,10 @@ public class NpcType {
         return gearDatas.getRandom();
     }
 
-    private NbtCompound getNpcAttributePool() {
+    private CompoundTag getNpcAttributePool() {
         if(npcAttributePools == null)
             return null;
-        var nbt = new NbtCompound();
+        var nbt = new CompoundTag();
         for(var category : npcAttributePools.keySet()){
             nbt.put(category.name(), npcAttributePools.get(category).getNbt());
         }
@@ -155,14 +154,13 @@ public class NpcType {
     private Identifier getNpcTextureDataValue() {
         return npcTextureKey;
     }
-    public TexturePresetDataPool getNpcTextureData(World world) {
-        return world.getRegistryManager().getOrThrow(DynamicRegistriesME.TEXTURE_PRESETS).get(npcTextureKey);
+    public TexturePresetDataPool getNpcTextureData(Level world) {
+        return world.registryAccess().lookupOrThrow(DynamicRegistriesME.TEXTURE_PRESETS).getValue(npcTextureKey);
     }
-
 
     public void applyAttributes(NpcEntity npcEntity) {
         AttributePool.reverse(npcEntity);
-        Race race = RaceLookup.getRace(npcEntity.getWorld(), raceId);
+        Race race = RaceLookup.getRace(npcEntity.level(), raceId);
         if(race != null)
             race.applyNpcAttributes(npcEntity);
         EntityCategories category = npcEntity.getNpcCategory();
@@ -188,7 +186,7 @@ public class NpcType {
         };
     }
 
-    public boolean hasCategory(World world, EntityCategories category) {
+    public boolean hasCategory(Level world, EntityCategories category) {
        TexturePresetDataPool pool =  getNpcTextureData(world);
        return pool.hasCategory(category);
     }

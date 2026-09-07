@@ -1,13 +1,13 @@
 package net.sevenstars.of_beasts_and_wild_things.entity;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.sevenstars.of_beasts_and_wild_things.OfBeastsAndWildThings;
 import net.sevenstars.of_beasts_and_wild_things.datageneration.content.TranslationEntries;
 import net.sevenstars.of_beasts_and_wild_things.entity.deer.DeerEntity;
@@ -18,17 +18,17 @@ import net.sevenstars.of_beasts_and_wild_things.entity.swan.SwanEntity;
 
 public class EntitiesWT {
 
-    public static final EntityType<SnailEntity> SNAIL = register("snail", EntityType.Builder.create(SnailEntity::new, SpawnGroup.CREATURE).dimensions(0.3f, 0.3f));
-    public static final EntityType<PheasantEntity> PHEASANT = register("pheasant", EntityType.Builder.create(PheasantEntity::new, SpawnGroup.CREATURE).dimensions(0.6f, 0.6f));
-    public static final EntityType<SwanEntity> SWAN = register("swan", EntityType.Builder.create(SwanEntity::new, SpawnGroup.CREATURE).dimensions(0.8f, 0.8f));
-    public static final EntityType<DeerEntity> DEER = register("deer", EntityType.Builder.create(DeerEntity::new, SpawnGroup.CREATURE).dimensions(0.8f, 1.5f));
+    public static final EntityType<SnailEntity> SNAIL = register("snail", EntityType.Builder.of(SnailEntity::new, MobCategory.CREATURE).sized(0.3f, 0.3f));
+    public static final EntityType<PheasantEntity> PHEASANT = register("pheasant", EntityType.Builder.of(PheasantEntity::new, MobCategory.CREATURE).sized(0.6f, 0.6f));
+    public static final EntityType<SwanEntity> SWAN = register("swan", EntityType.Builder.of(SwanEntity::new, MobCategory.CREATURE).sized(0.8f, 0.8f));
+    public static final EntityType<DeerEntity> DEER = register("deer", EntityType.Builder.of(DeerEntity::new, MobCategory.CREATURE).sized(0.8f, 1.5f));
 
     // Projectiles
-    public static final EntityType<SwanEggEntity> SWAN_EGG = register("swan_egg", EntityType.Builder.<SwanEggEntity>create(SwanEggEntity::new, SpawnGroup.MISC).dropsNothing().dimensions(0.25F, 0.25F).maxTrackingRange(4).trackingTickInterval(10));
+    public static final EntityType<SwanEggEntity> SWAN_EGG = register("swan_egg", EntityType.Builder.<SwanEggEntity>of(SwanEggEntity::new, MobCategory.MISC).noLootTable().sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10));
 
 
-    private static <T extends Entity> EntityType<T> register(RegistryKey<EntityType<?>> key, EntityType.Builder<T> type) {
-        EntityType<T> entityType = Registry.register(Registries.ENTITY_TYPE, key, type.build(key));
+    private static <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> key, EntityType.Builder<T> type) {
+        EntityType<T> entityType = Registry.register(BuiltInRegistries.ENTITY_TYPE, key, type.build(key));
         TranslationEntries.entityEntries.add(entityType);
         return entityType;
     }
@@ -37,8 +37,8 @@ public class EntitiesWT {
         return register(keyOf(id), type);
     }
 
-    private static RegistryKey<EntityType<?>> keyOf(String id) {
-        return RegistryKey.of(RegistryKeys.ENTITY_TYPE, OfBeastsAndWildThings.of(id));
+    private static ResourceKey<EntityType<?>> keyOf(String id) {
+        return ResourceKey.create(Registries.ENTITY_TYPE, OfBeastsAndWildThings.of(id));
     }
 
     public static void registerModEntities() {

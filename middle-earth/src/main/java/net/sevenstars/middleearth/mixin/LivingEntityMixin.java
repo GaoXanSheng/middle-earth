@@ -3,24 +3,29 @@ package net.sevenstars.middleearth.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectCategory;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.passive.HorseEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.*;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityEquipment;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.sevenstars.middleearth.block.registration.ModDecorativeBlocks;
 import net.sevenstars.middleearth.enchantments.EnchantmentsME;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
@@ -45,30 +50,30 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow @Final protected EntityEquipment equipment;
 
-    @Shadow public abstract ItemStack getEquippedStack(EquipmentSlot slot);
+    @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot slot);
 
-    @Shadow public abstract ItemStack getStackInHand(Hand hand);
+    @Shadow public abstract ItemStack getItemInHand(InteractionHand hand);
 
-    @Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
+    @Shadow public abstract boolean hasEffect(Holder<MobEffect> effect);
 
-    @Shadow public abstract @NotNull ItemStack getWeaponStack();
+    @Shadow public abstract @NotNull ItemStack getWeaponItem();
 
     @Shadow
-    protected abstract float getMovementSpeed(float slipperiness);
+    protected abstract float getFrictionInfluencedSpeed(float slipperiness);
 
-    public LivingEntityMixin(EntityType<?> type, World world) {
+    public LivingEntityMixin(EntityType<?> type, Level world) {
         super(type, world);
     }
 
-    @Inject(method = "getAttackDistanceScalingFactor", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getVisibilityPercent", at = @At("RETURN"), cancellable = true)
     public void getAttackDistanceScalingFactor(Entity entity, CallbackInfoReturnable<Double> cir) {
         if (entity != null) {
-            ItemStack chestplate = this.getEquippedStack(EquipmentSlot.CHEST);
+            ItemStack chestplate = this.getItemBySlot(EquipmentSlot.CHEST);
             if(!chestplate.isEmpty()) {
-                RegistryEntry<Enchantment> enchantmentRegistryEntry = entity.getWorld().getRegistryManager()
-                        .getOrThrow(RegistryKeys.ENCHANTMENT).getOptional(EnchantmentsME.STEALTHY_TRAIL).orElseThrow();
-                boolean hasEnchant = chestplate.getEnchantments().getEnchantments().contains(enchantmentRegistryEntry);
-                int level = EnchantmentHelper.getLevel(enchantmentRegistryEntry, chestplate);
+                Holder<Enchantment> enchantmentRegistryEntry = entity.level().registryAccess()
+                        .lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentsME.STEALTHY_TRAIL).orElseThrow();
+                boolean hasEnchant = chestplate.getEnchantments().keySet().contains(enchantmentRegistryEntry);
+                int level = EnchantmentHelper.getItemEnchantmentLevel(enchantmentRegistryEntry, chestplate);
                 if(hasEnchant) {
                     double original = cir.getReturnValue();
                     double viewDistance = original + Math.max(-0.9f, -0.2f * level);
@@ -78,13 +83,13 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Inject(method = "getEquippedStack", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getItemBySlot", at = @At("HEAD"), cancellable = true)
     public void getEquippedStack(EquipmentSlot slot, CallbackInfoReturnable<ItemStack> cir) {
         if(stackTraceLock) return;
         stackTraceLock = true;
         boolean twoHanded = false;
-        ItemStack stackMainHand = this.getStackInHand(Hand.MAIN_HAND);
-        ItemStack stackOffHand = this.getStackInHand(Hand.OFF_HAND);
+        ItemStack stackMainHand = this.getItemInHand(InteractionHand.MAIN_HAND);
+        ItemStack stackOffHand = this.getItemInHand(InteractionHand.OFF_HAND);
 
         if(stackMainHand != null){
             if ((stackMainHand.getItem() instanceof ReachWeaponItem && (((ReachWeaponItem) stackMainHand.getItem()).type.twoHanded))
@@ -110,16 +115,16 @@ public abstract class LivingEntityMixin extends Entity {
         stackTraceLock = false;
     }
 
-    @ModifyVariable(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z",
+    @ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z",
             at = @At("HEAD"), index = 1, argsOnly = true)
-    public final StatusEffectInstance addStatusEffect(StatusEffectInstance effect) {
-        if(effect.getEffectType().value().getCategory().equals(StatusEffectCategory.HARMFUL)) {
+    public final MobEffectInstance addStatusEffect(MobEffectInstance effect) {
+        if(effect.getEffect().value().getCategory().equals(MobEffectCategory.HARMFUL)) {
             float ailmentLevel = 0;
-            World world = this.getWorld();
-            ailmentLevel += getAilmentProtectionLevel(this.getEquippedStack(EquipmentSlot.HEAD), world);
-            ailmentLevel += getAilmentProtectionLevel(this.getEquippedStack(EquipmentSlot.CHEST), world);
-            ailmentLevel += getAilmentProtectionLevel(this.getEquippedStack(EquipmentSlot.LEGS), world);
-            ailmentLevel += getAilmentProtectionLevel(this.getEquippedStack(EquipmentSlot.FEET), world);
+            Level world = this.level();
+            ailmentLevel += getAilmentProtectionLevel(this.getItemBySlot(EquipmentSlot.HEAD), world);
+            ailmentLevel += getAilmentProtectionLevel(this.getItemBySlot(EquipmentSlot.CHEST), world);
+            ailmentLevel += getAilmentProtectionLevel(this.getItemBySlot(EquipmentSlot.LEGS), world);
+            ailmentLevel += getAilmentProtectionLevel(this.getItemBySlot(EquipmentSlot.FEET), world);
             if(ailmentLevel > 0) {
                 float scale = 0.08f * ailmentLevel;
                 scale = 1 - Math.min(0.8f, scale);
@@ -129,40 +134,40 @@ public abstract class LivingEntityMixin extends Entity {
         return effect;
     }
 
-    @Inject(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z", at = @At("TAIL"))
-    public final void addStatusEffect(StatusEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
-        if(!this.getWorld().isClient) {
-            for (ServerPlayerEntity player : ((ServerWorld) this.getWorld()).getPlayers()) {
+    @Inject(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("TAIL"))
+    public final void addStatusEffect(MobEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
+        if(!this.level().isClientSide()) {
+            for (ServerPlayer player : ((ServerLevel) this.level()).players()) {
                 ServerPlayNetworking.send(player, new PacketLivingEntityData(this.getId(), effect));
             }
         }
     }
 
-    private static int getAilmentProtectionLevel(ItemStack itemStack, World world) {
+    private static int getAilmentProtectionLevel(ItemStack itemStack, Level world) {
         int level = 0;
-        RegistryEntry<Enchantment> enchantmentRegistryEntry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT)
-                .getOptional(EnchantmentsME.AILMENT_PROTECTION).orElseThrow();
-        boolean hasEnchant = itemStack.getEnchantments().getEnchantments().contains(enchantmentRegistryEntry);
+        Holder<Enchantment> enchantmentRegistryEntry = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                .get(EnchantmentsME.AILMENT_PROTECTION).orElseThrow();
+        boolean hasEnchant = itemStack.getEnchantments().keySet().contains(enchantmentRegistryEntry);
         if(hasEnchant) {
-            level = EnchantmentHelper.getLevel(enchantmentRegistryEntry, itemStack);
+            level = EnchantmentHelper.getItemEnchantmentLevel(enchantmentRegistryEntry, itemStack);
         }
         return level;
     }
 
-    @Inject(at = @At("HEAD"), method = "drop")
-    protected void drop(ServerWorld world, DamageSource damageSource, CallbackInfo callbackInfo) {
+    @Inject(at = @At("HEAD"), method = "dropAllDeathLoot")
+    protected void drop(ServerLevel world, DamageSource damageSource, CallbackInfo callbackInfo) {
         if(getControllingPassenger() != null && getControllingPassenger() instanceof NpcEntity){
             this.equipment.clear();
         }
     }
 
-    @Inject(method = "getMovementSpeed()F", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getSpeed()F", at = @At("RETURN"), cancellable = true)
     private void getMovementSpeed(CallbackInfoReturnable<Float> cir) {
         if(getControllingPassenger() != null && getControllingPassenger() instanceof NpcEntity npcEntity){
             float currentValue = cir.getReturnValue();
             float modifier = 1f;
             float fightingModifier = 1f;
-            if(getControllingPassenger().getVehicle() instanceof HorseEntity){
+            if(getControllingPassenger().getVehicle() instanceof Horse){
                 currentValue = 0.5f;
                 fightingModifier = 2f;
             }
@@ -172,10 +177,10 @@ public abstract class LivingEntityMixin extends Entity {
             cir.setReturnValue(Math.max(currentValue * modifier, 0.25f));
         }
     }
-    @WrapOperation(method = "applyClimbingSpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 0))
-    private boolean ScaffoldingDescendLogic(BlockState state, Block block, Operation<Boolean> original) {
+    @WrapOperation(method = "handleOnClimbable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z", ordinal = 0))
+    private boolean ScaffoldingDescendLogic(BlockState state, Object block, Operation<Boolean> original) {
         return original.call(state, block)
-                || block == Blocks.SCAFFOLDING && state.isOf(ModDecorativeBlocks.REINFORCED_SCAFFOLDING);
+                || block == Blocks.SCAFFOLDING && state.is(ModDecorativeBlocks.REINFORCED_SCAFFOLDING);
     }
 
     @Inject(method = "remove", at = @At("TAIL"))
@@ -183,6 +188,6 @@ public abstract class LivingEntityMixin extends Entity {
         if (!(((Entity)this) instanceof LivingEntity livingEntity)) {
             return;
         }
-        BiomeEventDataLookup.removeEntity(livingEntity.getType(), livingEntity.getUuid());
+        BiomeEventDataLookup.removeEntity(livingEntity.getType(), livingEntity.getUUID());
     }
 }

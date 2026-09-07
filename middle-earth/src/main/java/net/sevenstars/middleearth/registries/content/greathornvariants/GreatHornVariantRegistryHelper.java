@@ -1,13 +1,13 @@
 package net.sevenstars.middleearth.registries.content.greathornvariants;
 
-import net.minecraft.entity.spawn.BiomeSpawnCondition;
-import net.minecraft.entity.spawn.SpawnConditionSelectors;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.AssetInfo;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.ClientAsset;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.variant.BiomeCheck;
+import net.minecraft.world.entity.variant.SpawnPrioritySelectors;
+import net.minecraft.world.level.biome.Biome;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.beasts.great_horn.GreatHornVariant;
 
@@ -17,14 +17,14 @@ public class GreatHornVariantRegistryHelper {
 
     public static GreatHornVariant.GreatHornAssetInfo createAssetInfos(String textureName){
         return new GreatHornVariant.GreatHornAssetInfo(
-                new AssetInfo(MiddleEarth.of(TEXTURE_PATH + textureName + ENTITY_NAME)));
+                MiddleEarth.of(TEXTURE_PATH + textureName + ENTITY_NAME));
     }
 
-    public static SpawnConditionSelectors createSpawnConditions(Registerable<GreatHornVariant> registry, TagKey<Biome> biomeTag, int priority) {
-        return createSpawnConditions(registry.getRegistryLookup(RegistryKeys.BIOME).getOrThrow(biomeTag), priority);
+    public static SpawnPrioritySelectors createSpawnConditions(BootstrapContext<GreatHornVariant> registry, TagKey<Biome> biomeTag, int priority) {
+        return createSpawnConditions(registry.lookup(Registries.BIOME).getOrThrow(biomeTag), priority);
     }
 
-    public static SpawnConditionSelectors createSpawnConditions(RegistryEntryList<Biome> requiredBiomes, int priority) {
-        return SpawnConditionSelectors.createSingle(new BiomeSpawnCondition(requiredBiomes), priority);
+    public static SpawnPrioritySelectors createSpawnConditions(HolderSet<Biome> requiredBiomes, int priority) {
+        return SpawnPrioritySelectors.single(new BiomeCheck(requiredBiomes), priority);
     }
 }

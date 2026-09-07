@@ -1,9 +1,9 @@
 package net.sevenstars.middleearth.datageneration.content;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.registries.content.races.RacePools;
 import net.sevenstars.middleearth.resources.datas.structure_manager_datas.StructureManagerData;
@@ -485,8 +485,8 @@ public class TranslationEntries {
 
             put("spawn."+ MiddleEarth.MOD_ID +".none", "None");
 
-            put(MiddleEarth.of("attribute_header").toTranslationKey("race_tooltip"), "Attributes : ");
-            put(MiddleEarth.of("no_attribute_change").toTranslationKey("race_tooltip"), "Nothing changes!");
+            put(MiddleEarth.of("attribute_header").toLanguageKey("race_tooltip"), "Attributes : ");
+            put(MiddleEarth.of("no_attribute_change").toLanguageKey("race_tooltip"), "Nothing changes!");
 
             put("tooltip."+ MiddleEarth.MOD_ID +".arkenstone_lore_0", "The fairest of gems found beneath");
             put("tooltip."+ MiddleEarth.MOD_ID +".arkenstone_lore_1", "the lonely mountain.");
@@ -568,7 +568,6 @@ public class TranslationEntries {
             put("command."+ MiddleEarth.MOD_ID +".open_target.onboarding.success", "Successfully opened the onboarding screen for %s.");
             put("command."+ MiddleEarth.MOD_ID +".open_target.onboarding.error", "Impossible to open the onboarding screen for %s, their faction is already chosen.");
             put("command."+ MiddleEarth.MOD_ID +".open.onboarding.error", "Impossible to open the onboarding screen, you already have your chosen faction.");
-
 
             put("command."+ MiddleEarth.MOD_ID +".get.faction.success", "Your initial faction is %s");
             put("command."+ MiddleEarth.MOD_ID +".get.faction.no_faction", "You have no initial faction");

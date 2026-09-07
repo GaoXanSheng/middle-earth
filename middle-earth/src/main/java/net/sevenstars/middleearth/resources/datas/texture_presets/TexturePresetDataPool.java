@@ -2,9 +2,9 @@ package net.sevenstars.middleearth.resources.datas.texture_presets;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.api.dtos.WeightedPool;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.resources.datas.common.CharacterMaterialTypes;
@@ -16,19 +16,19 @@ import java.util.Random;
 
 public class TexturePresetDataPool {
     public static final Codec<TexturePresetDataPool> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        NbtCompound.CODEC.fieldOf("categories").forGetter(TexturePresetDataPool::getNbt)
+        CompoundTag.CODEC.fieldOf("categories").forGetter(TexturePresetDataPool::getNbt)
     ).apply(instance, TexturePresetDataPool::new));
 
     HashMap<EntityCategories, WeightedPool<WeightedTexturePresetHolder>> presetsByCategory;
 
-    public TexturePresetDataPool(NbtCompound categories) {
+    public TexturePresetDataPool(CompoundTag categories) {
         if(categories == null) return;
         presetsByCategory = new HashMap<>();
 
         for(EntityCategories category : EntityCategories.values()){
             var optList = categories.getList(category.name());
             if(optList.isEmpty()) continue;;
-            NbtList nbtListPresets = optList.get();
+            ListTag nbtListPresets = optList.get();
             WeightedPool<WeightedTexturePresetHolder> dataPresetList = new WeightedPool<>();
             for(int i = 0; i < nbtListPresets.size(); i++){
                 WeightedTexturePresetHolder fetchedPreset = new WeightedTexturePresetHolder(nbtListPresets.getCompound(i).get());
@@ -56,13 +56,12 @@ public class TexturePresetDataPool {
         return textureIdentity.preset.getClothingData();
     }
 
-
-    public NbtCompound getNbt() {
-        NbtCompound newNbt = new NbtCompound();
+    public CompoundTag getNbt() {
+        CompoundTag newNbt = new CompoundTag();
         for(EntityCategories category : presetsByCategory.keySet()){
             WeightedPool<WeightedTexturePresetHolder> presets = presetsByCategory.get(category);
             if(presets != null && !presets.isEmpty()){
-                NbtList newNbtList = new NbtList();
+                ListTag newNbtList = new ListTag();
                 for (WeightedTexturePresetHolder preset : presets.elements) {
                     newNbtList.add(preset.getNbt());
                 }

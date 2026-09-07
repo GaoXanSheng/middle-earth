@@ -2,12 +2,12 @@ package net.sevenstars.middleearth.resources.datas.texture_presets;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.entry.RegistryElementCodec;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Holder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
 import net.sevenstars.middleearth.resources.datas.common.CharacterPatternTypes;
 
@@ -21,9 +21,9 @@ public class CharacterTexturePattern {
             Codec.BOOL.optionalFieldOf("has_addon").forGetter(CharacterTexturePattern::hasAddonOptional))
             .apply(instance, CharacterTexturePattern::new));
 
-    public static final PacketCodec<RegistryByteBuf, CharacterTexturePattern> PACKET_CODEC;
-    public static final Codec<RegistryEntry<CharacterTexturePattern>> ENTRY_CODEC;
-    public static final PacketCodec<RegistryByteBuf, RegistryEntry<CharacterTexturePattern>> ENTRY_PACKET_CODEC;
+    public static final StreamCodec<RegistryFriendlyByteBuf, CharacterTexturePattern> PACKET_CODEC;
+    public static final Codec<Holder<CharacterTexturePattern>> ENTRY_CODEC;
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<CharacterTexturePattern>> ENTRY_PACKET_CODEC;
 
     private final Identifier assetId;
     private final CharacterPatternTypes patternType;
@@ -70,17 +70,16 @@ public class CharacterTexturePattern {
         return hasAddon;
     }
 
-
     static {
-        PACKET_CODEC = PacketCodec.tuple(
-                Identifier.PACKET_CODEC,
+        PACKET_CODEC = StreamCodec.composite(
+                Identifier.STREAM_CODEC,
                 CharacterTexturePattern::getIdentifier,
-                PacketCodecs.STRING,
+                ByteBufCodecs.STRING_UTF8,
                 CharacterTexturePattern::getCategoryString,
-                PacketCodecs.BOOLEAN,
+                ByteBufCodecs.BOOL,
                 CharacterTexturePattern::hasAddonRawValue,
                 CharacterTexturePattern::new);
-        ENTRY_CODEC = RegistryElementCodec.of(DynamicRegistriesME.SKIN_PATTERN, CODEC);
-        ENTRY_PACKET_CODEC = PacketCodecs.registryEntry(DynamicRegistriesME.SKIN_PATTERN, PACKET_CODEC);
+        ENTRY_CODEC = RegistryFileCodec.create(DynamicRegistriesME.SKIN_PATTERN, CODEC);
+        ENTRY_PACKET_CODEC = ByteBufCodecs.holder(DynamicRegistriesME.SKIN_PATTERN, PACKET_CODEC);
     }
 }

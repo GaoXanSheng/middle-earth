@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version "${loom_version}" apply false
+	id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
 	id 'maven-publish'
 	id 'java'
 	id 'base'
@@ -9,42 +9,42 @@ version = project.mod_version
 group = project.maven_group
 
 java {
-	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 21
+		it.options.release = 25
 	}
 }
 
 /* configurations for each projects */
 project(":sevenstars-api") {
 	java {
-		sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+		sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 	}
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 21
+		it.options.release = 25
 	}
 }
 
 project(":middle-earth") {
 	java {
-		sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+		sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 	}
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 21
+		it.options.release = 25
 	}
 }
 
 project(":of-beasts-and-wild-things") {
 	java {
-		sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+		sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 	}
 	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 21
+		it.options.release = 25
 	}
 }
 
 subprojects() {
-	apply plugin: 'fabric-loom'
+	apply plugin: 'net.fabricmc.fabric-loom'
 
 	version = project.mod_version
 	group = project.maven_group
@@ -54,25 +54,27 @@ subprojects() {
 	}
 
 	dependencies {
+		// Minecraft 26.1+ ships unobfuscated; no mappings are needed or allowed
 		minecraft "com.mojang:minecraft:${project.minecraft_version}"
-		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+		implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+		implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	}
 
 	processResources {
-		inputs.property "version", project.version
+		def version = project.version
+		inputs.property "version", version
 
 		filesMatching("fabric.mod.json") {
-			expand "version": project.version
+			expand "version": version
 		}
 	}
 
 	sourceSets.main.resources.srcDirs += 'src/main/generated'
 
 	jar {
+		def baseName = project.archives_base_name
 		from("LICENSE") {
-			rename { "${it}_${project.archives_base_name}"}
+			rename { "${it}_${baseName}"}
 		}
 	}
 }

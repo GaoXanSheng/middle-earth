@@ -1,7 +1,7 @@
 package net.sevenstars.of_beasts_and_wild_things;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.api.utils.IdentifierUtil;
 import net.sevenstars.api.utils.ModLogger;
 import net.sevenstars.of_beasts_and_wild_things.block.BlocksWT;

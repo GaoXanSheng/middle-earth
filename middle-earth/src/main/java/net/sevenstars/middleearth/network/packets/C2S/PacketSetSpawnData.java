@@ -1,26 +1,26 @@
 package net.sevenstars.middleearth.network.packets.C2S;
 
-import net.minecraft.world.dimension.DimensionTypes;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.network.contexts.ServerPacketContext;
 import net.sevenstars.middleearth.network.packets.ClientToServerPacket;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.sevenstars.middleearth.resources.persistent_datas.PlayerDataService;
 
 public class PacketSetSpawnData extends ClientToServerPacket<PacketSetSpawnData>
 {
-    public static final Id<PacketSetSpawnData> ID = new Id<>(Identifier.of(MiddleEarth.MOD_ID, "packet_spawn_data"));
+    public static final Type<PacketSetSpawnData> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "packet_spawn_data"));
 
-    public static final PacketCodec<RegistryByteBuf, PacketSetSpawnData> CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, p -> p.overworldX,
-            PacketCodecs.INTEGER, p -> p.overworldY,
-            PacketCodecs.INTEGER, p -> p.overworldZ,
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketSetSpawnData> CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, p -> p.overworldX,
+            ByteBufCodecs.INT, p -> p.overworldY,
+            ByteBufCodecs.INT, p -> p.overworldZ,
             PacketSetSpawnData::new
     );
 
@@ -34,26 +34,25 @@ public class PacketSetSpawnData extends ClientToServerPacket<PacketSetSpawnData>
     }
 
     @Override
-    public Id<PacketSetSpawnData> getId() {
+    public Type<PacketSetSpawnData> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, PacketSetSpawnData> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, PacketSetSpawnData> streamCodec() {
         return CODEC;
     }
 
     @Override
     public void process(ServerPacketContext context) {
         try{
-            context.player().getServer().execute(() -> {
+            context.player().level().getServer().execute(() -> {
 
-                MinecraftServer server = context.player().getServer();
-                ServerPlayerEntity player = server.getPlayerManager().getPlayer(context.player().getUuid());
-
+                MinecraftServer server = context.player().level().getServer();
+                ServerPlayer player = server.getPlayerList().getPlayer(context.player().getUUID());
 
                 BlockPos overworldSpawnBlockpos = new BlockPos(overworldX, overworldY, overworldZ);
-                PlayerDataService.setOrigin(player, player.getWorld(), DimensionTypes.OVERWORLD_ID, overworldSpawnBlockpos);
+                PlayerDataService.setOrigin(player, player.level(), BuiltinDimensionTypes.OVERWORLD.identifier(), overworldSpawnBlockpos);
             });
         } catch (Exception e){
             MiddleEarth.LOGGER.logError("SpawnDataPacket::Apply - Tried applying the spawn data packet",e);

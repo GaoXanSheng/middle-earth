@@ -1,6 +1,6 @@
 package net.sevenstars.middleearth.registries;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 
 public class CharacterClothesRegistryME {

@@ -1,43 +1,35 @@
 package net.sevenstars.middleearth.entity.beasts.great_horn.features;
 
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.equipment.EquipmentRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.great_horn.GreatHornEntityRenderState;
 import net.sevenstars.middleearth.entity.beasts.great_horn.GreatHornModel;
 
-public class GreatHornSaddleFeatureRenderer extends FeatureRenderer<GreatHornEntityRenderState, GreatHornModel> {
+public class GreatHornSaddleFeatureRenderer extends RenderLayer<GreatHornEntityRenderState, GreatHornModel> {
     private final GreatHornSaddleModel model;
-    private final static String PATH = "textures/entities/great_horn/feature/great_horn_saddle";
+    private static final String PATH = "textures/entities/great_horn/feature/great_horn_saddle";
 
-    public GreatHornSaddleFeatureRenderer(FeatureRendererContext<GreatHornEntityRenderState, GreatHornModel> context, LoadedEntityModels loader, EquipmentRenderer equipmentRenderer) {
+    public GreatHornSaddleFeatureRenderer(RenderLayerParent<GreatHornEntityRenderState, GreatHornModel> context, EntityModelSet loader, EquipmentLayerRenderer equipmentRenderer) {
         super(context);
-        this.model = new GreatHornSaddleModel(loader.getModelPart(EntityModelLayersME.GREAT_HORN_SADDLE));
+        this.model = new GreatHornSaddleModel(loader.bakeLayer(EntityModelLayersME.GREAT_HORN_SADDLE));
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, GreatHornEntityRenderState state, float limbAngle, float limbDistance) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, GreatHornEntityRenderState state, float limbAngle, float limbDistance) {
         ItemStack itemStack = state.saddle;
-        boolean blueSaddle = state.blueSaddle;
-        String suffix = "";
-        if(blueSaddle) suffix = "_blue";
         if(!itemStack.isEmpty()) {
-            VertexConsumer vertexConsumer = ItemRenderer.getArmorGlintConsumer(vertexConsumers,
-                    RenderLayer.getArmorCutoutNoCull(Identifier.of(MiddleEarth.MOD_ID, PATH + suffix + ".png")), itemStack.hasGlint());
-
-            model.setAngles(state);
-            model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+            Identifier texture = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, PATH + (state.blueSaddle ? "_blue.png" : ".png"));
+            model.setupAnim(state);
+            // TODO 26.2: was armorCutoutNoCull + glint vertex pipeline; now generic cutout overlay
+            RenderLayer.renderColoredCutoutModel(model, texture, poseStack, submitNodeCollector, light, state, -1, 0);
         }
     }
 }

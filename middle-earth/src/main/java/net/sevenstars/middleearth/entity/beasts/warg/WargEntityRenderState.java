@@ -2,8 +2,8 @@ package net.sevenstars.middleearth.entity.beasts.warg;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.entity.AnimationState;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.item.ItemStack;
 import net.sevenstars.middleearth.entity.beasts.BeastEntityRenderState;
 
 @Environment(EnvType.CLIENT)

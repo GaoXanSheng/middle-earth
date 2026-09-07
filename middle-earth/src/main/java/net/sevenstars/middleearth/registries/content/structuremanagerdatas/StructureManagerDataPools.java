@@ -1,7 +1,8 @@
 package net.sevenstars.middleearth.registries.content.structuremanagerdatas;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntitiesME;
 import net.sevenstars.middleearth.registries.content.factions.FactionRegistry;
@@ -37,7 +38,7 @@ public class StructureManagerDataPools {
     }
     
     static {
-        BRIGAND_DUNGEON_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "brigand_dungeon_pool"), List.of(
+        BRIGAND_DUNGEON_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "brigand_dungeon_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("brigand_dungeon_nests.cook"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.BRIGAND, NpcRegistry.BRIGAND_THUG).SetFixAmount(1)
                 )),
@@ -58,7 +59,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        DALE_VILLAGE_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "dale_village_pool"), List.of(
+        DALE_VILLAGE_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "dale_village_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("dale_village_nests.civilian"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 3).SetNpcData(FactionRegistry.DALE, NpcRegistry.DALE_PEASANT).SetFixAmount(1),
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.DALE, NpcRegistry.DALE_MILITIA).SetFixAmount(1)
@@ -74,7 +75,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        DALE_KEEP_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "dale_keep_pool"), List.of(
+        DALE_KEEP_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "dale_keep_pool"), List.of(
             new SpawnNestNodeData(createIdentifier("dale_keep_nests.captain"), RESPAWN_TICKS, List.of(
                 new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.DALE, NpcRegistry.DALE_VETERAN).SetFixAmount(1),
                 new StructureSpawnNestPool(EntitiesME.NPC, 2).SetNpcData(FactionRegistry.DALE, NpcRegistry.DALE_SERGEANT).SetFixAmount(1)
@@ -83,8 +84,8 @@ public class StructureManagerDataPools {
                 new StructureSpawnNestPool(EntitiesME.NPC, 2).SetNpcData(FactionRegistry.DALE, NpcRegistry.DALE_PEASANT).SetFixAmount(1)
             )),
             new SpawnNestNodeData(createIdentifier("dale_keep_nests.stable"), RESPAWN_TICKS, List.of(
-                new StructureSpawnNestPool(EntityType.HORSE, 4).SetFixAmount(1),
-                new StructureSpawnNestPool(EntityType.DONKEY, 1).SetFixAmount(1)
+                new StructureSpawnNestPool(EntityTypes.HORSE, 4).SetFixAmount(1),
+                new StructureSpawnNestPool(EntityTypes.DONKEY, 1).SetFixAmount(1)
             )),
             new SpawnNestNodeData(createIdentifier("dale_keep_nests.small_prisoner_cell"), RESPAWN_TICKS, List.of(
                 new StructureSpawnNestPool(EntitiesME.NPC, 5).SetNpcData(FactionRegistry.DALE, NpcRegistry.BRIGAND_THIEF).SetFixAmount(1),
@@ -108,7 +109,7 @@ public class StructureManagerDataPools {
             ))
         ));
 
-        EREBOR_GENERIC_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "erebor_generic_pool"), List.of(
+        EREBOR_GENERIC_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "erebor_generic_pool"), List.of(
             new SpawnNestNodeData(createIdentifier("erebor_generic_nests.captain"), RESPAWN_TICKS, List.of(
                     new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.LONGBEARDS_EREBOR, NpcRegistry.EREBOR_LEADER).SetFixAmount(1)
             )),
@@ -137,12 +138,12 @@ public class StructureManagerDataPools {
             )),
             new SpawnNestNodeData(createIdentifier("erebor_generic_nests.stable"), RESPAWN_TICKS, List.of(
                     new StructureSpawnNestPool(EntitiesME.BROADHOOF_GOAT, 5).SetFixAmount(1),
-                    new StructureSpawnNestPool(EntityType.PIG, 2).SetFixAmount(1),
-                    new StructureSpawnNestPool(EntityType.DONKEY, 2).SetFixAmount(1)
+                    new StructureSpawnNestPool(EntityTypes.PIG, 2).SetFixAmount(1),
+                    new StructureSpawnNestPool(EntityTypes.DONKEY, 2).SetFixAmount(1)
             ))
         ));
 
-        GONDOR_VILLAGE_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "gondor_village_pool"), List.of(
+        GONDOR_VILLAGE_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "gondor_village_pool"), List.of(
             new SpawnNestNodeData(createIdentifier("gondor_village_nests.peasant"), RESPAWN_TICKS, List.of(
                 new StructureSpawnNestPool(EntitiesME.NPC, 2).SetNpcData(FactionRegistry.GONDOR, NpcRegistry.GONDOR_PEASANT).SetFixAmount(1)
             )),
@@ -156,14 +157,14 @@ public class StructureManagerDataPools {
                 new StructureSpawnNestPool(EntitiesME.NPC, 2).SetNpcData(FactionRegistry.GONDOR, NpcRegistry.GONDOR_PEASANT).SetFixAmount(1)
             )),
             new SpawnNestNodeData(createIdentifier("gondor_village_nests.barn"), RESPAWN_TICKS, List.of(
-                new StructureSpawnNestPool(EntityType.COW, 1).SetRangeAmount(2,3),
-                new StructureSpawnNestPool(EntityType.CHICKEN, 2).SetRangeAmount(2,3),
-                new StructureSpawnNestPool(EntityType.SHEEP, 2).SetRangeAmount(2,3),
-                new StructureSpawnNestPool(EntityType.PIG, 3).SetRangeAmount(2,3)
+                new StructureSpawnNestPool(EntityTypes.COW, 1).SetRangeAmount(2,3),
+                new StructureSpawnNestPool(EntityTypes.CHICKEN, 2).SetRangeAmount(2,3),
+                new StructureSpawnNestPool(EntityTypes.SHEEP, 2).SetRangeAmount(2,3),
+                new StructureSpawnNestPool(EntityTypes.PIG, 3).SetRangeAmount(2,3)
             ))
         ));
         
-        GONDOR_LORD_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "gondor_lord_pool"), List.of(
+        GONDOR_LORD_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "gondor_lord_pool"), List.of(
             new SpawnNestNodeData(createIdentifier("gondor_lord_nests.lord"), RESPAWN_TICKS, List.of(
                 new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.GONDOR, NpcRegistry.GONDOR_LEADER).SetFixAmount(1)
             )),
@@ -184,13 +185,13 @@ public class StructureManagerDataPools {
                 new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.BRIGAND, NpcRegistry.BRIGAND_THUG).SetFixAmount(1)
             )),
             new SpawnNestNodeData(createIdentifier("gondor_lord_nests.stable"), RESPAWN_TICKS, List.of(
-                new StructureSpawnNestPool(EntityType.HORSE, 5).SetFixAmount(1),
-                new StructureSpawnNestPool(EntityType.DONKEY, 2).SetFixAmount(1),
-                new StructureSpawnNestPool(EntityType.PIG, 1).SetFixAmount(1)
+                new StructureSpawnNestPool(EntityTypes.HORSE, 5).SetFixAmount(1),
+                new StructureSpawnNestPool(EntityTypes.DONKEY, 2).SetFixAmount(1),
+                new StructureSpawnNestPool(EntityTypes.PIG, 1).SetFixAmount(1)
             ))
         ));
 
-        GUNDABAD_CAMP_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "gundabad_camp_pool"), List.of(
+        GUNDABAD_CAMP_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "gundabad_camp_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("gundabad_camp_nests.orc"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.HOBGOBLIN_TRIBES_GUNDABAD, NpcRegistry.GUNDABAD_GOBLIN).SetRangeAmount(1,3),
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.HOBGOBLIN_TRIBES_GUNDABAD, NpcRegistry.GUNDABAD_MILITIA).SetRangeAmount(1,2)
@@ -210,7 +211,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        ISENGARD_CAMP_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "isengard_camp_pool"), List.of(
+        ISENGARD_CAMP_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "isengard_camp_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("isengard_camp_nests.orc"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.ISENGARD, NpcRegistry.ISENGARD_ORC_SNAGA).SetRangeAmount(1,3),
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.ISENGARD, NpcRegistry.ISENGARD_ORC_WARRIOR).SetRangeAmount(1,2)
@@ -235,7 +236,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        LOTHLORIEN_HAMLET_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "lothlorien_hamlet_pool"), List.of(
+        LOTHLORIEN_HAMLET_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "lothlorien_hamlet_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("lothlorien_hamlet_nests.civilian"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.LOTHLORIEN, NpcRegistry.LOTHLORIEN_RANGER).SetFixAmount(1),
                         new StructureSpawnNestPool(EntitiesME.NPC, 2).SetNpcData(FactionRegistry.LOTHLORIEN, NpcRegistry.LOTHLORIEN_SENTINEL).SetFixAmount(1)
@@ -248,7 +249,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        MORDOR_CAMP_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "mordor_camp_pool"), List.of(
+        MORDOR_CAMP_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "mordor_camp_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("mordor_camp_nests.orc"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.MORDOR, NpcRegistry.MORDOR_SNAGA).SetRangeAmount(1,2),
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.MORDOR, NpcRegistry.MORDOR_SCOUT).SetRangeAmount(1,2),
@@ -268,7 +269,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        MORIA_HALL_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "moria_hall_pool"), List.of(
+        MORIA_HALL_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "moria_hall_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("moria_hall_nests.orc"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.HOBGOBLIN_TRIBES_GUNDABAD, NpcRegistry.GUNDABAD_GOBLIN).SetRangeAmount(1,3),
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.HOBGOBLIN_TRIBES_GUNDABAD, NpcRegistry.GUNDABAD_MILITIA).SetRangeAmount(1,2)
@@ -288,7 +289,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        ROHAN_VILLAGE_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "rohan_village_pool"), List.of(
+        ROHAN_VILLAGE_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "rohan_village_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("rohan_village_nests.civilian"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 3).SetNpcData(FactionRegistry.ROHAN, NpcRegistry.ROHAN_PEASANT).SetFixAmount(1),
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.ROHAN, NpcRegistry.ROHAN_MILITIA).SetFixAmount(1)
@@ -300,21 +301,21 @@ public class StructureManagerDataPools {
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.ROHAN, NpcRegistry.ROHAN_PEASANT).SetFixAmount(1)
                 )),
                 new SpawnNestNodeData(createIdentifier("rohan_village_nests.bees"), RESPAWN_TICKS, List.of(
-                        new StructureSpawnNestPool(EntityType.BEE, 1).SetRangeAmount(2,3)
+                        new StructureSpawnNestPool(EntityTypes.BEE, 1).SetRangeAmount(2,3)
                 )),
                 new SpawnNestNodeData(createIdentifier("rohan_village_nests.stables_master"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.ROHAN, NpcRegistry.ROHAN_PEASANT).SetFixAmount(1)
                 )),
                 new SpawnNestNodeData(createIdentifier("rohan_village_nests.stable"), RESPAWN_TICKS, List.of(
-                        new StructureSpawnNestPool(EntityType.HORSE, 6).SetFixAmount(1),
-                        new StructureSpawnNestPool(EntityType.DONKEY, 1).SetFixAmount(1)
+                        new StructureSpawnNestPool(EntityTypes.HORSE, 6).SetFixAmount(1),
+                        new StructureSpawnNestPool(EntityTypes.DONKEY, 1).SetFixAmount(1)
                 )),
                 new SpawnNestNodeData(createIdentifier("rohan_village_nests.smith"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.ROHAN, NpcRegistry.ROHAN_PEASANT).SetFixAmount(1)
                 ))
         ));
 
-        ROHAN_MILITARY_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "rohan_military_pool"), List.of(
+        ROHAN_MILITARY_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "rohan_military_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("rohan_military_nests.soldier"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 3).SetNpcData(FactionRegistry.ROHAN, NpcRegistry.ROHAN_SOLDIER).SetRangeAmount(2,3),
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.ROHAN, NpcRegistry.ROHAN_KNIGHT).SetFixAmount(1)
@@ -327,7 +328,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        SHIRE_VILLAGE_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "shire_village_pool"), List.of(
+        SHIRE_VILLAGE_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "shire_village_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("shire_village_nests.poor_civilian"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.SHIRE, NpcRegistry.SHIRE_PEASANT).SetFixAmount(1)
                 )),
@@ -344,7 +345,7 @@ public class StructureManagerDataPools {
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.SHIRE, NpcRegistry.SHIRE_PEASANT).SetFixAmount(1)
                 )),
                 new SpawnNestNodeData(createIdentifier("shire_village_nests.bees"), RESPAWN_TICKS, List.of(
-                        new StructureSpawnNestPool(EntityType.BEE, 1).SetRangeAmount(2,3)
+                        new StructureSpawnNestPool(EntityTypes.BEE, 1).SetRangeAmount(2,3)
                 )),
                 new SpawnNestNodeData(createIdentifier("shire_village_nests.innkeeper"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.SHIRE, NpcRegistry.SHIRE_PEASANT).SetFixAmount(1)
@@ -358,7 +359,7 @@ public class StructureManagerDataPools {
                 ))
         ));
 
-        WOODLAND_REALM_HAMLET_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "woodland_realm_hamlet_pool"), List.of(
+        WOODLAND_REALM_HAMLET_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "woodland_realm_hamlet_pool"), List.of(
             new SpawnNestNodeData(createIdentifier("woodland_realm_hamlet_nests.civilian"), RESPAWN_TICKS, List.of(
                 new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.WOODLAND_REALM, NpcRegistry.WOODLAND_REALM_RANGER).SetFixAmount(1),
                 new StructureSpawnNestPool(EntitiesME.NPC, 2).SetNpcData(FactionRegistry.WOODLAND_REALM, NpcRegistry.WOODLAND_REALM_ARTISAN).SetFixAmount(1)
@@ -368,7 +369,7 @@ public class StructureManagerDataPools {
             ))
         ));
 
-        WOODLAND_REALM_HALL_NESTS = new StructureManagerData(Identifier.of(MiddleEarth.MOD_ID, "woodland_realm_hall_pool"), List.of(
+        WOODLAND_REALM_HALL_NESTS = new StructureManagerData(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "woodland_realm_hall_pool"), List.of(
                 new SpawnNestNodeData(createIdentifier("woodland_realm_hall_nests.lord"), RESPAWN_TICKS, List.of(
                         new StructureSpawnNestPool(EntitiesME.NPC, 1).SetNpcData(FactionRegistry.WOODLAND_REALM, NpcRegistry.WOODLAND_REALM_COMMANDER).SetFixAmount(1)
                 )),

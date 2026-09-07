@@ -1,6 +1,6 @@
 package net.sevenstars.middleearth.resources.datas.combatarchetypes;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.sevenstars.middleearth.resources.datas.combatarchetypes.data.CombatArchetype;
 
 public class MeleeCombatArchetypeData extends CombatArchetypeData {
@@ -11,9 +11,9 @@ public class MeleeCombatArchetypeData extends CombatArchetypeData {
         this.critialChance = critialChance;
     }
 
-    public MeleeCombatArchetypeData(NbtCompound data) {
+    public MeleeCombatArchetypeData(CompoundTag data) {
         super(data);
-        critialChance = data.getFloat("critical_chance", 0.2f);
+        critialChance = data.getFloatOr("critical_chance", 0.2f);
     }
 
     @Override
@@ -22,8 +22,8 @@ public class MeleeCombatArchetypeData extends CombatArchetypeData {
     };
 
     @Override
-    protected NbtCompound getDataNbt() {
-        NbtCompound nbt = super.getDataNbt();
+    protected CompoundTag getDataNbt() {
+        CompoundTag nbt = super.getDataNbt();
         nbt.putFloat("critical_chance", this.critialChance);
 
         return nbt;

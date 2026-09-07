@@ -4,17 +4,21 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
-import net.minecraft.recipe.*;
-import net.minecraft.recipe.book.RecipeBookCategory;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.block.registration.ModDecorativeBlocks;
 import net.sevenstars.middleearth.block.special.forge.MultipleStackRecipeInput;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
-
 import java.util.List;
 
 public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
@@ -45,10 +49,10 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
     }
 
     @Override
-    public boolean matches(MultipleStackRecipeInput input, World world) {
+    public boolean matches(MultipleStackRecipeInput input, Level world) {
         int i = 0;
         for (int j = 0; j < input.size(); j++) {
-            ItemStack itemStack = input.getStackInSlot(j);
+            ItemStack itemStack = input.getItem(j);
             if (itemStack.isEmpty()) continue;
             i++;
         }
@@ -57,22 +61,20 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
 
         for (int j = 0; j < inputs.size(); j++) {
             Ingredient ingredient = this.inputs.get(j);
-            if (!ingredient.test(input.getStackInSlot(j))) {
+            if (!ingredient.test(input.getItem(j))) {
                 return false;
             }
-
-            /*if (ingredient.getMatchingStacks().length == 1){
-                for (ItemStack itemStack2 : ingredient.getMatchingStacks()) {
-                    if (!Objects.equals(itemStack2.get(DataComponentTypes.TRIM), input.getStackInSlot(j).get(DataComponentTypes.TRIM))) return false;
-                }
-            }*/
         }
 
         return true;
     }
 
     @Override
-    public ItemStack craft(MultipleStackRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack assemble(MultipleStackRecipeInput input) {
+        return this.output.copy();
+    }
+
+    public ItemStack craft(MultipleStackRecipeInput input, HolderLookup.Provider lookup) {
         return this.output.copy();
     }
 
@@ -84,14 +86,24 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
         return xp;
     }
 
-    public DefaultedList<Ingredient> getIngredients() {
-        DefaultedList<Ingredient> defaultedList = DefaultedList.of();
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> defaultedList = NonNullList.create();
         defaultedList.addAll(this.inputs);
         return defaultedList;
     }
 
     public String getDisposition() {
         return disposition;
+    }
+
+    @Override
+    public String group() {
+        return "";
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
     }
 
     @Override
@@ -105,13 +117,13 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
     }
 
     @Override
-    public IngredientPlacement getIngredientPlacement() {
-        return null;
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.create(this.inputs);
     }
 
     @Override
-    public RecipeBookCategory getRecipeBookCategory() {
-        return null;
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public static class Type implements RecipeType<ArtisanRecipe> {
@@ -121,57 +133,44 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
     }
 
     @Override
-    public boolean isIgnoredInRecipeBook() {
+    public boolean isSpecial() {
         return true;
     }
 
-    public static class Serializer implements RecipeSerializer<ArtisanRecipe> {
-        public static final Serializer INSTANCE = new Serializer();
+    public static class Serializer {
         public static final String ID = "artisan_table";
-        private final MapCodec<ArtisanRecipe> codec;
-        private final PacketCodec<RegistryByteBuf, ArtisanRecipe> packetCodec;
 
-        protected Serializer() {
-            this.codec = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                    Codec.STRING.fieldOf("category").forGetter(recipe -> recipe.category),
-                    ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
-                    Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(recipe -> recipe.inputs),
-                    Codec.STRING.fieldOf("disposition").forGetter(recipe -> recipe.disposition),
-                    Codec.INT.fieldOf("xp").forGetter(recipe -> recipe.xp)
-            ).apply(instance, ArtisanRecipe::new));
+        private static final MapCodec<ArtisanRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+                Codec.STRING.fieldOf("category").forGetter(recipe -> recipe.category),
+                ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
+                Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(recipe -> recipe.inputs),
+                Codec.STRING.optionalFieldOf("disposition", "").forGetter(recipe -> recipe.disposition),
+                Codec.INT.optionalFieldOf("xp", 0).forGetter(recipe -> recipe.xp)
+        ).apply(instance, ArtisanRecipe::new));
 
-            this.packetCodec = PacketCodec.ofStatic(Serializer::write, Serializer::read);
-        }
+        private static final StreamCodec<RegistryFriendlyByteBuf, ArtisanRecipe> STREAM_CODEC = StreamCodec.of(Serializer::write, Serializer::read);
 
-        @Override
-        public MapCodec<ArtisanRecipe> codec() {
-            return this.codec;
-        }
+        public static final RecipeSerializer<ArtisanRecipe> INSTANCE = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
-        @Override
-        public PacketCodec<RegistryByteBuf, ArtisanRecipe> packetCodec() {
-            return this.packetCodec;
-        }
-
-        private static ArtisanRecipe read(RegistryByteBuf buf) {
-            String category = buf.readString();
-            ItemStack output = ItemStack.PACKET_CODEC.decode(buf);
+        private static ArtisanRecipe read(RegistryFriendlyByteBuf buf) {
+            String category = buf.readUtf();
+            ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
             int i = buf.readVarInt();
-            DefaultedList<Ingredient> defaultedList = DefaultedList.ofSize(i);
-            defaultedList.replaceAll(empty -> CustomIngredientImpl.PACKET_CODEC.decode(buf));
-            String disposition = buf.readString();
+            NonNullList<Ingredient> defaultedList = NonNullList.createWithCapacity(i);
+            defaultedList.replaceAll(empty -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
+            String disposition = buf.readUtf();
             int xp = buf.readVarInt();
             return new ArtisanRecipe(category, output, defaultedList, disposition, xp);
         }
 
-        private static void write(RegistryByteBuf buf, ArtisanRecipe recipe) {
-            buf.writeString(recipe.category);
-            ItemStack.PACKET_CODEC.encode(buf, recipe.output);
+        private static void write(RegistryFriendlyByteBuf buf, ArtisanRecipe recipe) {
+            buf.writeUtf(recipe.category);
+            ItemStack.STREAM_CODEC.encode(buf, recipe.output);
             buf.writeVarInt(recipe.inputs.size());
             for (Ingredient ingredient : recipe.inputs) {
-                CustomIngredientImpl.PACKET_CODEC.encode(buf, ingredient);
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
             }
-            buf.writeString(recipe.disposition);
+            buf.writeUtf(recipe.disposition);
             buf.writeVarInt(recipe.xp);
         }
     }

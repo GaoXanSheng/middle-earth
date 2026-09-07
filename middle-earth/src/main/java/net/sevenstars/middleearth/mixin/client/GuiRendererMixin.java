@@ -2,10 +2,10 @@ package net.sevenstars.middleearth.mixin.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.gui.render.SpecialGuiElementRenderer;
-import net.minecraft.client.gui.render.state.GuiRenderState;
-import net.minecraft.client.gui.render.state.special.SpecialGuiElementRenderState;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.sevenstars.middleearth.gui.render.InstancedGuiElementRenderer;
 import net.sevenstars.middleearth.gui.render.states.InstancedGuiElementRenderState;
 import org.spongepowered.asm.mixin.Final;
@@ -23,28 +23,19 @@ import java.util.Map;
 public class GuiRendererMixin {
     @Shadow
     @Final
-    GuiRenderState state;
+    private GuiRenderState renderState;
     @Shadow
     @Final
-    private VertexConsumerProvider.Immediate vertexConsumers;
+    private FeatureRenderDispatcher featureRenderDispatcher;
     @Unique
     private final Map<InstancedGuiElementRenderState, InstancedGuiElementRenderer<?>> instancedRenderers = new Object2ObjectOpenHashMap<>();
 
-    @Inject(method = "prepareSpecialElement", at = @At("HEAD"), cancellable = true)
-    private <T extends SpecialGuiElementRenderState> void skyblocker$instancedGuiElementRendering(SpecialGuiElementRenderState specialGuiElementRenderState, int windowScaleFactor, CallbackInfo ci) {
-/*
-        if(specialGuiElementRenderState instanceof BannerResultWithScaleGuiElementRenderState state){
-            @SuppressWarnings("unchecked")
-            BannerResultWithScaleGuiElementRenderer renderer = (BannerResultWithScaleGuiElementRenderer) this.instancedRenderers.computeIfAbsent(state, ignored -> state.newRenderer(this.vertexConsumers));
-            renderer.render(instanced, this.state, windowScaleFactor);
-
-        }
- */
-
+    @Inject(method = "preparePictureInPictureState", at = @At("HEAD"), cancellable = true)
+    private <T extends PictureInPictureRenderState> void skyblocker$instancedGuiElementRendering(T specialGuiElementRenderState, int windowScaleFactor, CallbackInfo ci) {
         if (specialGuiElementRenderState instanceof InstancedGuiElementRenderState instanced) {
             @SuppressWarnings("unchecked")
-            InstancedGuiElementRenderer<InstancedGuiElementRenderState> renderer = (InstancedGuiElementRenderer<InstancedGuiElementRenderState>) this.instancedRenderers.computeIfAbsent(instanced, ignored -> instanced.newRenderer(this.vertexConsumers));
-            renderer.render(instanced, this.state, windowScaleFactor);
+            InstancedGuiElementRenderer<InstancedGuiElementRenderState> renderer = (InstancedGuiElementRenderer<InstancedGuiElementRenderState>) this.instancedRenderers.computeIfAbsent(instanced, ignored -> (InstancedGuiElementRenderer<InstancedGuiElementRenderState>) instanced.newRenderer());
+            renderer.prepare(instanced, this.renderState, this.featureRenderDispatcher, windowScaleFactor);
 
             ci.cancel();
         }
@@ -57,7 +48,7 @@ public class GuiRendererMixin {
 
     @Inject(method = "close", at = @At("TAIL"))
     public void skyblocker$closeInstancedRenderers(CallbackInfo ci) {
-        this.instancedRenderers.values().forEach(SpecialGuiElementRenderer::close);
+        this.instancedRenderers.values().forEach(PictureInPictureRenderer::close);
     }
 
     @Unique

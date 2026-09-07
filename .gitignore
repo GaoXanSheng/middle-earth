@@ -27,3 +27,6 @@ bin/main/*
 middle-earth/src/main/java/net/sevenstars/middleearth/block/ModBlocks.java
 /.idea
 /.run2
+/.zcode/
+/.mimosa/
+nul

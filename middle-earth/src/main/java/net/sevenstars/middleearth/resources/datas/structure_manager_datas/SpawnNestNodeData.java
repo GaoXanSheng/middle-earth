@@ -2,10 +2,9 @@ package net.sevenstars.middleearth.resources.datas.structure_manager_datas;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.Identifier;
-
 import java.util.List;
 import java.util.Random;
+import net.minecraft.resources.Identifier;
 
 /// NpcSpawnNest is a specific area where entities can spawn with the different parameters.
 public class SpawnNestNodeData {

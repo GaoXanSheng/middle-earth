@@ -6,9 +6,10 @@ repositories {
 dependencies {
     implementation project(path: ':sevenstars-api', configuration: 'dev')
     implementation project(path: ':of-beasts-and-wild-things', configuration: 'dev')
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:20.0.811"
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:20.0.811"
-    modImplementation(include("me.lucko:fabric-permissions-api:0.4.0"))
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:26.2.821"
+    compileOnly "dev.architectury:architectury-fabric:21.0.2"
+    compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
+    runtimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:26.2.821"
 }
 
 loom {

@@ -1,7 +1,8 @@
 package net.sevenstars.middleearth.gui.utils.widgets.map;
 
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.gui.utils.widgets.ModWidget;
 import net.sevenstars.middleearth.gui.utils.widgets.UiDirections;
@@ -9,8 +10,6 @@ import net.sevenstars.middleearth.world.biomes.surface.MapBasedBiomePool;
 import net.sevenstars.middleearth.world.biomes.surface.MapBasedCustomBiome;
 import net.sevenstars.middleearth.world.chunkgen.map.ImageUtils;
 import net.sevenstars.middleearth.world.map.MiddleEarthMapConfigs;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
@@ -77,10 +76,10 @@ public class MapWidget extends ModWidget {
         return 1f;
     }
     protected Identifier getMapTexture(){
-        return Identifier.of(MiddleEarth.MOD_ID,"textures/map.png");
+        return Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID,"textures/map.png");
     }
     protected Identifier getOverlayMapTexture(){
-        return Identifier.of(MiddleEarth.MOD_ID,"textures/map_overlay.png");
+        return Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID,"textures/map_overlay.png");
     }
     public void setOverlayState(boolean state){
         isOverlayEnabled = state;
@@ -106,12 +105,12 @@ public class MapWidget extends ModWidget {
         return getMapPointFromMapCoordinate(point);
     }
 
-    public void drawCentered(DrawContext context, int centerX, int startY){
+    public void drawCentered(GuiGraphicsExtractor context, int centerX, int startY){
         int startX = centerX - (uiWidth / 2);
         draw(context, startX, startY);
     }
 
-    public void drawAnchored(DrawContext context, int anchorX, int startY, boolean isLeftAnchor){
+    public void drawAnchored(GuiGraphicsExtractor context, int anchorX, int startY, boolean isLeftAnchor){
         int startX = anchorX;
         if(!isLeftAnchor)
             startX -= uiWidth;
@@ -119,7 +118,7 @@ public class MapWidget extends ModWidget {
         draw(context, startX, startY);
     }
 
-    protected void draw(DrawContext context, int startX, int startY){
+    protected void draw(GuiGraphicsExtractor context, int startX, int startY){
         this.startX = startX;
         this.startY = startY;
 
@@ -142,20 +141,20 @@ public class MapWidget extends ModWidget {
         }
     }
 
-    protected void drawMapTexture(DrawContext context, int startX, int startY) {
+    protected void drawMapTexture(GuiGraphicsExtractor context, int startX, int startY) {
         int size = Math.max(getCurrentWidth(), getCurrentHeight());
 
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, getMapTexture(),
+        context.blit(RenderPipelines.GUI_TEXTURED, getMapTexture(),
                 startX, startY, uvX.floatValue(), uvY.floatValue(),
                 getWidth(), getHeight(),
                 size, size
         );
     }
 
-    protected void drawOverlayMapTexture(DrawContext context, int startX, int startY) {
+    protected void drawOverlayMapTexture(GuiGraphicsExtractor context, int startX, int startY) {
         int size = Math.max(getCurrentWidth(), getCurrentHeight());
 
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, getOverlayMapTexture(),
+        context.blit(RenderPipelines.GUI_TEXTURED, getOverlayMapTexture(),
                 startX, startY, uvX.floatValue(), uvY.floatValue(),
                 getWidth(), getHeight(),
                 size, size
@@ -260,7 +259,6 @@ public class MapWidget extends ModWidget {
         currentPointRatio.x = (-startX + mouseX) / getWidth();
         currentPointRatio.y = (-startY + mouseY) / getHeight();
     }
-
 
     protected boolean mouseIsInside(double mouseX, double mouseY) {
         return ((mouseX > startX && mouseX < startX + getWidth()) && (mouseY > startY && mouseY < startY + getHeight()));

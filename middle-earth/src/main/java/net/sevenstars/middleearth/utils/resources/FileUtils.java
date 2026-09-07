@@ -1,12 +1,12 @@
 package net.sevenstars.middleearth.utils.resources;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.world.biomes.surface.MapBasedBiomePool;
 import net.sevenstars.middleearth.world.chunkgen.map.ImageUtils;
 import net.sevenstars.middleearth.world.map.MiddleEarthMapConfigs;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
 import org.joml.Vector2i;
 
 import javax.imageio.ImageIO;
@@ -95,9 +95,9 @@ public class FileUtils {
     }
 
     public static boolean isLanguageFileExist(String languageCode) {
-        MinecraftClient client = MinecraftClient.getInstance();
+        Minecraft client = Minecraft.getInstance();
         ResourceManager resourceManager = client.getResourceManager();
-        Identifier path = Identifier.of(MiddleEarth.MOD_ID, String.format("lang/%s.json", languageCode));
+        Identifier path = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, String.format("lang/%s.json", languageCode));
         return resourceManager.getResource(path).isPresent();
     }
 

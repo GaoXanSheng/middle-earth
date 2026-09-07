@@ -1,21 +1,21 @@
 package net.sevenstars.middleearth.network.packets.C2S;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.special.structureManager.StructureManagerBlockEntity;
 import net.sevenstars.middleearth.network.contexts.ServerPacketContext;
 import net.sevenstars.middleearth.network.packets.ClientToServerPacket;
 
 public class PacketStructureManagerShowAllEntities extends ClientToServerPacket<PacketStructureManagerShowAllEntities> {
-    public static final CustomPayload.Id<PacketStructureManagerShowAllEntities> ID = new CustomPayload.Id<>(Identifier.of(MiddleEarth.MOD_ID, "structure_manager_show_all_entities"));
+    public static final CustomPacketPayload.Type<PacketStructureManagerShowAllEntities> ID = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "structure_manager_show_all_entities"));
 
-    public static final PacketCodec<RegistryByteBuf, PacketStructureManagerShowAllEntities> CODEC = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, p -> p.pos,
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketStructureManagerShowAllEntities> CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, p -> p.pos,
             PacketStructureManagerShowAllEntities::new
     );
 
@@ -26,23 +26,23 @@ public class PacketStructureManagerShowAllEntities extends ClientToServerPacket<
     }
 
     @Override
-    public Id<PacketStructureManagerShowAllEntities> getId() {
+    public Type<PacketStructureManagerShowAllEntities> type() {
         return ID;
     }
 
     @Override
-    public PacketCodec<RegistryByteBuf, PacketStructureManagerShowAllEntities> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, PacketStructureManagerShowAllEntities> streamCodec() {
         return CODEC;
     }
 
     @Override
     public void process(ServerPacketContext context) {
         try{
-            MinecraftServer server = context.player().getServer();
+            MinecraftServer server = context.player().level().getServer();
             server.execute(() -> {
-                if(!context.player().hasPermissionLevel(2))
+                if(!server.getPlayerList().isOp(context.player().nameAndId()))
                     return;
-                if(context.player().getWorld().getBlockEntity(pos) instanceof StructureManagerBlockEntity blockEntity){
+                if(context.player().level().getBlockEntity(pos) instanceof StructureManagerBlockEntity blockEntity){
                     blockEntity.showAllEntities();
                 }
             });

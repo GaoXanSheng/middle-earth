@@ -1,19 +1,20 @@
 package net.sevenstars.middleearth.world.dimension;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.TeleportTarget;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.storage.LevelData;
+import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.config.ModServerConfigs;
 import net.sevenstars.middleearth.registries.RegistryAliasesME;
@@ -28,25 +29,25 @@ import net.sevenstars.middleearth.world.map.MiddleEarthMapConfigs;
 import org.joml.Vector3i;
 
 public class ModDimensions {
-    public static Identifier ME_DIMENSION_ID = Identifier.of(MiddleEarth.MOD_ID, "middle_earth");
-    public static Identifier OW_DIMENSION_ID = Identifier.of("overworld");
+    public static Identifier ME_DIMENSION_ID = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "middle_earth");
+    public static Identifier OW_DIMENSION_ID = Identifier.parse("overworld");
 
-    public static final RegistryKey<DimensionOptions> ME_DIMENSION_KEY =
-            RegistryKey.of(RegistryKeys.DIMENSION, ME_DIMENSION_ID);
+    public static final ResourceKey<LevelStem> ME_DIMENSION_KEY =
+            ResourceKey.create(Registries.LEVEL_STEM, ME_DIMENSION_ID);
 
-    public static RegistryKey<World> ME_WORLD_KEY =
-            RegistryKey.of(RegistryKeys.WORLD, ME_DIMENSION_KEY.getValue());
+    public static ResourceKey<Level> ME_WORLD_KEY =
+            ResourceKey.create(Registries.DIMENSION, ME_DIMENSION_ID);
 
-    public static final RegistryKey<DimensionOptions> OW_DIMENSION_KEY =
-            RegistryKey.of(RegistryKeys.DIMENSION, Identifier.of("overworld"));
+    public static final ResourceKey<LevelStem> OW_DIMENSION_KEY =
+            ResourceKey.create(Registries.LEVEL_STEM, Identifier.parse("overworld"));
 
-    public static RegistryKey<World> OW_WORLD_KEY =
-            RegistryKey.of(RegistryKeys.WORLD, OW_DIMENSION_KEY.getValue());
+    public static ResourceKey<Level> OW_WORLD_KEY =
+            ResourceKey.create(Registries.DIMENSION, OW_DIMENSION_ID);
 
     public static void register() {
-        Registry.register(Registries.CHUNK_GENERATOR, ME_DIMENSION_ID, MiddleEarthChunkGenerator.CODEC);
-        ME_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, ME_DIMENSION_ID);
-        RegistryAliasesME.aliases.add(new RegistryAliasesME.Alias(Registries.CHUNK_GENERATOR, ME_DIMENSION_ID.getPath()));
+        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, ME_DIMENSION_ID, MiddleEarthChunkGenerator.CODEC);
+        ME_WORLD_KEY = ResourceKey.create(Registries.DIMENSION, ME_DIMENSION_ID);
+        RegistryAliasesME.aliases.add(new RegistryAliasesME.Alias(BuiltInRegistries.CHUNK_GENERATOR, ME_DIMENSION_ID.getPath()));
 
         MiddleEarth.LOGGER.logDebugMsg("Registering ModDimensions for " + MiddleEarth.MOD_ID);
     }
@@ -57,25 +58,25 @@ public class ModDimensions {
         return new Vector3i(x, height, z);
     }
 
-    public static void teleportPlayerToMe(PlayerEntity player, Vec3d coordinates, boolean setSpawnPoint, boolean welcomeNeeded){
-        if(!player.getWorld().isClient()) {
-            RegistryKey<World> registryKey = ME_WORLD_KEY;
-            ServerWorld serverWorld = (ServerWorld) player.getWorld();
+    public static void teleportPlayerToMe(Player player, Vec3 coordinates, boolean setSpawnPoint, boolean welcomeNeeded){
+        if(!player.level().isClientSide()) {
+            ResourceKey<Level> registryKey = ME_WORLD_KEY;
+            ServerLevel serverWorld = (ServerLevel) player.level();
             if (serverWorld != null) {
 
-                player.teleportTo(new TeleportTarget(player.getServer().getWorld(ME_WORLD_KEY), coordinates, Vec3d.ZERO, 0, 0, new TeleportTarget.PostDimensionTransition() {
+                player.teleport(new TeleportTransition(serverWorld.getServer().getLevel(ME_WORLD_KEY), coordinates, Vec3.ZERO, 0, 0, new TeleportTransition.PostTeleportTransition() {
                     @Override
                     public void onTransition(Entity entity) {
                         // idk
                     }
                 }));
                 if(setSpawnPoint){
-                    ServerPlayerEntity.Respawn respawn = new ServerPlayerEntity.Respawn(registryKey, new BlockPos((int) coordinates.x, (int) coordinates.y, (int) coordinates.z), player.getYaw(), true);
-                    ((ServerPlayerEntity) player).setSpawnPoint(respawn, true);
+                    ServerPlayer.RespawnConfig respawn = new ServerPlayer.RespawnConfig(LevelData.RespawnData.of(registryKey, new BlockPos((int) coordinates.x, (int) coordinates.y, (int) coordinates.z), player.getYRot(), player.getXRot()), true);
+                    ((ServerPlayer) player).setRespawnPosition(respawn, true);
                 }
                 if(welcomeNeeded)
                     FactionUtil.sendOnFactionJoinMessage(player);
-                Race race =  PlayerDataService.getPlayerRace(player, player.getWorld());
+                Race race =  PlayerDataService.getPlayerRace(player, player.level());
                 if(race != null){
                     RaceUtil.updateRace(player, race, false);
                 }
@@ -84,29 +85,29 @@ public class ModDimensions {
         }
     }
 
-    public static boolean isInMiddleEarth(World world){
-        return world.getRegistryKey().getValue().equals(ME_DIMENSION_ID);
+    public static boolean isInMiddleEarth(Level world){
+        return world.dimension().identifier().equals(ME_DIMENSION_ID);
     }
 
-    public static boolean isInOverworld(World world){
-        return world.getRegistryKey().getValue().equals(OW_DIMENSION_ID);
+    public static boolean isInOverworld(Level world){
+        return world.dimension().identifier().equals(OW_DIMENSION_ID);
     }
 
-    public static boolean teleportPlayerToOverworld(PlayerEntity player) {
-        if(!player.getWorld().isClient()) {
-            RegistryKey<World> registryKey = OW_WORLD_KEY;
-            ServerWorld serverWorld = (ServerWorld) player.getWorld();
-            PlayerDataService.OriginAggregate origin = PlayerDataService.getOriginAggregate(player, player.getWorld());
+    public static boolean teleportPlayerToOverworld(Player player) {
+        if(!player.level().isClientSide()) {
+            ResourceKey<Level> registryKey = OW_WORLD_KEY;
+            ServerLevel serverWorld = (ServerLevel) player.level();
+            PlayerDataService.OriginAggregate origin = PlayerDataService.getOriginAggregate(player, player.level());
             BlockPos coordinate;
             if(origin == null) {
-                coordinate = player.getServer().getOverworld().getSpawnPos();
+                coordinate = serverWorld.getServer().overworld().getLevelData().getRespawnData().pos();
             } else {
                 coordinate = origin.origin();
             }
 
             if (serverWorld != null) {
-                Vec3d coordinates = new Vec3d(coordinate.getX(), coordinate.getY(), coordinate.getZ());
-                player.teleportTo(new TeleportTarget(player.getServer().getOverworld(), coordinates, Vec3d.ZERO, 0, 0, entity -> {
+                Vec3 coordinates = new Vec3(coordinate.getX(), coordinate.getY(), coordinate.getZ());
+                player.teleport(new TeleportTransition(serverWorld.getServer().overworld(), coordinates, Vec3.ZERO, 0, 0, entity -> {
                     // idk
                 }));
                 

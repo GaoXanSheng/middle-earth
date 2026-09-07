@@ -2,15 +2,14 @@ package net.sevenstars.middleearth.resources.datas.biome_events.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 
 public class BroadcastData {
     public static class Fields {
@@ -47,7 +46,6 @@ public class BroadcastData {
         return this;
     }
 
-
     private Optional<Identifier> getBroadcastMessageLangKey() {
         return Optional.ofNullable(broadcastLangKey);
     }
@@ -57,17 +55,17 @@ public class BroadcastData {
         return this;
     }
 
-    public void broadcastMessage(ServerWorld world, BlockPos pos){
+    public void broadcastMessage(ServerLevel world, BlockPos pos){
         if(broadcastLangKey == null)
             return;
         int distanceToBroadcast =  getBroadcastMessageDistance().orElse(200);
-        List<ServerPlayerEntity> playerNearby = new ArrayList<>();
-        for(ServerPlayerEntity player : world.getPlayers()) {
-            if(pos.isWithinDistance(player.getPos(), distanceToBroadcast))
+        List<ServerPlayer> playerNearby = new ArrayList<>();
+        for(ServerPlayer player : world.players()) {
+            if(pos.closerToCenterThan(player.position(), distanceToBroadcast))
                 playerNearby.add(player);
         }
-        for(ServerPlayerEntity player : playerNearby){
-            player.sendMessage(Text.translatable(broadcastLangKey.toTranslationKey("biome_event")) ,true);
+        for(ServerPlayer player : playerNearby){
+            player.sendOverlayMessage(Component.translatable(broadcastLangKey.toLanguageKey("biome_event")));
         }
     }
 }

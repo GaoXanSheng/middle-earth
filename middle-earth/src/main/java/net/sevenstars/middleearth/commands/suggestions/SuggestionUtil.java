@@ -2,11 +2,10 @@ package net.sevenstars.middleearth.commands.suggestions;
 
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.util.Identifier;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import net.minecraft.resources.Identifier;
 
 public class SuggestionUtil {
     public static CompletableFuture<Suggestions> getCorrespondingIdentifiers(List<Identifier> candidates, SuggestionsBuilder builder){

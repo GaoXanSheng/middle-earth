@@ -1,21 +1,18 @@
 package net.sevenstars.middleearth.mixin.client;
 
-import net.minecraft.client.render.entity.state.ArmedEntityRenderState;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.client.renderer.ArmedEntityRenderStateAccess;
 import net.sevenstars.middleearth.client.renderer.BipedEntityRenderStateAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
-@Mixin(BipedEntityRenderState.class)
+@Mixin(HumanoidRenderState.class)
 public class BipedEntityRenderStateMixin extends ArmedEntityRenderState implements BipedEntityRenderStateAccess {
     @Unique private float tickProgress;
-    @Unique private Vec3d previousVelocity;
-    @Unique private Vec3d velocity;
+    @Unique private Vec3 previousVelocity;
+    @Unique private Vec3 velocity;
 
     @Override
     public float getTickProgress() {
@@ -23,12 +20,12 @@ public class BipedEntityRenderStateMixin extends ArmedEntityRenderState implemen
     }
 
     @Override
-    public Vec3d getPreviousVelocity() {
+    public Vec3 getPreviousVelocity() {
         return previousVelocity;
     }
 
     @Override
-    public Vec3d getVelocity() {
+    public Vec3 getVelocity() {
         return velocity;
     }
 
@@ -38,12 +35,12 @@ public class BipedEntityRenderStateMixin extends ArmedEntityRenderState implemen
     }
 
     @Override
-    public void setPreviousVelocity(Vec3d previousVelocity) {
+    public void setPreviousVelocity(Vec3 previousVelocity) {
         this.previousVelocity = previousVelocity;
     }
 
     @Override
-    public void setVelocity(Vec3d velocity) {
+    public void setVelocity(Vec3 velocity) {
         this.velocity = velocity;
     }
 }

@@ -21,7 +21,6 @@ public class GundabadBiomeEventPool {
             new WildSpawnEventData(NpcRegistry.GUNDABAD_LEADER).withSameNpcType(0, 512)
         ));
 
-
         SCOUTS = new BiomeEventData(false, List.of(
             new WildSpawnEventData(NpcRegistry.GUNDABAD_SCOUT).withWeight(4).withSameNpcType(1, 256),
             new WildSpawnEventData(NpcRegistry.GUNDABAD_MILITIA).withWeight(3).withSameNpcType(0, 256),

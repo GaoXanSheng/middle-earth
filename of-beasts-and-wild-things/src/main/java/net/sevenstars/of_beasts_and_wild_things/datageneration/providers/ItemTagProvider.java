@@ -1,26 +1,27 @@
 package net.sevenstars.of_beasts_and_wild_things.datageneration.providers;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.TagKey;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.sevenstars.of_beasts_and_wild_things.OfBeastsAndWildThings;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
+public class ItemTagProvider extends FabricTagsProvider<Item> {
 
-    public ItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        super(output, registriesFuture);
+    public ItemTagProvider(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, Registries.ITEM, registriesFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-        TagKey<Item> swan_food = TagKey.of(RegistryKeys.ITEM, OfBeastsAndWildThings.of("swan_food"));
+    protected void addTags(HolderLookup.Provider wrapperLookup) {
+        TagKey<Item> swan_food = TagKey.create(Registries.ITEM, OfBeastsAndWildThings.of("swan_food"));
 
-        valueLookupBuilder(swan_food).add(Items.TADPOLE_BUCKET);
+        builder(swan_food).add(BuiltInRegistries.ITEM.getResourceKey(Items.TADPOLE_BUCKET).orElseThrow());
     }
 }

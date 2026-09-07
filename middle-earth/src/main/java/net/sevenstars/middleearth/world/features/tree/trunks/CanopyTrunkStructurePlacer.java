@@ -3,13 +3,14 @@ package net.sevenstars.middleearth.world.features.tree.trunks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.TestableWorld;
-import net.minecraft.world.gen.feature.TreeFeatureConfig;
-import net.minecraft.world.gen.foliage.FoliagePlacer;
-import net.minecraft.world.gen.trunk.TrunkPlacerType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import net.sevenstars.middleearth.world.gen.ModTreeGeneration;
 
 import java.util.List;
@@ -53,12 +54,12 @@ public class CanopyTrunkStructurePlacer extends CanopyTrunkPlacer {
     }
 
     @Override
-    protected TrunkPlacerType<?> getType() {
+    protected TrunkPlacerType<?> type() {
         return ModTreeGeneration.CANOPY_TRUNK_STRUCTURE_PLACER;
     }
 
     @Override
-    public List<FoliagePlacer.TreeNode> generate(TestableWorld world, BiConsumer<BlockPos, BlockState> replacer, Random random, int height, BlockPos startPos, TreeFeatureConfig config) {
+    public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel world, BiConsumer<BlockPos, BlockState> replacer, RandomSource random, int height, BlockPos startPos, TreeConfiguration config) {
         // Deprecated, although it can be useful later on, so keeping it there
         /*if(world instanceof ServerWorld serverWorld) {
             StructureTemplate template = getStructureTemplate(serverWorld);
@@ -67,7 +68,7 @@ public class CanopyTrunkStructurePlacer extends CanopyTrunkPlacer {
             StructureTemplate template = getStructureTemplate(chunkRegion);
             generateStructurePool(chunkRegion.toServerWorld(), startPos, height, template);
         }*/
-        return super.generate(world, replacer, random, height, startPos, config);
+        return super.placeTrunk(world, replacer, random, height, startPos, config);
     }
 
     // NOTE keep it for later maybe

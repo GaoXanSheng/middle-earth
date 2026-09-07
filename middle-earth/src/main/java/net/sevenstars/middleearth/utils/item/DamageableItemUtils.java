@@ -1,9 +1,8 @@
 package net.sevenstars.middleearth.utils.item;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class DamageableItemUtils {
-
 
     /**
      * Checks if an ItemStack is damageable and fully used (ex. its damage equals or exceeds max damage).
@@ -12,7 +11,7 @@ public class DamageableItemUtils {
      * @return true if the item is damageable and out of durability; false otherwise.
      */
     public static boolean isFullyDamaged(ItemStack stack) {
-        return stack.isDamageable() && stack.getDamage() >= stack.getMaxDamage();
+        return stack.isDamageableItem() && stack.getDamageValue() >= stack.getMaxDamage();
     }
 
     /**
@@ -23,8 +22,8 @@ public class DamageableItemUtils {
      * @param damage The amount of damage to add to the current value.
      */
     public static void incrementDamage(ItemStack stack, int damage) {
-        if (stack.isDamageable()) {
-            stack.setDamage(stack.getDamage() + damage);
+        if (stack.isDamageableItem()) {
+            stack.setDamageValue(stack.getDamageValue() + damage);
         }
     }
 
@@ -34,6 +33,6 @@ public class DamageableItemUtils {
      * @param item the item stack whose damage should be reset
      */
     public static void resetDamage(ItemStack item) {
-        item.setDamage(0);
+        item.setDamageValue(0);
     }
 }

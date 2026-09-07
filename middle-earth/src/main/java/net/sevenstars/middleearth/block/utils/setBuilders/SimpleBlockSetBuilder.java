@@ -1,9 +1,9 @@
 package net.sevenstars.middleearth.block.utils.setBuilders;
 
-import net.minecraft.block.MapColor;
-import net.minecraft.block.enums.NoteBlockInstrument;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.sevenstars.middleearth.block.utils.BlockRecordTypes;
 
 import java.util.List;
@@ -17,13 +17,13 @@ public class SimpleBlockSetBuilder {
     public float blastResistance;
     public MapColor mapColor;
     public NoteBlockInstrument instrument;
-    public BlockSoundGroup soundGroup;
+    public SoundType soundGroup;
     public boolean requiresTool;
-    public  List<ItemStack> group;
+    public  List<ItemLike> group;
 
     public SimpleBlockSetBuilder(String name, float hardness, float blastResistance,
-                                 MapColor mapColor, NoteBlockInstrument instrument, BlockSoundGroup soundGroup, boolean requiresTool,
-                                 List<ItemStack> group){
+                                 MapColor mapColor, NoteBlockInstrument instrument, SoundType soundGroup, boolean requiresTool,
+                                 List<ItemLike> group){
         this.setName = name;
         this.hardness = hardness;
         this.blastResistance = blastResistance;

@@ -1,31 +1,34 @@
 package net.sevenstars.middleearth.recipe;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.recipe.*;
-import net.minecraft.recipe.book.RecipeBookCategory;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.block.registration.ModDecorativeBlocks;
-import net.sevenstars.middleearth.item.DataComponentTypesME;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.recipe.input.SingleStackRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
-
 import java.util.List;
 
-public class AnvilShapingRecipe implements Recipe<SingleStackRecipeInput> {
+public class AnvilShapingRecipe implements Recipe<SingleRecipeInput> {
     protected final Ingredient input;
     protected final ItemStack output;
     protected final int amount;
 
-    private IngredientPlacement ingredientPlacement;
-    public static final PacketCodec<ByteBuf, List<String>> STRING_LIST_CODEC =
-            PacketCodecs.STRING.collect(PacketCodecs.toList());
+    private PlacementInfo ingredientPlacement;
+    public static final StreamCodec<ByteBuf, List<String>> STRING_LIST_CODEC =
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list());
 
     public AnvilShapingRecipe(Ingredient input, ItemStack output, int amount) {
         this.output = output;
@@ -38,14 +41,17 @@ public class AnvilShapingRecipe implements Recipe<SingleStackRecipeInput> {
     }
 
     @Override
-    public boolean matches(SingleStackRecipeInput input, World world) {
+    public boolean matches(SingleRecipeInput input, Level world) {
         if(input.item().isEmpty()) return false;
-        //if(input.item().get(DataComponentTypesME.TEMPERATURE_DATA) == null) return false;
         return this.input.test(input.item());
     }
 
     @Override
-    public ItemStack craft(SingleStackRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
+    public ItemStack assemble(SingleRecipeInput input) {
+        return this.output.copy();
+    }
+
+    public ItemStack craft(SingleRecipeInput input, HolderLookup.Provider lookup) {
         return this.output.copy();
     }
 
@@ -62,26 +68,36 @@ public class AnvilShapingRecipe implements Recipe<SingleStackRecipeInput> {
     }
 
     @Override
-    public RecipeSerializer<? extends Recipe<SingleStackRecipeInput>> getSerializer() {
+    public String group() {
+        return "";
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
+    }
+
+    @Override
+    public RecipeSerializer<? extends Recipe<SingleRecipeInput>> getSerializer() {
         return Serializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<? extends Recipe<SingleStackRecipeInput>> getType() {
+    public RecipeType<? extends Recipe<SingleRecipeInput>> getType() {
         return Type.INSTANCE;
     }
 
     @Override
-    public IngredientPlacement getIngredientPlacement() {
+    public PlacementInfo placementInfo() {
         if (this.ingredientPlacement == null) {
-            this.ingredientPlacement = IngredientPlacement.forSingleSlot(this.input);
+            this.ingredientPlacement = PlacementInfo.create(this.input);
         }
 
         return this.ingredientPlacement;
     }
 
     @Override
-    public RecipeBookCategory getRecipeBookCategory() {
+    public RecipeBookCategory recipeBookCategory() {
         return null;
     }
 
@@ -92,47 +108,34 @@ public class AnvilShapingRecipe implements Recipe<SingleStackRecipeInput> {
     }
 
     @Override
-    public boolean isIgnoredInRecipeBook() {
+    public boolean isSpecial() {
         return true;
     }
 
-    public static class Serializer implements RecipeSerializer<AnvilShapingRecipe> {
-        public static final Serializer INSTANCE = new Serializer();
+    public static class Serializer {
         public static final String ID = "anvil_shaping";
-        private final MapCodec<AnvilShapingRecipe> codec;
-        private final PacketCodec<RegistryByteBuf, AnvilShapingRecipe> packetCodec;
 
-        protected Serializer() {
-            this.codec = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-                    Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.input),
-                    ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
-                    CODEC.INT.fieldOf("amount").forGetter(recipe -> recipe.amount)
-            ).apply(instance, AnvilShapingRecipe::new));
+        private static final MapCodec<AnvilShapingRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
+                Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.input),
+                ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
+                Codec.INT.fieldOf("amount").forGetter(recipe -> recipe.amount)
+        ).apply(instance, AnvilShapingRecipe::new));
 
-            this.packetCodec = PacketCodec.ofStatic(Serializer::write, Serializer::read);
-        }
+        private static final StreamCodec<RegistryFriendlyByteBuf, AnvilShapingRecipe> STREAM_CODEC = StreamCodec.of(Serializer::write, Serializer::read);
 
-        @Override
-        public MapCodec<AnvilShapingRecipe> codec() {
-            return this.codec;
-        }
+        public static final RecipeSerializer<AnvilShapingRecipe> INSTANCE = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
-        @Override
-        public PacketCodec<RegistryByteBuf, AnvilShapingRecipe> packetCodec() {
-            return this.packetCodec;
-        }
-
-        private static AnvilShapingRecipe read(RegistryByteBuf buf) {
-            Ingredient input = Ingredient.PACKET_CODEC.decode(buf);
-            ItemStack output = ItemStack.PACKET_CODEC.decode(buf);
-            int amount = PacketCodecs.INTEGER.decode(buf);
+        private static AnvilShapingRecipe read(RegistryFriendlyByteBuf buf) {
+            Ingredient input = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+            ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+            int amount = ByteBufCodecs.INT.decode(buf);
             return new AnvilShapingRecipe(input,output, amount);
         }
 
-        private static void write(RegistryByteBuf buf, AnvilShapingRecipe recipe) {
-            Ingredient.PACKET_CODEC.encode(buf, recipe.input);
-            ItemStack.PACKET_CODEC.encode(buf, recipe.output);
-            PacketCodecs.INTEGER.encode(buf, recipe.amount);
+        private static void write(RegistryFriendlyByteBuf buf, AnvilShapingRecipe recipe) {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.input);
+            ItemStack.STREAM_CODEC.encode(buf, recipe.output);
+            ByteBufCodecs.INT.encode(buf, recipe.amount);
         }
     }
 }

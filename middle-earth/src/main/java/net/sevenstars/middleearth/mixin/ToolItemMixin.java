@@ -1,19 +1,13 @@
 package net.sevenstars.middleearth.mixin;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ToolComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.level.block.Block;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.utils.BlockTagsME;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,18 +20,18 @@ import java.util.List;
 @Mixin(ToolMaterial.class)
 public class ToolItemMixin {
 
-    @Inject(method = "applySwordSettings", at = @At(value = "RETURN"), cancellable = true)
-    private void applySwordSettings(Item.Settings settings, float attackDamage, float attackSpeed, CallbackInfoReturnable<Item.Settings> cir) {
-        RegistryEntryLookup<Block> registryEntryLookup = Registries.createEntryLookup(Registries.BLOCK);
-        Item.Settings result = cir.getReturnValue();
+    @Inject(method = "applySwordProperties", at = @At(value = "RETURN"), cancellable = true)
+    private void applySwordSettings(Item.Properties settings, float attackDamage, float attackSpeed, CallbackInfoReturnable<Item.Properties> cir) {
+        HolderGetter<Block> registryEntryLookup = BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK);
+        Item.Properties result = cir.getReturnValue();
 
         result = result.component(
-                DataComponentTypes.TOOL,
-                new ToolComponent(
+                DataComponents.TOOL,
+                new Tool(
                         List.of(
-                                ToolComponent.Rule.ofAlwaysDropping(registryEntryLookup.getOrThrow(BlockTagsME.COBWEBS), 15.0F),
-                                ToolComponent.Rule.of(registryEntryLookup.getOrThrow(BlockTags.SWORD_INSTANTLY_MINES), Float.MAX_VALUE),
-                                ToolComponent.Rule.of(registryEntryLookup.getOrThrow(BlockTags.SWORD_EFFICIENT), 1.5F)
+                                Tool.Rule.minesAndDrops(registryEntryLookup.getOrThrow(BlockTagsME.COBWEBS), 15.0F),
+                                Tool.Rule.overrideSpeed(registryEntryLookup.getOrThrow(BlockTags.SWORD_INSTANTLY_MINES), Float.MAX_VALUE),
+                                Tool.Rule.overrideSpeed(registryEntryLookup.getOrThrow(BlockTags.SWORD_EFFICIENT), 1.5F)
                         ),
                         1.0F,
                         2,

@@ -1,20 +1,20 @@
 package net.sevenstars.of_beasts_and_wild_things.entity.snail;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.sevenstars.of_beasts_and_wild_things.OfBeastsAndWildThings;
 import net.sevenstars.of_beasts_and_wild_things.entity.model.EntityModelLayersWT;
 
 import java.util.Map;
 
-public class SnailEntityRenderer extends MobEntityRenderer<SnailEntity, SnailEntityRenderState, SnailEntityModel> {
+public class SnailEntityRenderer extends MobRenderer<SnailEntity, SnailEntityRenderState, SnailEntityModel> {
     private static final String PATH = "textures/entity/snail/";
 
-    public SnailEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new SnailEntityModel(context.getPart(EntityModelLayersWT.SNAIL)), 0.2f);
+    public SnailEntityRenderer(EntityRendererProvider.Context context) {
+        super(context, new SnailEntityModel(context.bakeLayer(EntityModelLayersWT.SNAIL)), 0.2f);
     }
 
     public static final Map<SnailEntityVariant, String> LOCATION_BY_VARIANT =
@@ -31,7 +31,7 @@ public class SnailEntityRenderer extends MobEntityRenderer<SnailEntity, SnailEnt
             });
 
     @Override
-    public Identifier getTexture(SnailEntityRenderState state) {
+    public Identifier getTextureLocation(SnailEntityRenderState state) {
         return OfBeastsAndWildThings.of(LOCATION_BY_VARIANT.get(state.variant));
     }
 
@@ -41,7 +41,7 @@ public class SnailEntityRenderer extends MobEntityRenderer<SnailEntity, SnailEnt
     }
 
     public void updateRenderState(SnailEntity snailEntity, SnailEntityRenderState snailEntityRenderState, float f) {
-        super.updateRenderState(snailEntity, snailEntityRenderState, f);
+        super.extractRenderState(snailEntity, snailEntityRenderState, f);
         snailEntityRenderState.variant = snailEntity.getVariant();
         snailEntityRenderState.climbingTicks = snailEntity.getClimbingTicks();
     }

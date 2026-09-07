@@ -1,9 +1,8 @@
 package net.sevenstars.middleearth.datageneration.content.models;
 
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.sevenstars.middleearth.block.registration.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,22 +49,22 @@ public class SimpleStairModel {
 
             add(new Stair(Blocks.PACKED_MUD, ModBlocks.PACKED_MUD_STAIRS));
 
-            add(new Stair(Blocks.BLACK_WOOL, ModBlocks.BLACK_WOOL_STAIRS));
-            add(new Stair(Blocks.BLUE_WOOL, ModBlocks.BLUE_WOOL_STAIRS));
-            add(new Stair(Blocks.BROWN_WOOL, ModBlocks.BROWN_WOOL_STAIRS));
-            add(new Stair(Blocks.CYAN_WOOL, ModBlocks.CYAN_WOOL_STAIRS));
-            add(new Stair(Blocks.GRAY_WOOL, ModBlocks.GRAY_WOOL_STAIRS));
-            add(new Stair(Blocks.GREEN_WOOL, ModBlocks.GREEN_WOOL_STAIRS));
-            add(new Stair(Blocks.LIGHT_BLUE_WOOL, ModBlocks.LIGHT_BLUE_WOOL_STAIRS));
-            add(new Stair(Blocks.LIGHT_GRAY_WOOL, ModBlocks.LIGHT_GRAY_WOOL_STAIRS));
-            add(new Stair(Blocks.LIME_WOOL, ModBlocks.LIME_WOOL_STAIRS));
-            add(new Stair(Blocks.MAGENTA_WOOL, ModBlocks.MAGENTA_WOOL_STAIRS));
-            add(new Stair(Blocks.ORANGE_WOOL, ModBlocks.ORANGE_WOOL_STAIRS));
-            add(new Stair(Blocks.PINK_WOOL, ModBlocks.PINK_WOOL_STAIRS));
-            add(new Stair(Blocks.PURPLE_WOOL, ModBlocks.PURPLE_WOOL_STAIRS));
-            add(new Stair(Blocks.RED_WOOL, ModBlocks.RED_WOOL_STAIRS));
-            add(new Stair(Blocks.WHITE_WOOL, ModBlocks.WHITE_WOOL_STAIRS));
-            add(new Stair(Blocks.YELLOW_WOOL, ModBlocks.YELLOW_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.black(), ModBlocks.BLACK_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.blue(), ModBlocks.BLUE_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.brown(), ModBlocks.BROWN_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.cyan(), ModBlocks.CYAN_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.gray(), ModBlocks.GRAY_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.green(), ModBlocks.GREEN_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.lightBlue(), ModBlocks.LIGHT_BLUE_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.lightGray(), ModBlocks.LIGHT_GRAY_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.lime(), ModBlocks.LIME_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.magenta(), ModBlocks.MAGENTA_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.orange(), ModBlocks.ORANGE_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.pink(), ModBlocks.PINK_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.purple(), ModBlocks.PURPLE_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.red(), ModBlocks.RED_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.white(), ModBlocks.WHITE_WOOL_STAIRS));
+            add(new Stair(Blocks.WOOL.yellow(), ModBlocks.YELLOW_WOOL_STAIRS));
         }
     };
 

@@ -1,9 +1,14 @@
 package net.sevenstars.middleearth.registries.content.biomevents;
 
-import net.minecraft.registry.*;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.structure.Structure;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.core.registries.*;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
 import net.sevenstars.middleearth.registries.content.biomevents.pools.GenericHostilesBiomeEventPool;
@@ -13,12 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BiomeEventRegistryUtil {
-    private static final RegistryKey<Registry<BiomeEventData>> BIOME_EVENT_KEY = DynamicRegistriesME.BIOME_EVENT;
+    private static final ResourceKey<Registry<BiomeEventData>> BIOME_EVENT_KEY = DynamicRegistriesME.BIOME_EVENT;
 
-    public static List<RegistryKey<Biome>> biomeEntries = new ArrayList<>();
+    public static List<ResourceKey<Biome>> biomeEntries = new ArrayList<>();
 
-
-    public static void addBiomeEntry(RegistryKey<Biome> biome) {
+    public static void addBiomeEntry(ResourceKey<Biome> biome) {
         if(biomeEntries == null) {
             biomeEntries = new ArrayList<>();
         }
@@ -28,35 +32,33 @@ public class BiomeEventRegistryUtil {
         biomeEntries.add(biome);
     }
 
-
     public static void removeBiomeEntry(Identifier biomeId) {
         if (biomeEntries != null) {
-            biomeEntries.removeIf(entry -> entry.getValue().equals(biomeId));
+            biomeEntries.removeIf(entry -> entry.identifier().equals(biomeId));
         }
     }
 
-    public static void registerDefaults(Registerable<BiomeEventData> context, RegistryEntryLookup<BiomeEventData> registryEntryLookup) {
+    public static void registerDefaults(BootstrapContext<BiomeEventData> context, HolderGetter<BiomeEventData> registryEntryLookup) {
         if(biomeEntries == null)
             return;
 
-        for(RegistryKey<Biome> key : biomeEntries){
+        for(ResourceKey<Biome> key : biomeEntries){
             DynamicRegistriesME.register(context, registryEntryLookup, of(key), GenericHostilesBiomeEventPool.EMPTY);
         }
     }
 
-    public static RegistryKey<BiomeEventData> of(RegistryKey<Biome> key){
-        return DynamicRegistriesME.of(BIOME_EVENT_KEY, key.getValue());
+    public static ResourceKey<BiomeEventData> of(ResourceKey<Biome> key){
+        return DynamicRegistriesME.of(BIOME_EVENT_KEY, key.identifier());
     }
 
-
-    public static void register(Registerable<BiomeEventData> context, RegistryEntryLookup<BiomeEventData> registryEntryLookup, RegistryKey<BiomeEventData> registryKey, BiomeEventData element){
+    public static void register(BootstrapContext<BiomeEventData> context, HolderGetter<BiomeEventData> registryEntryLookup, ResourceKey<BiomeEventData> registryKey, BiomeEventData element){
         DynamicRegistriesME.register(context, registryEntryLookup, registryKey, element);
-        BiomeEventRegistryUtil.removeBiomeEntry(registryKey.getValue());
+        BiomeEventRegistryUtil.removeBiomeEntry(registryKey.identifier());
         // [LANG datagen]
         // None
     }
 
-    public static RegistryKey<Structure> register(String name) {
-        return RegistryKey.of(RegistryKeys.STRUCTURE, Identifier.of(MiddleEarth.MOD_ID, name));
+    public static ResourceKey<Structure> register(String name) {
+        return ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, name));
     }
 }

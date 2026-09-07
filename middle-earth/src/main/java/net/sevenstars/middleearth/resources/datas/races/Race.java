@@ -2,11 +2,11 @@ package net.sevenstars.middleearth.resources.datas.races;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
 import net.sevenstars.middleearth.resources.datas.common.RaceType;
@@ -26,8 +26,8 @@ public class Race {
     public static final Codec<Race> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf(ID_FIELD).forGetter(Race::getIdValue),
             Codec.STRING.fieldOf(TYPE_FIELD).forGetter(Race::getRaceTypeValue),
-            NbtCompound.CODEC.fieldOf(BASE_ATTRIBUTE_FIELD).forGetter(Race::getBaseAttributePoolNbt),
-            NbtCompound.CODEC.fieldOf(CATEGORY_BASED_ATTRIBUTE_FIELD).forGetter(Race::getCategoryBasedAttributePool),
+            CompoundTag.CODEC.fieldOf(BASE_ATTRIBUTE_FIELD).forGetter(Race::getBaseAttributePoolNbt),
+            CompoundTag.CODEC.fieldOf(CATEGORY_BASED_ATTRIBUTE_FIELD).forGetter(Race::getCategoryBasedAttributePool),
             Codec.list(Codec.STRING, 0, 5).optionalFieldOf(COMMAND_JOIN_FIELD).forGetter(Race::getJoinCommands),
             Codec.list(Codec.STRING, 0, 5).optionalFieldOf(COMMAND_LEAVE_FIELD).forGetter(Race::getLeaveCommands)
     ).apply(instance, Race::new));
@@ -40,11 +40,10 @@ public class Race {
     private final List<String> joinCommands;
     private final List<String> leaveCommands;
 
-
-    public Race(String id, String raceTypeValue, NbtCompound baseAttributes, NbtCompound categoryBasedAttributes, Optional<List<String>> joinCommands, Optional<List<String>> leaveCommands){
+    public Race(String id, String raceTypeValue, CompoundTag baseAttributes, CompoundTag categoryBasedAttributes, Optional<List<String>> joinCommands, Optional<List<String>> leaveCommands){
         // Create id
         this.id = MiddleEarth.fetchId(id);
-        this.translatableKey = "race.".concat(this.id.toTranslationKey());
+        this.translatableKey = "race.".concat(this.id.toLanguageKey());
         // Create model
         this.raceType = RaceType.valueOf(raceTypeValue.toUpperCase());
         // Attribute Datas
@@ -68,7 +67,7 @@ public class Race {
     public Race(Identifier id, RaceType raceType, AttributePool baseAttributePool, HashMap<EntityCategories, AttributePool> categoryBasedAttributePool, List<String> joinCommands, List<String> leaveCommands) {
         this.id = id;
         this.raceType = raceType;
-        this.translatableKey = "race.".concat(this.id.toTranslationKey());
+        this.translatableKey = "race.".concat(this.id.toLanguageKey());
         this.baseAttributePool = baseAttributePool;
         this.categoryBasedAttributePool = categoryBasedAttributePool;
         this.joinCommands = joinCommands;
@@ -87,7 +86,7 @@ public class Race {
         return raceType.toString().toUpperCase();
     }
 
-    private NbtCompound getBaseAttributePoolNbt() {
+    private CompoundTag getBaseAttributePoolNbt() {
         if(baseAttributePool == null)
             return null;
         return baseAttributePool.getNbt();
@@ -96,10 +95,10 @@ public class Race {
         return baseAttributePool;
     }
 
-    private NbtCompound getCategoryBasedAttributePool() {
+    private CompoundTag getCategoryBasedAttributePool() {
         if(categoryBasedAttributePool == null)
             return null;
-        var nbt = new NbtCompound();
+        var nbt = new CompoundTag();
         for(var category : categoryBasedAttributePool.keySet()){
             nbt.put(category.name(), categoryBasedAttributePool.get(category).getNbt());
         }
@@ -118,15 +117,15 @@ public class Race {
         return Optional.of(this.leaveCommands);
     }
 
-    public MutableText getFullName() {
-        return Text.translatable(translatableKey);
+    public MutableComponent getFullName() {
+        return Component.translatable(translatableKey);
     }
 
-    public void applyPlayerAttributes(PlayerEntity playerEntity){
+    public void applyPlayerAttributes(Player playerEntity){
         baseAttributePool.apply(playerEntity);
     }
 
-    public void reverseAttributes(PlayerEntity playerEntity){
+    public void reverseAttributes(Player playerEntity){
         AttributePool.reverse(playerEntity);
     }
 

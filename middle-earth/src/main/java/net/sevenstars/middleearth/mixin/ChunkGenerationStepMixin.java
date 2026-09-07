@@ -1,11 +1,11 @@
 package net.sevenstars.middleearth.mixin;
 
-import net.minecraft.world.chunk.ChunkGenerationStep;
+import net.minecraft.world.level.chunk.status.ChunkStep;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(ChunkGenerationStep.class)
+@Mixin(ChunkStep.class)
 public class ChunkGenerationStepMixin {
 
     @ModifyVariable(method = "<init>", at = @At("HEAD"), ordinal = 0, argsOnly = true)

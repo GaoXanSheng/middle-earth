@@ -1,15 +1,9 @@
 package net.sevenstars.middleearth.mixin.client;
 
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.client.renderer.ArmedEntityRenderStateAccess;
 import net.sevenstars.middleearth.entity.spider.EnwebbedFeatureRenderer;
@@ -18,15 +12,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PlayerEntityModel.class)
-public abstract class PlayerEntityModelMixin extends BipedEntityModel<PlayerEntityRenderState> {
+@Mixin(PlayerModel.class)
+public abstract class PlayerEntityModelMixin extends HumanoidModel<AvatarRenderState> {
 
     public PlayerEntityModelMixin(ModelPart modelPart) {
         super(modelPart);
     }
 
-    @Inject(at = @At("TAIL"), method = "setAngles(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;)V")
-    private <T extends PlayerEntityRenderState> void positionRightArm(PlayerEntityRenderState playerEntityRenderState, CallbackInfo ci) {
+    @Inject(at = @At("TAIL"), method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V")
+    private void positionRightArm(AvatarRenderState playerEntityRenderState, CallbackInfo ci) {
         ArmedEntityRenderStateAccess renderStateAccess = ((ArmedEntityRenderStateAccess)playerEntityRenderState);
         if(renderStateAccess.isRestrained()) {
             restrainedAnimation();
@@ -34,9 +28,9 @@ public abstract class PlayerEntityModelMixin extends BipedEntityModel<PlayerEnti
     }
 
     private void restrainedAnimation() {
-        this.rightArm.pitch = 0.0F;
-        this.rightArm.yaw = 0.0F;
-        this.leftArm.pitch = 0.0F;
-        this.leftArm.yaw = 0.0F;
+        this.rightArm.xRot = 0.0F;
+        this.rightArm.yRot = 0.0F;
+        this.leftArm.xRot = 0.0F;
+        this.leftArm.yRot = 0.0F;
     }
 }

@@ -1,19 +1,18 @@
 package net.sevenstars.middleearth.entity.npcs.renderer.features.ear;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.client.ModTexturedRenderLayers;
 import net.sevenstars.middleearth.config.ModClientConfigs;
@@ -23,43 +22,34 @@ import net.sevenstars.middleearth.entity.npcs.renderer.NpcEntityRenderState;
 import net.sevenstars.middleearth.registries.AtlasesME;
 
 @Environment(EnvType.CLIENT)
-public class EarFeatureRenderer extends FeatureRenderer<NpcEntityRenderState, NpcEntityModel> {
+public class EarFeatureRenderer extends RenderLayer<NpcEntityRenderState, NpcEntityModel> {
     private final EarModel earModel;
-    private final SpriteAtlasTexture characterTexturesAtlas;
+    private TextureAtlas characterTexturesAtlas;
 
-    public EarFeatureRenderer(FeatureRendererContext<NpcEntityRenderState, NpcEntityModel> context, LoadedEntityModels loader) {
+    public EarFeatureRenderer(RenderLayerParent<NpcEntityRenderState, NpcEntityModel> context, EntityModelSet loader) {
         super(context);
-        this.earModel = new EarModel(loader.getModelPart(EntityModelLayersME.NPC_ENTITY_EAR));
-        characterTexturesAtlas = AtlasesME.getAtlasFromPath(ModTexturedRenderLayers.CHARACTER_ATLAS_TEXTURES);
+        this.earModel = new EarModel(loader.bakeLayer(EntityModelLayersME.NPC_ENTITY_EAR));
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, NpcEntityRenderState state, float limbAngle, float limbDistance) {
+    public void submit(PoseStack matrices, SubmitNodeCollector submitNodeCollector, int light, NpcEntityRenderState state, float limbAngle, float limbDistance) {
+        if (characterTexturesAtlas == null) {
+            characterTexturesAtlas = AtlasesME.getAtlasFromPath(ModTexturedRenderLayers.CHARACTER_ATLAS_TEXTURES);
+        }
         boolean isSimplified = ModClientConfigs.ENABLE_SIMPLIFIED_CHARACTER_RENDERING && state.simplifiedSkinId != null;
         Identifier earId =  (isSimplified) ? state.simplifiedEarId : MiddleEarth.ofPrefix(state.earId, AtlasesME.SKIN_PREFIX);
 
-        earModel.setAngles(state);
+        earModel.setupAnim(state);
 
         if(!state.canShowEars)
             return;
 
-        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(ModTexturedRenderLayers.getCharacterTexturesRenderLayer());
-
-        int overlay = state.hurt ? getOverlay(state, 0f) : OverlayTexture.DEFAULT_UV;
+        int overlay = OverlayTexture.pack(0.0f, state.hasRedOverlay);
         if(earId != null){
-            Sprite sprite = characterTexturesAtlas.getSprite(earId);
-            renderModel(sprite, matrices, vertexConsumer, light, overlay);
-        }
-    }
-
-    public static int getOverlay(LivingEntityRenderState state, float whiteOverlayProgress) {
-        return OverlayTexture.packUv(OverlayTexture.getU(whiteOverlayProgress), OverlayTexture.getV(state.hurt));
-    }
-
-    private void renderModel(Sprite sprite, MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay){
-        if(sprite != null){
-            VertexConsumer newLayerVertexConsumer = sprite.getTextureSpecificVertexConsumer(vertexConsumer);
-            earModel.render(matrices, newLayerVertexConsumer, light, overlay);
+            TextureAtlasSprite sprite = characterTexturesAtlas.getSprite(earId);
+            if(sprite != null){
+                submitNodeCollector.submitModelPart(earModel.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, sprite);
+            }
         }
     }
 }

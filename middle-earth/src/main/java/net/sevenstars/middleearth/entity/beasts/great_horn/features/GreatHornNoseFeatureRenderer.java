@@ -1,16 +1,13 @@
 package net.sevenstars.middleearth.entity.beasts.great_horn.features;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.great_horn.GreatHornEntityRenderState;
@@ -20,13 +17,13 @@ import java.time.LocalDate;
 import java.time.Month;
 
 @Environment(EnvType.CLIENT)
-public class GreatHornNoseFeatureRenderer extends FeatureRenderer<GreatHornEntityRenderState, GreatHornModel> {
+public class GreatHornNoseFeatureRenderer extends RenderLayer<GreatHornEntityRenderState, GreatHornModel> {
 	private final GreatHornModel model;
-	private final static Identifier TEXTURE = Identifier.of(MiddleEarth.MOD_ID, "textures/entities/great_horn/feature/great_horn_red_nose.png");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/entities/great_horn/feature/great_horn_red_nose.png");
 
-	public GreatHornNoseFeatureRenderer(FeatureRendererContext<GreatHornEntityRenderState, GreatHornModel> context, LoadedEntityModels loader) {
+	public GreatHornNoseFeatureRenderer(RenderLayerParent<GreatHornEntityRenderState, GreatHornModel> context, EntityModelSet loader) {
 		super(context);
-		this.model = new GreatHornModel(loader.getModelPart(EntityModelLayersME.GREAT_HORN));
+		this.model = new GreatHornModel(loader.bakeLayer(EntityModelLayersME.GREAT_HORN));
 	}
 
 	private boolean isChristmas() {
@@ -35,10 +32,10 @@ public class GreatHornNoseFeatureRenderer extends FeatureRenderer<GreatHornEntit
 	}
 
 	@Override
-	public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, GreatHornEntityRenderState state, float limbAngle, float limbDistance) {
+	public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, GreatHornEntityRenderState state, float limbAngle, float limbDistance) {
 		if(state.hasRedNose() || isChristmas()) {
-			VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(TEXTURE));
-			this.getContextModel().render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+			// TODO 26.2: was entityTranslucent overlay on parent model; now generic cutout overlay
+			RenderLayer.renderColoredCutoutModel(this.getParentModel(), TEXTURE, poseStack, submitNodeCollector, light, state, -1, 0);
 		}
 	}
 }

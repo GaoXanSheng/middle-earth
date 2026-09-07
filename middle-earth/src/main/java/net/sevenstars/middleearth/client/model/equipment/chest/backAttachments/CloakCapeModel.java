@@ -1,10 +1,9 @@
 package net.sevenstars.middleearth.client.model.equipment.chest.backAttachments;
 
-import net.minecraft.client.render.entity.state.BipedEntityRenderState;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.client.model.equipment.chest.ChestplateAddonModel;
-import net.minecraft.client.model.ModelPart;
 import net.sevenstars.middleearth.client.renderer.ArmedEntityRenderStateAccess;
 import net.sevenstars.middleearth.client.renderer.BipedEntityRenderStateAccess;
 import net.sevenstars.middleearth.utils.ToRad;
@@ -20,18 +19,18 @@ public class CloakCapeModel extends ChestplateAddonModel {
     }
 
     @Override
-    public void setAngles(BipedEntityRenderState bipedEntityRenderState) {
+    public void setupAnim(HumanoidRenderState bipedEntityRenderState) {
         BipedEntityRenderStateAccess renderStateAccess = ((BipedEntityRenderStateAccess)bipedEntityRenderState);
         if(renderStateAccess != null) {
-            this.cape.traverse().forEach(ModelPart::resetTransform);
-            Vec3d currentVelocity = renderStateAccess.getVelocity();
-            if(currentVelocity == null) currentVelocity = new Vec3d(0, 0, 0);
+            this.cape.getAllParts().forEach(ModelPart::resetPose);
+            Vec3 currentVelocity = renderStateAccess.getVelocity();
+            if(currentVelocity == null) currentVelocity = new Vec3(0, 0, 0);
 
             double sqrVel = currentVelocity.length();
-            double speed = (sqrVel * 0.65f) + Math.sqrt(Math.abs(bipedEntityRenderState.limbSwingAmplitude)) * 0.35f;
+            double speed = (sqrVel * 0.65f) + Math.sqrt(Math.abs(bipedEntityRenderState.walkAnimationSpeed)) * 0.35f;
             double degree;
 
-            if (bipedEntityRenderState.isInSneakingPose) {
+            if (bipedEntityRenderState.isCrouching) {
                 degree = 5f + (speed * (MAX_ANGLE_CLOAK / 2));
             } else {
                 degree = (MAX_ANGLE_CLOAK * speed);
@@ -39,10 +38,10 @@ public class CloakCapeModel extends ChestplateAddonModel {
             degree = Math.max(0.0F, degree);
             degree = Math.min(MAX_ANGLE_CLOAK, degree);
 
-            double result = renderStateAccess.getVelocity().dotProduct(currentVelocity);
+            double result = renderStateAccess.getVelocity().dot(currentVelocity);
 
             if(result > 0) {
-                this.cape.pitch = ToRad.ex(degree);
+                this.cape.xRot = ToRad.ex(degree);
             }
         }
     }

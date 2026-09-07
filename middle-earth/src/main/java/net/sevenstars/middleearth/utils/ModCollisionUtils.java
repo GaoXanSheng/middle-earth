@@ -1,17 +1,16 @@
 package net.sevenstars.middleearth.utils;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Pair;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
-import net.minecraft.world.World;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.core.Direction;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class ModCollisionUtils {
     // Default ray length used for collision detection
@@ -35,31 +34,31 @@ public class ModCollisionUtils {
      * @return true if any collision is detected, false otherwise
      */
     public static boolean checkBlockFanCollision(
-            World world,
-            Box box,
-            Vec3d velocity,
+            Level world,
+            AABB box,
+            Vec3 velocity,
             Entity contextEntity,
             Consumer<HitResult> onCollision) {
         // If the velocity is zero but the entity might still be colliding with something, check its position
-        if (velocity.lengthSquared() == 0 && !world.isSpaceEmpty(contextEntity)) {
+        if (velocity.lengthSqr() == 0 && !world.noCollision(contextEntity)) {
             return true; // Handle the collision, or do whatever logic is necessary for a stationary entity
         }
 
         // Generate rays for all 6 faces of the bounding box
-        List<Pair<Vec3d, Vec3d>> rays = getFanRaysFromBoxFaces(box, velocity);
+        List<Pair<Vec3, Vec3>> rays = getFanRaysFromBoxFaces(box, velocity);
 
         // Check each ray for collisions
-        for (Pair<Vec3d, Vec3d> ray : rays) {
-            Vec3d origin = ray.getLeft();
-            Vec3d dir = ray.getRight();
-            Vec3d end = origin.add(dir.multiply(DEFAULT_RAY_LENGTH));
+        for (Pair<Vec3, Vec3> ray : rays) {
+            Vec3 origin = ray.getFirst();
+            Vec3 dir = ray.getSecond();
+            Vec3 end = origin.add(dir.scale(DEFAULT_RAY_LENGTH));
 
             // Perform the raycast to check for a collision
-            HitResult hit = world.raycast(new RaycastContext(origin,
+            HitResult hit = world.clip(new ClipContext(origin,
                     end,
-                    RaycastContext.ShapeType.OUTLINE,
+                    ClipContext.Block.OUTLINE,
                     // We use OUTLINE shape for detecting blocks
-                    RaycastContext.FluidHandling.NONE,
+                    ClipContext.Fluid.NONE,
                     // No fluid handling
                     contextEntity));
 
@@ -80,8 +79,8 @@ public class ModCollisionUtils {
      * @param velocity the velocity of the entity/projectile
      * @return a list of rays to check for collisions
      */
-    public static List<Pair<Vec3d, Vec3d>> getFanRaysFromBoxFaces(Box box, Vec3d velocity) {
-        List<Pair<Vec3d, Vec3d>> rays = new ArrayList<>();
+    public static List<Pair<Vec3, Vec3>> getFanRaysFromBoxFaces(AABB box, Vec3 velocity) {
+        List<Pair<Vec3, Vec3>> rays = new ArrayList<>();
 
         // Loop through all 6 directions (faces)
         for (Direction faceDir : Direction.values()) {
@@ -99,27 +98,27 @@ public class ModCollisionUtils {
      * @param velocity the velocity of the entity/projectile
      * @return a list of rays originating from the specified face
      */
-    private static List<Pair<Vec3d, Vec3d>> getFaceRays(
-            Box box,
+    private static List<Pair<Vec3, Vec3>> getFaceRays(
+            AABB box,
             Direction faceDir,
-            Vec3d velocity) {
-        Vec3d normal = Vec3d.of(faceDir.getVector()).normalize();
-        Vec3d center = box.getCenter();
+            Vec3 velocity) {
+        Vec3 normal = Vec3.atLowerCornerOf(faceDir.getUnitVec3i()).normalize();
+        Vec3 center = box.getCenter();
         double minX = box.minX, minY = box.minY, minZ = box.minZ;
         double maxX = box.maxX, maxY = box.maxY, maxZ = box.maxZ;
 
         // Choose the corner points and center on the face
-        List<Vec3d> facePoints = getFacePoints(faceDir, minX, minY, minZ, maxX, maxY, maxZ, center);
+        List<Vec3> facePoints = getFacePoints(faceDir, minX, minY, minZ, maxX, maxY, maxZ, center);
 
-        List<Pair<Vec3d, Vec3d>> rays = new ArrayList<>();
+        List<Pair<Vec3, Vec3>> rays = new ArrayList<>();
 
         // Generate rays by applying a slight outward offset and angle bias
-        for (Vec3d point : facePoints) {
-            Vec3d origin = point.add(normal.multiply(ORIGIN_OFFSET));  // Apply outward offset
-            Vec3d diagonalBias = point.subtract(center).normalize().multiply(ANGLE_SPREAD);  // Apply angle bias
-            Vec3d direction = velocity.normalize().add(diagonalBias).normalize();  // Final ray direction
+        for (Vec3 point : facePoints) {
+            Vec3 origin = point.add(normal.scale(ORIGIN_OFFSET));  // Apply outward offset
+            Vec3 diagonalBias = point.subtract(center).normalize().scale(ANGLE_SPREAD);  // Apply angle bias
+            Vec3 direction = velocity.normalize().add(diagonalBias).normalize();  // Final ray direction
 
-            rays.add(new Pair<>(origin, direction));  // Add the ray to the list
+            rays.add(Pair.of(origin, direction));  // Add the ray to the list
         }
 
         return rays;
@@ -139,7 +138,7 @@ public class ModCollisionUtils {
      * @param center  the center of the box
      * @return a list of points on the face of the box
      */
-    private static List<Vec3d> getFacePoints(
+    private static List<Vec3> getFacePoints(
             Direction faceDir,
             double minX,
             double minY,
@@ -147,26 +146,26 @@ public class ModCollisionUtils {
             double maxX,
             double maxY,
             double maxZ,
-            Vec3d center) {
+            Vec3 center) {
         return switch (faceDir.getAxis()) {
             case X -> // X-axis (East-West direction)
-                    List.of(new Vec3d(faceDir == Direction.EAST ? maxX : minX, minY, minZ),
-                            new Vec3d(faceDir == Direction.EAST ? maxX : minX, minY, maxZ),
-                            new Vec3d(faceDir == Direction.EAST ? maxX : minX, maxY, minZ),
-                            new Vec3d(faceDir == Direction.EAST ? maxX : minX, maxY, maxZ),
-                            new Vec3d(faceDir == Direction.EAST ? maxX : minX, center.y, center.z));
+                    List.of(new Vec3(faceDir == Direction.EAST ? maxX : minX, minY, minZ),
+                            new Vec3(faceDir == Direction.EAST ? maxX : minX, minY, maxZ),
+                            new Vec3(faceDir == Direction.EAST ? maxX : minX, maxY, minZ),
+                            new Vec3(faceDir == Direction.EAST ? maxX : minX, maxY, maxZ),
+                            new Vec3(faceDir == Direction.EAST ? maxX : minX, center.y, center.z));
             case Y -> // Y-axis (Up-Down direction)
-                    List.of(new Vec3d(minX, faceDir == Direction.UP ? maxY : minY, minZ),
-                            new Vec3d(maxX, faceDir == Direction.UP ? maxY : minY, minZ),
-                            new Vec3d(minX, faceDir == Direction.UP ? maxY : minY, maxZ),
-                            new Vec3d(maxX, faceDir == Direction.UP ? maxY : minY, maxZ),
-                            new Vec3d(center.x, faceDir == Direction.UP ? maxY : minY, center.z));
+                    List.of(new Vec3(minX, faceDir == Direction.UP ? maxY : minY, minZ),
+                            new Vec3(maxX, faceDir == Direction.UP ? maxY : minY, minZ),
+                            new Vec3(minX, faceDir == Direction.UP ? maxY : minY, maxZ),
+                            new Vec3(maxX, faceDir == Direction.UP ? maxY : minY, maxZ),
+                            new Vec3(center.x, faceDir == Direction.UP ? maxY : minY, center.z));
             case Z -> // Z-axis (North-South direction)
-                    List.of(new Vec3d(minX, minY, faceDir == Direction.SOUTH ? maxZ : minZ),
-                            new Vec3d(maxX, minY, faceDir == Direction.SOUTH ? maxZ : minZ),
-                            new Vec3d(minX, maxY, faceDir == Direction.SOUTH ? maxZ : minZ),
-                            new Vec3d(maxX, maxY, faceDir == Direction.SOUTH ? maxZ : minZ),
-                            new Vec3d(center.x,
+                    List.of(new Vec3(minX, minY, faceDir == Direction.SOUTH ? maxZ : minZ),
+                            new Vec3(maxX, minY, faceDir == Direction.SOUTH ? maxZ : minZ),
+                            new Vec3(minX, maxY, faceDir == Direction.SOUTH ? maxZ : minZ),
+                            new Vec3(maxX, maxY, faceDir == Direction.SOUTH ? maxZ : minZ),
+                            new Vec3(center.x,
                                     center.y,
                                     faceDir == Direction.SOUTH ? maxZ : minZ));
         };

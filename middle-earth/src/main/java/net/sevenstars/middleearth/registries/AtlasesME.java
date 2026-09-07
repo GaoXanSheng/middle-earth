@@ -3,9 +3,9 @@ package net.sevenstars.middleearth.registries;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.datageneration.providers.dynamic.CharacterAtlasTexturesProvider;
 
@@ -27,9 +27,9 @@ public class AtlasesME {
     }
 
     @Environment(EnvType.CLIENT)
-    public static SpriteAtlasTexture getAtlasFromPath(Identifier atlasPath){
-        MinecraftClient client = MinecraftClient.getInstance();
-        return client.getBakedModelManager().getAtlas(atlasPath);
+    public static TextureAtlas getAtlasFromPath(Identifier atlasPath){
+        Minecraft client = Minecraft.getInstance();
+        return client.getAtlasManager().getAtlasOrThrow(atlasPath);
     }
 
     public static void addProviders(FabricDataGenerator.Pack pack) {

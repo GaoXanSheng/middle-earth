@@ -4,13 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.commands.CommandUtils;
 import net.sevenstars.middleearth.commands.ModCommands;
@@ -19,22 +19,22 @@ import net.sevenstars.middleearth.network.packets.S2C.PacketForceOnboardingScree
 import net.sevenstars.middleearth.resources.persistent_datas.PlayerDataService;
 import net.sevenstars.middleearth.utils.ModColors;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class CommandOnboarding {
     public static String ONBOARDING_BASE_COMMAND = "onboarding";
     private static final String OPEN = "open";
     private static final String TRY = "try";
     private static final String PLAYER = "player";
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandRegistryAccess, Commands.CommandSelection registrationEnvironment) {
         // [TRY OPEN]
         dispatcher.register(literal(ModCommands.BASE_COMMAND)
-                .requires(source -> source.hasPermissionLevel(2)) // Require OP
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS)) // Require OP
                 .then(literal(ONBOARDING_BASE_COMMAND)
                         .then(literal(TRY)
                         .then(literal(OPEN)
-                        .then(argument(PLAYER, EntityArgumentType.player())
+                        .then(argument(PLAYER, EntityArgument.player())
                         .executes(CommandOnboarding::tryOpenForTarget)))))
                 .then(literal(ONBOARDING_BASE_COMMAND)
                         .then(literal(TRY)
@@ -47,9 +47,9 @@ public class CommandOnboarding {
                 PLAYER, literal(OPEN).executes(CommandOnboarding::openForTarget));
     }
 
-    private static int open(CommandContext<ServerCommandSource> context) {
-        if(context.getSource().isExecutedByPlayer()) {
-            ServerPlayerEntity source = context.getSource().getPlayer();
+    private static int open(CommandContext<CommandSourceStack> context) {
+        if(context.getSource().isPlayer()) {
+            ServerPlayer source = context.getSource().getPlayer();
             if(source != null){
                 ServerPlayNetworking.send(source, new PacketForceOnboardingScreen(ModServerConfigs.DELAY_ON_TELEPORT_CONFIRMATION, source));
             }
@@ -57,8 +57,8 @@ public class CommandOnboarding {
         return 0;
     }
 
-    private static int openForTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, PLAYER);
+    private static int openForTarget(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer targetPlayer = EntityArgument.getPlayer(context, PLAYER);
         if(targetPlayer != null){
             ServerPlayNetworking.send(targetPlayer, new PacketForceOnboardingScreen(ModServerConfigs.DELAY_ON_TELEPORT_CONFIRMATION, targetPlayer));
         }
@@ -66,33 +66,33 @@ public class CommandOnboarding {
         return 0;
     }
 
-    private static int tryOpen(CommandContext<ServerCommandSource> context) {
-        if(context.getSource().isExecutedByPlayer()) {
-            ServerPlayerEntity playerSource = context.getSource().getPlayer();
+    private static int tryOpen(CommandContext<CommandSourceStack> context) {
+        if(context.getSource().isPlayer()) {
+            ServerPlayer playerSource = context.getSource().getPlayer();
             if(playerSource != null){
                 boolean playerPassedOnboarding = PlayerDataService.playerPassedOnboarding(playerSource);
                 if(playerPassedOnboarding){
                     ServerPlayNetworking.send(playerSource, new PacketForceOnboardingScreen(ModServerConfigs.DELAY_ON_TELEPORT_CONFIRMATION, playerSource));
                 } else {
-                    MutableText sourceText = Text.translatable("command.%s.open.onboarding.error".formatted(MiddleEarth.MOD_ID));
-                    playerSource.sendMessage(sourceText.withColor(ModColors.WARNING.color));
+                    MutableComponent sourceText = Component.translatable("command.%s.open.onboarding.error".formatted(MiddleEarth.MOD_ID));
+                    playerSource.sendSystemMessage(sourceText.withColor(ModColors.WARNING.color));
                 }
             }
         }
         return 0;
     }
 
-    private static int tryOpenForTarget(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity playerTarget = EntityArgumentType.getPlayer(context, PLAYER);
+    private static int tryOpenForTarget(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer playerTarget = EntityArgument.getPlayer(context, PLAYER);
         if(playerTarget != null){
             boolean playerPassedOnboarding = PlayerDataService.playerPassedOnboarding(playerTarget);
             if(playerPassedOnboarding){
                 ServerPlayNetworking.send(playerTarget, new PacketForceOnboardingScreen(ModServerConfigs.DELAY_ON_TELEPORT_CONFIRMATION, playerTarget));
-                MutableText sourceText = Text.translatable("command.%s.open_target.onboarding.success".formatted(MiddleEarth.MOD_ID), playerTarget.getName());
-                context.getSource().sendMessage(sourceText.withColor(ModColors.SUCCESS.color));
+                MutableComponent sourceText = Component.translatable("command.%s.open_target.onboarding.success".formatted(MiddleEarth.MOD_ID), playerTarget.getName());
+                context.getSource().sendSystemMessage(sourceText.withColor(ModColors.SUCCESS.color));
             } else {
-                MutableText sourceText = Text.translatable("command.%s.open_target.onboarding.error".formatted(MiddleEarth.MOD_ID), playerTarget.getName());
-                context.getSource().sendMessage(sourceText.withColor(ModColors.WARNING.color));
+                MutableComponent sourceText = Component.translatable("command.%s.open_target.onboarding.error".formatted(MiddleEarth.MOD_ID), playerTarget.getName());
+                context.getSource().sendSystemMessage(sourceText.withColor(ModColors.WARNING.color));
             }
         }
 

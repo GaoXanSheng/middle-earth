@@ -199,7 +199,6 @@ public class GondorTexturePresetsPool {
     }
     // endregion
 
-
     // region [DATAS]
     static {
         COMMON = new TexturePresetDataPool(new HashMap<>(){{

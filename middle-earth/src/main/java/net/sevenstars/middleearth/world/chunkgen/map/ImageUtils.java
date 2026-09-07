@@ -14,8 +14,8 @@ import java.awt.image.Kernel;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 public class ImageUtils {
     private static HashMap<Integer, float[]> gaussianBlurKernel = new HashMap<>();
@@ -53,7 +53,6 @@ public class ImageUtils {
         return subidivedImages;
     }
 
-
     private static BufferedImage createChildFromParentImage(BufferedImage parent, int regionSize, int xIndex, int yIndex) {
         BufferedImage child = new BufferedImage(regionSize, regionSize, BufferedImage.TYPE_INT_ARGB);
         child = createVoids(child, parent, regionSize/2, xIndex, yIndex);
@@ -88,7 +87,6 @@ public class ImageUtils {
                 if(y  + 1 < result.getHeight() && x  + 1 < result.getWidth()) {
                     colorOccurences.add(result.getRGB(x + 1, y + 1));
                 }
-
 
                 try {
                     Integer color = getMostOccuringColorFromBiomeList(colorOccurences);
@@ -141,7 +139,6 @@ public class ImageUtils {
         }
         Map<Integer, Integer> counts = new HashMap<>();
 
-
         int max = 0;
         for(int i = 0; i < list.size(); i++) {
             var value = counts.get(list.get(i));
@@ -172,7 +169,6 @@ public class ImageUtils {
     private static int getExpansionWeight(Integer integer) throws Exception{
         return MapBasedBiomePool.getBiomeByColor(integer).getBiomeData().biomeWeight[(MiddleEarthMapGeneration.CURRENT_ITERATION <= 1) ? 0 : 1];
     }
-
 
     /**
      * TODO : Optimise this part, it the longest process in World-Gen
@@ -248,11 +244,8 @@ public class ImageUtils {
         BufferedImage edgeImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         edgeImage = op.filter(image, edgeImage);
 
-
-
         return edgeImage;
     }
-
 
     // Old algorithm
     private static BufferedImage fillImage(BufferedImage image) {

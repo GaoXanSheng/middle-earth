@@ -2,48 +2,48 @@ package net.sevenstars.middleearth.entity.spider;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.entity.VariantSelectorProvider;
-import net.minecraft.entity.spawn.SpawnCondition;
-import net.minecraft.entity.spawn.SpawnConditionSelectors;
-import net.minecraft.entity.spawn.SpawnContext;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.entry.RegistryFixedCodec;
-import net.minecraft.util.AssetInfo;
+import net.minecraft.core.ClientAsset;
+import net.minecraft.core.Holder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryFixedCodec;
+import net.minecraft.world.entity.variant.PriorityProvider;
+import net.minecraft.world.entity.variant.SpawnCondition;
+import net.minecraft.world.entity.variant.SpawnContext;
+import net.minecraft.world.entity.variant.SpawnPrioritySelectors;
 import net.sevenstars.middleearth.registries.DynamicRegistriesME;
 
 import java.util.List;
 
-public record SpiderVariant(SpiderAssetInfo assetInfo, SpawnConditionSelectors spawnConditions) implements VariantSelectorProvider<SpawnContext, SpawnCondition> {
+public record SpiderVariant(SpiderAssetInfo assetInfo, SpawnPrioritySelectors spawnConditions) implements PriorityProvider<SpawnContext, SpawnCondition> {
 	public static final Codec<SpiderVariant> CODEC = RecordCodecBuilder.create(
 			instance -> instance.group(
 							SpiderAssetInfo.CODEC.fieldOf("assets").forGetter(SpiderVariant::assetInfo),
-							SpawnConditionSelectors.CODEC.fieldOf("spawn_conditions").forGetter(SpiderVariant::spawnConditions)
+							SpawnPrioritySelectors.CODEC.fieldOf("spawn_conditions").forGetter(SpiderVariant::spawnConditions)
 					)
 					.apply(instance, SpiderVariant::new)
 	);
 
-	public static final Codec<RegistryEntry<SpiderVariant>> ENTRY_CODEC = RegistryFixedCodec.of(DynamicRegistriesME.SPIDER_VARIANTS);
+	public static final Codec<Holder<SpiderVariant>> ENTRY_CODEC = RegistryFixedCodec.create(DynamicRegistriesME.SPIDER_VARIANTS);
 
-	public static final PacketCodec<RegistryByteBuf, RegistryEntry<SpiderVariant>> PACKET_CODEC = PacketCodecs.registryEntry(DynamicRegistriesME.SPIDER_VARIANTS);
+	public static final StreamCodec<RegistryFriendlyByteBuf, Holder<SpiderVariant>> PACKET_CODEC = ByteBufCodecs.holderRegistry(DynamicRegistriesME.SPIDER_VARIANTS);
 
 	private SpiderVariant(SpiderAssetInfo assetInfo) {
-		this(assetInfo, SpawnConditionSelectors.EMPTY);
+		this(assetInfo, SpawnPrioritySelectors.EMPTY);
 	}
 
 	@Override
-	public List<VariantSelectorProvider.Selector<SpawnContext, SpawnCondition>> getSelectors() {
+	public List<PriorityProvider.Selector<SpawnContext, SpawnCondition>> selectors() {
 		return this.spawnConditions.selectors();
 	}
 
-	public record SpiderAssetInfo(AssetInfo larva, AssetInfo scuttler, AssetInfo spawnOfShelob) {
+	public record SpiderAssetInfo(net.minecraft.resources.Identifier larva, net.minecraft.resources.Identifier scuttler, net.minecraft.resources.Identifier spawnOfShelob) {
 		public static final Codec<SpiderAssetInfo> CODEC = RecordCodecBuilder.create(
 				instance -> instance.group(
-								AssetInfo.CODEC.fieldOf("larva").forGetter(SpiderAssetInfo::larva),
-								AssetInfo.CODEC.fieldOf("scuttler").forGetter(SpiderAssetInfo::scuttler),
-								AssetInfo.CODEC.fieldOf("spawn").forGetter(SpiderAssetInfo::spawnOfShelob)
+								net.minecraft.resources.Identifier.CODEC.fieldOf("larva").forGetter(SpiderAssetInfo::larva),
+								net.minecraft.resources.Identifier.CODEC.fieldOf("scuttler").forGetter(SpiderAssetInfo::scuttler),
+								net.minecraft.resources.Identifier.CODEC.fieldOf("spawn").forGetter(SpiderAssetInfo::spawnOfShelob)
 						)
 						.apply(instance, SpiderAssetInfo::new)
 		);

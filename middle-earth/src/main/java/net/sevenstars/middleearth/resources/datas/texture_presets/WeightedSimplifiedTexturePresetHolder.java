@@ -1,13 +1,12 @@
 package net.sevenstars.middleearth.resources.datas.texture_presets;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.sevenstars.api.dtos.WeightedItem;
-
 
 public class WeightedSimplifiedTexturePresetHolder extends WeightedItem<SimplifiedTexturePreset> {
 
-    public WeightedSimplifiedTexturePresetHolder(NbtCompound source){
+    public WeightedSimplifiedTexturePresetHolder(CompoundTag source){
         super(source);
         this.item = new SimplifiedTexturePreset(source);
     }
@@ -20,19 +19,17 @@ public class WeightedSimplifiedTexturePresetHolder extends WeightedItem<Simplifi
         this.weight = weight;
     }
 
-
     @Override
     public WeightedItem<SimplifiedTexturePreset> withWeight(int newWeight) {
         this.weight = newWeight;
         return this;
     }
 
-
     @Override
-    public NbtElement getNbt() {
-        NbtElement newNbt = super.getNbt();
+    public Tag getNbt() {
+        Tag newNbt = super.getNbt();
         if(newNbt == null)
-            newNbt = new NbtCompound();
+            newNbt = new CompoundTag();
         return this.item.getNbt(newNbt);
     }
 }

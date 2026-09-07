@@ -1,17 +1,17 @@
 package net.sevenstars.middleearth.entity.beasts.trolls.stone;
 
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.trolls.TrollEntityRenderState;
 
-public class StoneTrollRenderer extends MobEntityRenderer<StoneTrollEntity, TrollEntityRenderState, StoneTrollModel> {
+public class StoneTrollRenderer extends MobRenderer<StoneTrollEntity, TrollEntityRenderState, StoneTrollModel> {
     private static final String PATH = "textures/entities/trolls/stone/stone_troll1.png";
 
-    public StoneTrollRenderer(EntityRendererFactory.Context context) {
-        super(context, new StoneTrollModel(context.getPart(EntityModelLayersME.STONE_TROLL)), 1.1f);
+    public StoneTrollRenderer(EntityRendererProvider.Context context) {
+        super(context, new StoneTrollModel(context.bakeLayer(EntityModelLayersME.STONE_TROLL)), 1.1f);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class StoneTrollRenderer extends MobEntityRenderer<StoneTrollEntity, Trol
         return new TrollEntityRenderState();
     }
     @Override
-    public Identifier getTexture(TrollEntityRenderState state) {
-        return Identifier.of(MiddleEarth.MOD_ID, PATH);
+    public Identifier getTextureLocation(TrollEntityRenderState state) {
+        return Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, PATH);
     }
 }

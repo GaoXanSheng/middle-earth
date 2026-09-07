@@ -1,8 +1,13 @@
 package net.sevenstars.middleearth.block.registration;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.special.beds.CustomBedBlockEntity;
 import net.sevenstars.middleearth.block.special.bellows.BellowsBlockEntity;
@@ -18,10 +23,6 @@ import net.sevenstars.middleearth.block.special.skull.OldSkullBlockEntity;
 import net.sevenstars.middleearth.block.special.structureManager.StructureManagerBlockEntity;
 import net.sevenstars.middleearth.block.special.structureManager.nest.StructureNestBlockEntity;
 import net.sevenstars.middleearth.block.special.wood_pile.WoodPileBlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 import net.sevenstars.middleearth.registries.RegistryAliasesME;
 
 public class ModBlockEntities {
@@ -86,34 +87,36 @@ public class ModBlockEntities {
             ModDecorativeBlocks.STRAW_BED);
 
     public static void registerBlockEntities() {
-        BlockEntityType.BARREL.addSupportedBlock(ModDecorativeBlocks.SMALL_CRATE);
-        BlockEntityType.BARREL.addSupportedBlock(ModDecorativeBlocks.THIN_BARREL);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.AMPHORA);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.BROWN_AMPHORA);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.BROWN_JUG);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.GRAY_POT);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.LARGE_JUG);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.GRAY_VASE);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.BROWN_JAR);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.CLAY_JAR);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.GRAY_JAR);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.BROWN_FAT_POT);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.FAT_POT);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.GRAY_FAT_POT);
-        BlockEntityType.DECORATED_POT.addSupportedBlock(ModDecorativeBlocks.POT_OF_GOLD);
+        BlockEntityTypes.BARREL.addValidBlock(ModDecorativeBlocks.SMALL_CRATE);
+        BlockEntityTypes.BARREL.addValidBlock(ModDecorativeBlocks.THIN_BARREL);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.AMPHORA);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.BROWN_AMPHORA);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.BROWN_JUG);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.GRAY_POT);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.LARGE_JUG);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.GRAY_VASE);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.BROWN_JAR);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.CLAY_JAR);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.GRAY_JAR);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.BROWN_FAT_POT);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.FAT_POT);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.GRAY_FAT_POT);
+        BlockEntityTypes.DECORATED_POT.addValidBlock(ModDecorativeBlocks.POT_OF_GOLD);
 
-        BlockEntityType.TRIAL_SPAWNER.addSupportedBlock(ModDecorativeBlocks.BRIGAND_TRIAL_SPAWNER);
-        BlockEntityType.TRIAL_SPAWNER.addSupportedBlock(ModDecorativeBlocks.SPIDER_TRIAL_SPAWNER);
-        BlockEntityType.VAULT.addSupportedBlock(ModDecorativeBlocks.BRIGAND_VAULT);
-        BlockEntityType.VAULT.addSupportedBlock(ModDecorativeBlocks.SPIDER_VAULT);
+        BlockEntityTypes.TRIAL_SPAWNER.addValidBlock(ModDecorativeBlocks.BRIGAND_TRIAL_SPAWNER);
+        BlockEntityTypes.TRIAL_SPAWNER.addValidBlock(ModDecorativeBlocks.SPIDER_TRIAL_SPAWNER);
+        BlockEntityTypes.VAULT.addValidBlock(ModDecorativeBlocks.BRIGAND_VAULT);
+        BlockEntityTypes.VAULT.addValidBlock(ModDecorativeBlocks.SPIDER_VAULT);
+        BlockEntityTypes.LECTERN.addValidBlock(ModDecorativeBlocks.STONE_LECTERN);
+        BlockEntityTypes.CHISELED_BOOKSHELF.addValidBlock(ModDecorativeBlocks.CHISELED_DOLOMITE_BOOKSHELF);
     }
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String name,
                                                                        FabricBlockEntityTypeBuilder.Factory<? extends T> entityFactory,
                                                                        Block... blocks) {
-        Identifier id = Identifier.of(MiddleEarth.MOD_ID, name);
-        RegistryAliasesME.aliases.add(new RegistryAliasesME.Alias(Registries.BLOCK_ENTITY_TYPE, name));
+        Identifier id = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, name);
+        RegistryAliasesME.aliases.add(new RegistryAliasesME.Alias(BuiltInRegistries.BLOCK_ENTITY_TYPE, name));
 
-        return Registry.register(Registries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.<T>create(entityFactory, blocks).build());
+        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.<T>create(entityFactory, blocks).build());
     }
 }

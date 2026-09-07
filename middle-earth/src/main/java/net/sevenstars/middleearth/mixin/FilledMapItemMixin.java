@@ -1,31 +1,31 @@
 package net.sevenstars.middleearth.mixin;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.MapColor;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.sevenstars.middleearth.MiddleEarth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(FilledMapItem.class)
+@Mixin(MapItem.class)
 public class FilledMapItemMixin {
     @Redirect(
-            method = "updateColors",
+            method = "update",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/block/BlockState;getMapColor(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/MapColor;"
+                    target = "Lnet/minecraft/world/level/block/state/BlockState;getMapColor(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/MapColor;"
             )
     )
-    private MapColor preventNullMapColor(BlockState state, BlockView world, BlockPos pos) {
+    private MapColor preventNullMapColor(BlockState state, BlockGetter world, BlockPos pos) {
         MapColor color = state.getMapColor(world, pos);
         //debug(state, world, pos);
-        return color == null ? MapColor.CLEAR : color;
+        return color == null ? MapColor.NONE : color;
     }
 
-    private void debug(BlockState state, BlockView world, BlockPos pos) {
+    private void debug(BlockState state, BlockGetter world, BlockPos pos) {
         MapColor color = state.getMapColor(world, pos);
 
         if (color == null) {

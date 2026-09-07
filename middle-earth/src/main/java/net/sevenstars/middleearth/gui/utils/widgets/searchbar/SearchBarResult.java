@@ -1,23 +1,23 @@
 package net.sevenstars.middleearth.gui.utils.widgets.searchbar;
 
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.MutableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 
 public class SearchBarResult {
-    private MutableText text;
+    private MutableComponent text;
     private SearchBarResultType type;
     private Identifier targetIdentifier;
-    private ButtonWidget.PressAction action;
+    private Button.OnPress action;
 
-    public SearchBarResult(MutableText text, Identifier targetIdentifier, SearchBarResultType type, ButtonWidget.PressAction action){
+    public SearchBarResult(MutableComponent text, Identifier targetIdentifier, SearchBarResultType type, Button.OnPress action){
         this.text = text;
         this.targetIdentifier = targetIdentifier;
         this.type = type;
         this.action = action;
     }
 
-    public MutableText getText(){
+    public MutableComponent getText(){
         return text;
     }
 
@@ -29,7 +29,7 @@ public class SearchBarResult {
         return type;
     }
 
-    public ButtonWidget.PressAction getAction(){
+    public Button.OnPress getAction(){
         return action;
     }
 }
