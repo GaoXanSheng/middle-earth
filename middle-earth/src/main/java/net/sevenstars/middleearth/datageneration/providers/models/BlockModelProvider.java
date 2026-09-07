@@ -28,9 +28,14 @@ public class BlockModelProvider extends FabricModelProvider {
         // doors, cross/plant shapes, coffers, ...) that previously had bespoke BlockStateModelGenerator
         // entries should be layered back on top of this (see the legacy content in git history) once
         // their 26.2 data.models counterparts are wired in.
+        // Wall-pair blocks share their standing variant's BlockItem, so each item must be claimed once.
+        java.util.Set<net.minecraft.world.item.Item> seenItems = new java.util.HashSet<>();
         for (Block block : BuiltInRegistries.BLOCK) {
             Identifier id = BuiltInRegistries.BLOCK.getKey(block);
             if (id == null || !MiddleEarth.MOD_ID.equals(id.getNamespace())) {
+                continue;
+            }
+            if (block.asItem() == net.minecraft.world.item.Items.AIR || !seenItems.add(block.asItem())) {
                 continue;
             }
             blockStateModelGenerator.createTrivialCube(block);

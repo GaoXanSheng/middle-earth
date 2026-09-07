@@ -61,6 +61,10 @@ subprojects() {
 	}
 
 	processResources {
+		// datagen output (src/main/generated) overlaps hand-written resources mid-migration;
+		// first source root wins, so hand-written files take precedence
+		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
 		def version = project.version
 		inputs.property "version", version
 

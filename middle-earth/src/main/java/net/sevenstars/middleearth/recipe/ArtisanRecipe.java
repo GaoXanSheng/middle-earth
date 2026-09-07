@@ -3,42 +3,41 @@ package net.sevenstars.middleearth.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.fabric.impl.recipe.ingredient.CustomIngredientImpl;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.block.registration.ModDecorativeBlocks;
 import net.sevenstars.middleearth.block.special.forge.MultipleStackRecipeInput;
+
 import java.util.List;
 
 public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
     public final String category;
-    public final ItemStack output;
+    public final Item outputItem;
     public final String disposition;
     public final List<Ingredient> inputs;
     public final int xp;
 
-    public ArtisanRecipe(String category, ItemStack output, List<Ingredient> recipeItems, String disposition, int xp) {
+    private ItemStack output;
+
+    public ArtisanRecipe(String category, Item outputItem, List<Ingredient> recipeItems, String disposition, int xp) {
         this.category = category;
-        this.output = output;
+        this.outputItem = outputItem;
         this.inputs = recipeItems;
         this.disposition = disposition;
         this.xp = xp;
     }
 
-    public ArtisanRecipe(String category, ItemStack output, List<Ingredient> recipeItems) {
+    public ArtisanRecipe(String category, Item outputItem, List<Ingredient> recipeItems) {
         this.category = category;
-        this.output = output;
+        this.outputItem = outputItem;
         this.inputs = recipeItems;
         this.disposition = null;
         this.xp = 0;
@@ -71,14 +70,17 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
 
     @Override
     public ItemStack assemble(MultipleStackRecipeInput input) {
-        return this.output.copy();
+        return getOutput().copy();
     }
 
     public ItemStack craft(MultipleStackRecipeInput input, HolderLookup.Provider lookup) {
-        return this.output.copy();
+        return getOutput().copy();
     }
 
     public ItemStack getOutput() {
+        if (output == null) {
+            output = new ItemStack(outputItem);
+        }
         return output;
     }
 
@@ -142,7 +144,7 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
 
         private static final MapCodec<ArtisanRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 Codec.STRING.fieldOf("category").forGetter(recipe -> recipe.category),
-                ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
+                BuiltInRegistries.ITEM.byNameCodec().fieldOf("output").forGetter(recipe -> recipe.outputItem),
                 Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(recipe -> recipe.inputs),
                 Codec.STRING.optionalFieldOf("disposition", "").forGetter(recipe -> recipe.disposition),
                 Codec.INT.optionalFieldOf("xp", 0).forGetter(recipe -> recipe.xp)
@@ -154,18 +156,18 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
 
         private static ArtisanRecipe read(RegistryFriendlyByteBuf buf) {
             String category = buf.readUtf();
-            ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+            Item outputItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(buf.readUtf()));
             int i = buf.readVarInt();
             NonNullList<Ingredient> defaultedList = NonNullList.createWithCapacity(i);
             defaultedList.replaceAll(empty -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
             String disposition = buf.readUtf();
             int xp = buf.readVarInt();
-            return new ArtisanRecipe(category, output, defaultedList, disposition, xp);
+            return new ArtisanRecipe(category, outputItem, defaultedList, disposition, xp);
         }
 
         private static void write(RegistryFriendlyByteBuf buf, ArtisanRecipe recipe) {
             buf.writeUtf(recipe.category);
-            ItemStack.STREAM_CODEC.encode(buf, recipe.output);
+            buf.writeUtf(BuiltInRegistries.ITEM.getKey(recipe.outputItem).toString());
             buf.writeVarInt(recipe.inputs.size());
             for (Ingredient ingredient : recipe.inputs) {
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);

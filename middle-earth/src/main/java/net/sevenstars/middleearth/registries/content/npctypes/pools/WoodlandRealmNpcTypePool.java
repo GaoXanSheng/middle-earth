@@ -1,7 +1,7 @@
 package net.sevenstars.middleearth.registries.content.npctypes.pools;
 
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -264,7 +264,7 @@ public class WoodlandRealmNpcTypePool {
                                 .add(WeightedItemData.create(WeaponItemsME.WOODLAND_REALM_HEAVY_BLUE_SHIELD))
                                 .add(WeightedItemData.create(WeaponItemsME.WOODLAND_REALM_HEAVY_GREEN_SHIELD))
                         )
-        ), NpcRegistry.COMMON_NPC_ATTRIBUTES , CombatArchetypePool.DEFAULT, new MountData(EntitiesME.GREAT_HORN).withArmor(EquipmentItemsME.GREAT_HORN_PLATE_ARMOR.getDefaultInstance()), NpcLoot.FROM_6_TO_10);
+        ), NpcRegistry.COMMON_NPC_ATTRIBUTES , CombatArchetypePool.DEFAULT, new MountData(EntitiesME.GREAT_HORN).withArmor(EquipmentItemsME.GREAT_HORN_PLATE_ARMOR), NpcLoot.FROM_6_TO_10);
 
         NIGHTSHADE = new NpcType(NpcRegistry.WOODLAND_REALM_NIGHTSHADE.identifier(), RaceRegistry.ELF, FACTION, TexturePresetsRegistry.WOODLAND_REALM_NIGHTSHADE, List.of(
                 WeightedGearData.create()

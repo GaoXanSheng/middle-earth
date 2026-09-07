@@ -6,23 +6,14 @@ import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.data.recipes.SingleItemRecipeBuilder;
-import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -60,6 +51,7 @@ public class RecipeProvider extends FabricRecipeProvider {
 
             @Override
             public void buildRecipes() {
+                net.sevenstars.middleearth.datageneration.DatagenComponentBinder.bindItemComponents();
                 generate();
             }
 
@@ -662,7 +654,7 @@ public class RecipeProvider extends FabricRecipeProvider {
                         .save(exporter);
 
                 createBrickRecipe(exporter, ResourceItemsME.ASH, ModBlocks.ASH_BLOCK, 1);
-                createBrickRecipe(exporter, ModBlocks.ASH_BLOCK.asItem(), Blocks.TUFF, 1);
+                createBrickRecipe(exporter, ModBlocks.ASH_BLOCK.asItem(), Blocks.TUFF, 1, "tuff_from_ash");
 
                 ShapedRecipeBuilder.shaped(itemLookup, RecipeCategory.BUILDING_BLOCKS, StoneBlockSets.ASHENSTONE_SET.baseBlocks.base(), 4)
                         .pattern("AS")
@@ -3008,13 +3000,21 @@ public class RecipeProvider extends FabricRecipeProvider {
 
             //region BLOCK RECIPE METHODS
             private void createBrickRecipe(RecipeOutput exporter, Item input, Block output, int count) {
-                ShapedRecipeBuilder.shaped(itemLookup, RecipeCategory.BUILDING_BLOCKS, output, count)
+                createBrickRecipe(exporter, input, output, count, null);
+            }
+
+            private void createBrickRecipe(RecipeOutput exporter, Item input, Block output, int count, String recipeName) {
+                ShapedRecipeBuilder shapedRecipeBuilder = ShapedRecipeBuilder.shaped(itemLookup, RecipeCategory.BUILDING_BLOCKS, output, count)
                         .pattern("ll")
                         .pattern("ll")
                         .define('l', input)
                         .unlockedBy(hasItem(input),
-                                conditionsFromItem(input))
-                        .save(exporter);
+                                conditionsFromItem(input));
+                if (recipeName != null) {
+                    shapedRecipeBuilder.save(exporter, recipeName);
+                } else {
+                    shapedRecipeBuilder.save(exporter);
+                }
             }
 
             private void createPillarRecipe(RecipeOutput exporter, Block input, Block output, int count) {
@@ -3766,13 +3766,13 @@ public class RecipeProvider extends FabricRecipeProvider {
             private void createCookedFoodRecipes(RecipeOutput exporter, Item rawFood, Item cookedFood) {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(rawFood), RecipeCategory.FOOD, CookingBookCategory.FOOD, cookedFood, 0.35f, 200)
                         .unlockedBy(hasItem(rawFood), conditionsFromItem(rawFood))
-                        .save(exporter);
+                        .save(exporter, getItemName(cookedFood) + "_from_smelting");
                 SimpleCookingRecipeBuilder.smoking(Ingredient.of(rawFood), RecipeCategory.FOOD, cookedFood, 0.35f, 100)
                         .unlockedBy(hasItem(rawFood), conditionsFromItem(rawFood))
-                        .save(exporter);
+                        .save(exporter, getItemName(cookedFood) + "_from_smoking");
                 SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(rawFood), RecipeCategory.FOOD, cookedFood, 0.35f, 600)
                         .unlockedBy(hasItem(rawFood), conditionsFromItem(rawFood))
-                        .save(exporter);
+                        .save(exporter, getItemName(cookedFood) + "_from_campfire_cooking");
             }
 
             private void createSmokingRecipe(RecipeOutput exporter, Item rawFood, Item cookedFood) {
@@ -3846,7 +3846,7 @@ public class RecipeProvider extends FabricRecipeProvider {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(ingredients.stream()), category, CookingBookCategory.BLOCKS, output, experience, time)
                         .group(group)
                         .unlockedBy(getHasName(ingredients.get(0)), has(ingredients.get(0)))
-                        .save(exporter);
+                        .save(exporter, getItemName(output) + "_from_smelting_" + getItemName(ingredients.get(0)));
             }
 
             private static String hasItem(ItemLike item) {

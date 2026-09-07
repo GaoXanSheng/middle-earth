@@ -8,8 +8,6 @@
     "#middle-earth:mushroom_stew_ingredient",
     "minecraft:water_bucket"
   ],
-  "output": {
-    "count": 3,
-    "id": "minecraft:rabbit_stew"
-  }
+  "output": "minecraft:rabbit_stew",
+  "count": 3
 }

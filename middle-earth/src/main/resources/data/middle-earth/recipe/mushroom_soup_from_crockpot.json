@@ -6,8 +6,6 @@
     "minecraft:red_mushroom",
     "minecraft:water_bucket"
   ],
-  "output": {
-    "count": 3,
-    "id": "minecraft:mushroom_stew"
-  }
+  "output": "minecraft:mushroom_stew",
+  "count": 3
 }

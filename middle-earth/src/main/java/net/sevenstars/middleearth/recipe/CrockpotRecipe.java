@@ -5,18 +5,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.sevenstars.middleearth.block.special.forge.MultipleStackRecipeInput;
 
@@ -25,14 +21,24 @@ import java.util.List;
 public class CrockpotRecipe implements Recipe<MultipleStackRecipeInput> {
     public final int ingredientsAmount;
     public final List<Ingredient> inputs;
-    public final ItemStack output;
+    public final Item outputItem;
+    public final int outputCount;
 
     private PlacementInfo ingredientPlacement;
+    private ItemStack output;
 
-    public CrockpotRecipe(int ingredientsAmount, List<Ingredient> inputs, ItemStack output) {
+    public CrockpotRecipe(int ingredientsAmount, List<Ingredient> inputs, Item outputItem, int outputCount) {
         this.ingredientsAmount = ingredientsAmount;
         this.inputs = inputs;
-        this.output = output;
+        this.outputItem = outputItem;
+        this.outputCount = outputCount;
+    }
+
+    public ItemStack getOutput() {
+        if (output == null) {
+            output = new ItemStack(outputItem, outputCount);
+        }
+        return output;
     }
 
     public NonNullList<Ingredient> getIngredients() {
@@ -75,11 +81,11 @@ public class CrockpotRecipe implements Recipe<MultipleStackRecipeInput> {
 
     @Override
     public ItemStack assemble(MultipleStackRecipeInput input) {
-        return this.output.copy();
+        return getOutput().copy();
     }
 
     public ItemStack craft(MultipleStackRecipeInput input, HolderLookup.Provider lookup) {
-        return this.output.copy();
+        return getOutput().copy();
     }
 
     @Override
@@ -118,7 +124,8 @@ public class CrockpotRecipe implements Recipe<MultipleStackRecipeInput> {
         private static final MapCodec<CrockpotRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
                 Codec.INT.fieldOf("ingredients_amount").forGetter(recipe -> recipe.ingredientsAmount),
                 Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(recipe -> recipe.inputs),
-                ItemStack.CODEC.fieldOf("output").forGetter(recipe -> recipe.output)
+                BuiltInRegistries.ITEM.byNameCodec().fieldOf("output").forGetter(recipe -> recipe.outputItem),
+                Codec.INT.optionalFieldOf("count", 1).forGetter(recipe -> recipe.outputCount)
                 ).apply(instance, CrockpotRecipe::new));
 
         private static final StreamCodec<RegistryFriendlyByteBuf, CrockpotRecipe> STREAM_CODEC = StreamCodec.of(Serializer::write, Serializer::read);
@@ -130,8 +137,9 @@ public class CrockpotRecipe implements Recipe<MultipleStackRecipeInput> {
             int i = buf.readVarInt();
             NonNullList<Ingredient> ingredients = NonNullList.createWithCapacity(i);
             ingredients.replaceAll(empty -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
-            ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
-            return new CrockpotRecipe(ingredientsAmount, ingredients, output);
+            Item outputItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(buf.readUtf()));
+            int outputCount = buf.readVarInt();
+            return new CrockpotRecipe(ingredientsAmount, ingredients, outputItem, outputCount);
         }
 
         private static void write(RegistryFriendlyByteBuf buf, CrockpotRecipe recipe) {
@@ -140,7 +148,8 @@ public class CrockpotRecipe implements Recipe<MultipleStackRecipeInput> {
             for (Ingredient ingredient : recipe.inputs) {
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
             }
-            ItemStack.STREAM_CODEC.encode(buf, recipe.output);
+            buf.writeUtf(BuiltInRegistries.ITEM.getKey(recipe.outputItem).toString());
+            buf.writeVarInt(recipe.outputCount);
         }
     }
 }

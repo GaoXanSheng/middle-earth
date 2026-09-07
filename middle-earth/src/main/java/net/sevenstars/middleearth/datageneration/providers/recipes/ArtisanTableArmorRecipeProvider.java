@@ -9,8 +9,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -87,6 +87,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
 
     @Override
     protected RecipeProvider createRecipeProvider(HolderLookup.Provider wrapperLookup, RecipeOutput recipeExporter) {
+        net.sevenstars.middleearth.datageneration.DatagenComponentBinder.bindItemComponents();
         ItemStack goldArmorPlate = new ItemStack(ResourceItemsME.ARMOR_PLATE);
         goldArmorPlate.set(DataComponents.TRIM, new ArmorTrim(getArmorTrimMaterialsRegistry().getOrThrow(ResourceKey.create(Registries.TRIM_MATERIAL,
                 Identifier.parse(MetalTypes.GOLD.getName()))), getPattern()));
@@ -173,7 +174,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
 
                 //region GONDOR
                 //T2
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_BOOTS.getDefaultInstance(), "boots", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_BOOTS.asItem(), "boots", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -183,7 +184,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T3
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CABASSET_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CABASSET_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -193,7 +194,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -206,7 +207,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_LEATHER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_LEATHER_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -219,7 +220,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_LEATHER_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_LEATHER_CUIRASS.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -232,7 +233,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_TABBARD.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_TABBARD.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -245,7 +246,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_MAIL_COAT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_MAIL_COAT.asItem(), "leggings", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -258,7 +259,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T4
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_SOLDIER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_SOLDIER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelHelmetPlate.getItem()), steelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
@@ -268,7 +269,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(steelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_SOLDIER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_SOLDIER_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -282,7 +283,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 PLATE
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_PLATE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_PLATE_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelChainmail.getItem()), steelChainmail.getComponentsPatch()))
@@ -295,7 +296,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_SOLDIER_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_PLATE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_PLATE_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.GONDORIAN_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -308,7 +309,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 CAPTAIN
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CAPTAIN_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CAPTAIN_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.GONDORIAN_PLATE_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
@@ -319,7 +320,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 KING'S GUARD
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .input(Items.FEATHER)
                         .input(EquipmentItemsME.GONDORIAN_PLATE_HELMET)
                         .input(Items.FEATHER)
@@ -329,7 +330,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_PLATE_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_CHESTKPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_CHESTKPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -342,7 +343,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_PLATE_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelChainmail.getItem()), steelChainmail.getComponentsPatch()))
                         .input(EquipmentItemsME.GONDORIAN_PLATE_LEGGINGS)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelChainmail.getItem()), steelChainmail.getComponentsPatch()))
@@ -355,7 +356,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 CITADEL GUARD
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.GONDORIAN_PLATE_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
@@ -365,7 +366,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_PLATE_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -378,7 +379,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_PLATE_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelChainmail.getItem()), steelChainmail.getComponentsPatch()))
                         .input(EquipmentItemsME.GONDORIAN_PLATE_LEGGINGS)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelChainmail.getItem()), steelChainmail.getComponentsPatch()))
@@ -390,7 +391,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_PLATE_LEGGINGS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_BOOTS.getDefaultInstance(), "boots", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_BOOTS.asItem(), "boots", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -400,7 +401,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 FOUNTAIN GUARD
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.MITHRIL_NUGGET)
                         .input(EquipmentItemsME.GONDORIAN_CAPTAIN_HELMET)
                         .input(ResourceItemsME.MITHRIL_NUGGET)
@@ -410,7 +411,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_CAPTAIN_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -423,7 +424,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_PLATE_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.FABRIC)
                         .input(EquipmentItemsME.GONDORIAN_PLATE_LEGGINGS)
                         .input(ResourceItemsME.FABRIC)
@@ -436,7 +437,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //HOODS
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_HOOD.getDefaultInstance(), "helmet_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_HOOD.asItem(), "helmet_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -448,7 +449,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //CAPES
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CAPTAIN_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CAPTAIN_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.IRON_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -462,7 +463,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_HERO_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_HERO_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.IRON_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -476,7 +477,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_KINGS_GUARD_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.GOLD_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -490,7 +491,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_CITADEL_GUARD_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.GOLD_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -504,7 +505,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GONDORIAN_FOUNTAIN_GUARD_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.GOLD_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -521,7 +522,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
 
                 //region ROHAN
                 //T1
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_COAT.asItem(), "chestplate", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -535,7 +536,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T2
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_LEATHER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_LEATHER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -545,7 +546,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_LEATHER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_LEATHER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -555,7 +556,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_LEATHER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_LEATHER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -565,7 +566,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_LEATHER_VEST.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_LEATHER_VEST.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -578,7 +579,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ARMING_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_LEATHER_SCALE_VEST.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_LEATHER_SCALE_VEST.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -591,7 +592,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ARMING_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_GAMBESON.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_GAMBESON.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -605,7 +606,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T3
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_MILITIA_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_MILITIA_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -615,7 +616,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(bronzeArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_BRACED_MILITIA_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_BRACED_MILITIA_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -625,7 +626,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_MILITIA_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_MILITIA_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -635,7 +636,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(bronzeArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_MILITIA_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_MILITIA_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -645,7 +646,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(bronzeArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_LEATHER_VEST.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_LEATHER_VEST.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -658,7 +659,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_LEATHER_SCALE_VEST.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_REINFORCED_LEATHER_SCALE_VEST.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -671,7 +672,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_BRACED_MAIL_SHIRT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_BRACED_MAIL_SHIRT.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -685,7 +686,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 ///T4
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_SOLDIER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_SOLDIER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelHelmetPlate.getItem()), steelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
@@ -695,7 +696,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(steelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_SOLDIER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_SOLDIER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelHelmetPlate.getItem()), steelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
@@ -705,7 +706,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(steelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ROYAL_GUARD_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ROYAL_GUARD_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelHelmetPlate.getItem()), steelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -715,7 +716,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(steelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_SCALE_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_SCALE_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
@@ -728,7 +729,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_SCALE_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ORNAMENTED_SCALE_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -741,7 +742,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_SCALE_JACKET.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_SCALE_JACKET.asItem(), "leggings", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
@@ -754,7 +755,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 EORLING MARSHAL
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EORLING_MARSHAL_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EORLING_MARSHAL_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelChainmail.getItem()), steelChainmail.getComponentsPatch()))
@@ -767,7 +768,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ROHIRRIC_SCALE_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EORLING_MARSHAL_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EORLING_MARSHAL_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ROHIRRIC_SCALE_JACKET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -780,7 +781,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 HORSE LORD
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.HORSE_LORD_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.HORSE_LORD_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
@@ -793,7 +794,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ROHIRRIC_SCALE_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.HORSE_LORD_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.HORSE_LORD_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ROHIRRIC_SCALE_JACKET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -805,7 +806,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ROHIRRIC_SCALE_JACKET))
                         .save(output);
                 //CAPES
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -819,7 +820,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ROYAL_GUARD_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ROHIRRIC_ROYAL_GUARD_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -833,7 +834,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EORLING_MARSHAL_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EORLING_MARSHAL_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.STEEL_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -847,7 +848,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.HORSE_LORD_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.HORSE_LORD_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -865,7 +866,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //region DALE
 
                 //T1
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_ARMING_COAT_BLACK_FUR.getDefaultInstance(), "chestplate", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_ARMING_COAT_BLACK_FUR.asItem(), "chestplate", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -878,7 +879,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_ARMING_COAT_BROWN_FUR.getDefaultInstance(), "chestplate", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_ARMING_COAT_BROWN_FUR.asItem(), "chestplate", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -891,7 +892,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_ARMING_COAT_TAN_FUR.getDefaultInstance(), "chestplate", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_ARMING_COAT_TAN_FUR.asItem(), "chestplate", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -904,7 +905,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_ARMING_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_ARMING_COAT.asItem(), "chestplate", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -918,7 +919,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T2
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_BOOTS.getDefaultInstance(), "boots", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_BOOTS.asItem(), "boots", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -928,7 +929,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T3
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -938,7 +939,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET_BLACK_FUR.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET_BLACK_FUR.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(ResourceItemsME.FUR)
                         .input(EquipmentItemsME.DALISH_HELMET)
                         .input(ResourceItemsME.FUR)
@@ -948,7 +949,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DALISH_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET_BROWN_FUR.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET_BROWN_FUR.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(ResourceItemsME.FUR)
                         .input(EquipmentItemsME.DALISH_HELMET)
                         .input(ResourceItemsME.FUR)
@@ -958,7 +959,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DALISH_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET_TAN_FUR.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HELMET_TAN_FUR.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(ResourceItemsME.FUR)
                         .input(EquipmentItemsME.DALISH_HELMET)
                         .input(ResourceItemsME.FUR)
@@ -968,7 +969,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DALISH_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -981,7 +982,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_MAIL_COAT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_MAIL_COAT.asItem(), "leggings", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .input(EquipmentItemsME.MAIL_SKIRT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -994,7 +995,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T4
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_BURGONET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_BURGONET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelHelmetPlate.getItem()), steelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
@@ -1004,7 +1005,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(steelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_SCALE_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_SCALE_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelScaleMail.getItem()), steelScaleMail.getComponentsPatch()))
@@ -1018,7 +1019,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T4 HEYDAY
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.DALISH_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -1028,7 +1029,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DALISH_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -1041,7 +1042,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DALISH_SCALE_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_MAIL_COAT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_MAIL_COAT.asItem(), "leggings", DispositionType.GOOD, XP_T4)
                         .input(ResourceItemsME.FABRIC)
                         .input(EquipmentItemsME.DALISH_MAIL_COAT)
                         .input(ResourceItemsME.FABRIC)
@@ -1053,7 +1054,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DALISH_MAIL_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_BOOTS.getDefaultInstance(), "boots", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_BOOTS.asItem(), "boots", DispositionType.GOOD, XP_T4)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -1063,7 +1064,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 BARDING
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SOLDIER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SOLDIER_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelChainmail.getItem()), steelChainmail.getComponentsPatch()))
@@ -1076,7 +1077,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DALISH_SCALE_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_MAIL_SKIRT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_MAIL_SKIRT.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.DALISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -1089,7 +1090,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 BARDING SERGEANT
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SERGEANT_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SERGEANT_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .input(Items.FEATHER)
                         .input(EquipmentItemsME.BARDING_SOLDIER_HELMET)
                         .input(Items.FEATHER)
@@ -1099,7 +1100,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.BARDING_SOLDIER_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SERGEANT_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SERGEANT_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -1113,7 +1114,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //CAPES
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SURCOAT.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SURCOAT.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.STRING)
                         .input(ResourceItemsME.FABRIC)
@@ -1127,7 +1128,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SERGEANT_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BARDING_SERGEANT_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.STRING)
                         .input(ResourceItemsME.FABRIC)
@@ -1141,7 +1142,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_CLOAK.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DALISH_HEYDAY_CLOAK.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(Items.STRING)
                         .input(ResourceItemsME.BRONZE_NUGGET)
@@ -1162,7 +1163,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
 
                 //region LOTHLORIEN
                 //T1
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_DIADEM.getDefaultInstance(), "helmet", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_DIADEM.asItem(), "helmet", DispositionType.GOOD)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.BRONZE_NUGGET)
@@ -1171,7 +1172,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T2
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_LEATHER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_LEATHER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -1181,7 +1182,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_ARMING_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_ARMING_COAT.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.FABRIC)
@@ -1194,7 +1195,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ELVEN_ARMING_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_ARMING_SKIRT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_ARMING_SKIRT.asItem(), "leggings", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(EquipmentItemsME.ELVEN_ARMING_SKIRT)
                         .input(Items.LEATHER)
@@ -1207,7 +1208,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T3
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MAIL_COIF_DIADEM.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MAIL_COIF_DIADEM.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(EquipmentItemsME.ELVEN_MAIL_COIF)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .input(EquipmentItemsME.LORIEN_DIADEM)
@@ -1217,7 +1218,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ELVEN_MAIL_COIF))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SHORT_MAIL_COIF_DIADEM.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SHORT_MAIL_COIF_DIADEM.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(EquipmentItemsME.ELVEN_MAIL_COIF)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .input(EquipmentItemsME.LORIEN_DIADEM)
@@ -1227,7 +1228,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ELVEN_MAIL_COIF))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -1240,7 +1241,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ELVEN_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MARCHWARDEN_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MARCHWARDEN_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -1254,7 +1255,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T4
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SOLDIER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SOLDIER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelHelmetPlate.getItem()), edhelSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
@@ -1264,7 +1265,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(edhelSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SOLDIER_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SOLDIER_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -1277,7 +1278,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.LORIEN_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SOLDIER_SCALE_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SOLDIER_SCALE_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
@@ -1290,7 +1291,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(edhelSteelScaleMail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SCALE_COAT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_SCALE_COAT.asItem(), "leggings", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
@@ -1303,7 +1304,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 GALADHRIM
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelChainmail.getItem()), edhelSteelChainmail.getComponentsPatch()))
@@ -1316,7 +1317,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.LORIEN_SOLDIER_SCALE_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.LORIEN_SCALE_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
@@ -1329,7 +1330,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 EGLADIL & GALADHRIM LORD
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EGLADIL_SENTINEL_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EGLADIL_SENTINEL_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(silverArmorPlate.getItem()), silverArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(silverArmorPlate.getItem()), silverArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -1341,7 +1342,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.GALADHRIM_CHESTPLATE),
                                 has(EquipmentItemsME.GALADHRIM_CHESTPLATE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EGLADIL_SENTINEL_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EGLADIL_SENTINEL_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.FABRIC)
                         .input(EquipmentItemsME.GALADHRIM_LEGGINGS)
                         .input(ResourceItemsME.FABRIC)
@@ -1353,7 +1354,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GALADHRIM_LEGGINGS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -1365,7 +1366,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.GALADHRIM_CHESTPLATE),
                                 has(EquipmentItemsME.GALADHRIM_CHESTPLATE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.FABRIC)
                         .input(EquipmentItemsME.GALADHRIM_LEGGINGS)
                         .input(ResourceItemsME.FABRIC)
@@ -1378,7 +1379,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //HOODS
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MARCHWARDEN_HOOD.getDefaultInstance(), "helmet_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MARCHWARDEN_HOOD.asItem(), "helmet_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -1389,7 +1390,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_HOOD.getDefaultInstance(), "helmet_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_HOOD.asItem(), "helmet_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -1401,7 +1402,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //CAPES
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MARCHWARDEN_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LORIEN_MARCHWARDEN_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -1415,7 +1416,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(Items.STRING)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.STRING)
@@ -1428,7 +1429,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.FABRIC),
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EGLADIL_SENTINEL_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EGLADIL_SENTINEL_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(Items.STRING)
                         .input(Items.GOLD_NUGGET)
                         .input(Items.STRING)
@@ -1442,7 +1443,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.GOLD_NUGGET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_SURCOAT.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_SURCOAT.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.DYE.white())
                         .input(ResourceItemsME.FABRIC)
@@ -1456,7 +1457,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_CLOAK.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GALADHRIM_LORD_CLOAK.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.SILVER_NUGGET)
                         .input(Items.STRING)
                         .input(ResourceItemsME.SILVER_NUGGET)
@@ -1472,7 +1473,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //endregion
 
                 //region WOODLAND REALM
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_ARMING_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_ARMING_COAT.asItem(), "chestplate", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -1484,7 +1485,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.FABRIC),
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_LEATHER_ARMING_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_LEATHER_ARMING_COAT.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -1496,7 +1497,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.WOODLAND_REALM_ARMING_COAT),
                                 has(EquipmentItemsME.WOODLAND_REALM_ARMING_COAT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_LEATHER_BRONZED_ARMING_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_LEATHER_BRONZED_ARMING_COAT.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(Items.LEATHER)
@@ -1508,7 +1509,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.WOODLAND_REALM_ARMING_COAT),
                                 has(EquipmentItemsME.WOODLAND_REALM_ARMING_COAT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_LEATHER_SILVER_ARMING_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_LEATHER_SILVER_ARMING_COAT.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(ResourceItemsME.SILVER_NUGGET)
                         .input(ResourceItemsME.SILVER_NUGGET)
                         .input(Items.LEATHER)
@@ -1521,7 +1522,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.WOODLAND_REALM_ARMING_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_BRONZE_TRIMMED_RANGER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_BRONZE_TRIMMED_RANGER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(Items.LEATHER)
@@ -1530,7 +1531,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.BRONZE_NUGGET),
                                 has(ResourceItemsME.BRONZE_NUGGET))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SILVER_TRIMMED_RANGER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SILVER_TRIMMED_RANGER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.SILVER_NUGGET)
                         .input(Items.LEATHER)
@@ -1540,7 +1541,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.SILVER_NUGGET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_CAVALRY_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_CAVALRY_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelHelmetPlate.getItem()), edhelSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
@@ -1549,7 +1550,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(edhelSteelHelmetPlate.getItem()),
                                 has(edhelSteelHelmetPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -1561,7 +1562,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.LORIEN_MAIL_HAUBERK),
                                 has(EquipmentItemsME.LORIEN_MAIL_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_SKIRT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_SKIRT.asItem(), "leggings", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
@@ -1573,7 +1574,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(edhelSteelScaleMail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_ROYAL_GUARD_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_ROYAL_GUARD_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelHelmetPlate.getItem()), edhelSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
@@ -1582,7 +1583,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(edhelSteelHelmetPlate.getItem()),
                                 has(edhelSteelHelmetPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SCALE_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SCALE_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -1594,7 +1595,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.LORIEN_MAIL_HAUBERK),
                                 has(EquipmentItemsME.LORIEN_MAIL_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SCALE_SKIRT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SCALE_SKIRT.asItem(), "leggings", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelScaleMail.getItem()), edhelSteelScaleMail.getComponentsPatch()))
@@ -1607,7 +1608,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5 WLR
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SOLDIER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SOLDIER_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelChainmail.getItem()), edhelSteelChainmail.getComponentsPatch()))
@@ -1619,7 +1620,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.WOODLAND_REALM_SCALE_HAUBERK),
                                 has(EquipmentItemsME.WOODLAND_REALM_SCALE_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SOLDIER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SOLDIER_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.WOODLAND_REALM_SCALE_SKIRT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
@@ -1631,7 +1632,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.WOODLAND_REALM_SCALE_SKIRT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARDEN_OF_THE_GLADE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARDEN_OF_THE_GLADE_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelChainmail.getItem()), edhelSteelChainmail.getComponentsPatch()))
@@ -1643,7 +1644,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_HAUBERK),
                                 has(EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARDEN_OF_THE_GLADE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARDEN_OF_THE_GLADE_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_SKIRT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
@@ -1655,7 +1656,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.WOODLAND_REALM_GILDED_SCALE_SKIRT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARRIOR_OF_THE_NIGHTSHADE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARRIOR_OF_THE_NIGHTSHADE_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelChainmail.getItem()), edhelSteelChainmail.getComponentsPatch()))
@@ -1667,7 +1668,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.WOODLAND_REALM_SCALE_HAUBERK),
                                 has(EquipmentItemsME.WOODLAND_REALM_SCALE_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARRIOR_OF_THE_NIGHTSHADE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARRIOR_OF_THE_NIGHTSHADE_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.WOODLAND_REALM_SCALE_SKIRT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(edhelSteelArmorPlate.getItem()), edhelSteelArmorPlate.getComponentsPatch()))
@@ -1679,7 +1680,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.WOODLAND_REALM_SCALE_SKIRT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_COMMANDER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_COMMANDER_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -1691,7 +1692,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.WOODLAND_REALM_SOLDIER_CHESTPLATE),
                                 has(EquipmentItemsME.WOODLAND_REALM_SOLDIER_CHESTPLATE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_COMMANDER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_COMMANDER_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .input(ResourceItemsME.FABRIC)
                         .input(EquipmentItemsME.WOODLAND_REALM_SOLDIER_LEGGINGS)
                         .input(ResourceItemsME.FABRIC)
@@ -1703,7 +1704,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.WOODLAND_REALM_SOLDIER_LEGGINGS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_ROYAL_GUARD_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_ROYAL_GUARD_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.DYE.red())
                         .input(ResourceItemsME.FABRIC)
@@ -1716,7 +1717,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.FABRIC),
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SOLDIER_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WOODLAND_REALM_SOLDIER_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.DYE.red())
                         .input(ResourceItemsME.FABRIC)
@@ -1729,7 +1730,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.FABRIC),
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARDEN_OF_THE_GLADE_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARDEN_OF_THE_GLADE_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.DYE.brown())
                         .input(ResourceItemsME.FABRIC)
@@ -1742,7 +1743,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.FABRIC),
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARRIOR_OF_NIGHTSHADE_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WARRIOR_OF_NIGHTSHADE_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.DYE.green())
                         .input(ResourceItemsME.FABRIC)
@@ -1762,7 +1763,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //region DWARVES
 
                 //region EREBOR
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_SEGMENTED_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_SEGMENTED_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
@@ -1772,7 +1773,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(bronzeArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_LEATHER_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_LEATHER_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -1785,7 +1786,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_WANDERER_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_WANDERER_COAT.asItem(), "chestplate", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -1798,7 +1799,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_LEATHER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_LEATHER_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(Items.LEATHER)
@@ -1810,7 +1811,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_PARTISAN_OUTFIT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_PARTISAN_OUTFIT.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -1823,7 +1824,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DWARVEN_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_REINFORCED_LEATHER_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.LONGBEARD_REINFORCED_LEATHER_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -1836,7 +1837,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.DWARVEN_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_LEATHER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_LEATHER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.IRON_INGOT)
                         .input(Items.LEATHER)
                         .input(Items.IRON_INGOT)
@@ -1846,7 +1847,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_BRACED_LEATHER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_BRACED_LEATHER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.IRON_INGOT)
                         .input(Items.LEATHER)
                         .input(Items.IRON_INGOT)
@@ -1856,7 +1857,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_NASAL_LEATHER_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_NASAL_LEATHER_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T2)
                         .input(Items.IRON_INGOT)
                         .input(Items.LEATHER)
                         .input(Items.IRON_INGOT)
@@ -1866,7 +1867,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_LEATHER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_LEATHER_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T2)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(Items.LEATHER)
@@ -1878,7 +1879,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_COIF.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_COIF.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -1888,7 +1889,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GILDED_MAIL_COIF.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GILDED_MAIL_COIF.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .input(ResourceItemsME.BRONZE_NUGGET)
                         .input(EquipmentItemsME.EREBOR_MAIL_COIF)
                         .input(ResourceItemsME.BRONZE_NUGGET)
@@ -1898,7 +1899,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_MAIL_COIF))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -1908,7 +1909,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -1921,7 +1922,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_PADDED_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_PADDED_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -1934,7 +1935,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_COAT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_COAT.asItem(), "leggings", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -1946,7 +1947,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -1958,7 +1959,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_CHAUSSES.getDefaultInstance(), "boots", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_MAIL_CHAUSSES.asItem(), "boots", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -1967,7 +1968,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_BOOTS.getDefaultInstance(), "boots", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_BOOTS.asItem(), "boots", DispositionType.GOOD, XP_T5)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.IRON_INGOT)
@@ -1977,7 +1978,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //t4
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelHelmetPlate.getItem()), khazadSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
@@ -1987,14 +1988,14 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(khazadSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_GILDED_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_GILDED_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T4)
                         .input(EquipmentItemsME.EREBOR_GILDED_MAIL_COIF)
                         .input(EquipmentItemsME.RAVENHILL_HELMET)
                         .unlockedBy(getHasName(EquipmentItemsME.RAVENHILL_HELMET),
                                 has(EquipmentItemsME.RAVENHILL_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_SCALE_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_SCALE_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
@@ -2007,7 +2008,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(khazadSteelScaleMail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_LONG_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_LONG_COAT.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelChainmail.getItem()), khazadSteelChainmail.getComponentsPatch()))
@@ -2020,7 +2021,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_BRAWLER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_BRAWLER_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -2033,7 +2034,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_REINFORCED_LEATHER_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_REINFORCED_LEATHER_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2046,7 +2047,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_REINFORCED_COAT.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_REINFORCED_COAT.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -2059,7 +2060,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_REINFORCED_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_REINFORCED_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelChainmail.getItem()), khazadSteelChainmail.getComponentsPatch()))
@@ -2072,7 +2073,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_SCALE_COAT.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_SCALE_COAT.asItem(), "leggings", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
@@ -2084,7 +2085,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(khazadSteelScaleMail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_SCALE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_SCALE_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
@@ -2096,7 +2097,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(khazadSteelScaleMail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_BOOTS.getDefaultInstance(), "boots", DispositionType.GOOD, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_BOOTS.asItem(), "boots", DispositionType.GOOD, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2105,7 +2106,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(khazadSteelArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_PLATE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_PLATE_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelScaleMail.getItem()), khazadSteelScaleMail.getComponentsPatch()))
@@ -2118,7 +2119,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_SCALE_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_PLATE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_PLATE_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.EREBOR_SCALE_LEGGINGS)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
@@ -2130,7 +2131,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_SCALE_LEGGINGS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GUARD_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GUARD_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.EREBOR_PLATE_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
@@ -2138,7 +2139,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_PLATE_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GATEWARDEN_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GATEWARDEN_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.EREBOR_PLATE_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
@@ -2148,7 +2149,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_PLATE_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GATEWARDEN_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GATEWARDEN_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -2161,7 +2162,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_PLATE_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GATEWARDEN_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_GATEWARDEN_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.EREBOR_PLATE_LEGGINGS)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
@@ -2173,7 +2174,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_PLATE_LEGGINGS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_WATCHWARDEN_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_WATCHWARDEN_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.EREBOR_PLATE_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
@@ -2183,7 +2184,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_PLATE_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_WATCHWARDEN_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_WATCHWARDEN_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -2196,7 +2197,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_PLATE_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_WATCHWARDEN_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_WATCHWARDEN_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.EREBOR_PLATE_LEGGINGS)
                         .componentInput(new ComponentsIngredient(Ingredient.of(bronzeArmorPlate.getItem()), bronzeArmorPlate.getComponentsPatch()))
@@ -2208,7 +2209,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_PLATE_LEGGINGS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_CAPTAIN_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_CAPTAIN_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .input(Items.GOAT_HORN)
                         .input(EquipmentItemsME.EREBOR_GUARD_HELMET)
                         .input(Items.GOAT_HORN)
@@ -2216,7 +2217,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.EREBOR_GUARD_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_HELMET.getDefaultInstance(), "helmet", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_HELMET.asItem(), "helmet", DispositionType.GOOD, XP_T5)
                         .input(Items.FEATHER)
                         .input(EquipmentItemsME.RAVENHILL_WATCHWARDEN_HELMET)
                         .input(Items.FEATHER)
@@ -2226,7 +2227,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.RAVENHILL_WATCHWARDEN_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_CHESTPLATE.asItem(), "chestplate", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(goldArmorPlate.getItem()), goldArmorPlate.getComponentsPatch()))
                         .input(ResourceItemsME.FABRIC)
@@ -2239,7 +2240,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.RAVENHILL_WATCHWARDEN_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.GOOD, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_LEGGINGS.asItem(), "leggings", DispositionType.GOOD, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.RAVENHILL_WATCHWARDEN_LEGGINGS)
                         .componentInput(new ComponentsIngredient(Ingredient.of(khazadSteelArmorPlate.getItem()), khazadSteelArmorPlate.getComponentsPatch()))
@@ -2251,7 +2252,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.RAVENHILL_WATCHWARDEN_LEGGINGS))
                         .save(output);
                 //capes
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.EREBOR_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.STRING)
                         .input(ResourceItemsME.FABRIC)
@@ -2265,7 +2266,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_CAPE.getDefaultInstance(), "back_attachment", DispositionType.GOOD)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RAVENHILL_SENTINEL_CAPE.asItem(), "back_attachment", DispositionType.GOOD)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.STRING)
                         .input(ResourceItemsME.FABRIC)
@@ -2286,7 +2287,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //region ORCS
 
                 //region MORDOR
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -2296,7 +2297,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -2306,7 +2307,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_KETTLE_HAT.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_KETTLE_HAT.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -2316,7 +2317,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_KETTLE_HAT.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_KETTLE_HAT.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -2326,7 +2327,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_NASAL_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_NASAL_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -2336,7 +2337,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_NASAL_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_NASAL_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -2346,21 +2347,21 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_KETTLE_HAT_WITH_COIF.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_KETTLE_HAT_WITH_COIF.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .input(EquipmentItemsME.ORCISH_MAIL_COIF)
                         .input(EquipmentItemsME.MORDOR_KETTLE_HAT)
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_MAIL_COIF),
                                 has(EquipmentItemsME.ORCISH_MAIL_COIF))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_KETTLE_HAT_WITH_COIF.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_KETTLE_HAT_WITH_COIF.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .input(EquipmentItemsME.ORCISH_MAIL_COIF)
                         .input(EquipmentItemsME.MORDOR_KETTLE_HAT)
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_MAIL_COIF),
                                 has(EquipmentItemsME.ORCISH_MAIL_COIF))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_LEATHER_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_LEATHER_CUIRASS.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.LEATHER)
@@ -2373,7 +2374,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_PAINTED_LEATHER_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_PAINTED_LEATHER_CUIRASS.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.DYE.red())
@@ -2386,7 +2387,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MORDOR_LEATHER_CUIRASS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_CREST_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_CREST_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2396,7 +2397,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_CREST_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_CREST_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2406,7 +2407,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_MANDIBLE_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_MANDIBLE_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2416,7 +2417,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_MANDIBLE_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_MANDIBLE_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2426,7 +2427,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_SALLET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_SALLET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2436,7 +2437,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_SALLET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_SALLET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2446,7 +2447,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_CUIRASS.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2459,7 +2460,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MORDOR_LEATHER_CUIRASS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_CUIRASS.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2472,7 +2473,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MORDOR_LEATHER_CUIRASS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_GORGET_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_GORGET_HAUBERK.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2485,7 +2486,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_GORGET_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_GORGET_HAUBERK.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2498,7 +2499,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_REINFORCED_COAT.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_REINFORCED_COAT.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2511,7 +2512,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MORDOR_LEATHER_CUIRASS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_REINFORCED_COAT.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_REINFORCED_COAT.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2524,7 +2525,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MORDOR_LEATHER_CUIRASS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -2537,7 +2538,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -2550,7 +2551,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_PLATE_BOOTS.getDefaultInstance(), "boots", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_PLATE_BOOTS.asItem(), "boots", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2559,7 +2560,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_PLATE_BOOTS.getDefaultInstance(), "boots", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_PLATE_BOOTS.asItem(), "boots", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2568,7 +2569,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_GREAT_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_GREAT_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .input(ResourceItemsME.BURZUM_STEEL_INGOT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .input(ResourceItemsME.BURZUM_STEEL_INGOT)
@@ -2578,7 +2579,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_SNOUT_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.RUSTED_MORDOR_SNOUT_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .input(ResourceItemsME.BURZUM_STEEL_INGOT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .input(ResourceItemsME.BURZUM_STEEL_INGOT)
@@ -2588,7 +2589,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_DEGRADED_GONDORIAN_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_DEGRADED_GONDORIAN_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2601,7 +2602,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GONDORIAN_PLATE_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_PAINTED_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_PAINTED_CUIRASS.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .input(Items.DYE.red())
@@ -2614,7 +2615,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MORDOR_CUIRASS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_SCALE_COAT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_SCALE_COAT.asItem(), "leggings", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2627,7 +2628,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_PLATE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_PLATE_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -2639,7 +2640,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.MORDOR_CHESTPLATE),
                                 has(EquipmentItemsME.MORDOR_CHESTPLATE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_PLATE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_PLATE_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ORCISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2650,7 +2651,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_MAIL_COAT),
                                 has(EquipmentItemsME.ORCISH_MAIL_COAT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_COMMANDER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_COMMANDER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .input(Items.SKELETON_SKULL)
                         .input(EquipmentItemsME.BLACK_URUK_PLATE_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2659,7 +2660,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.BLACK_URUK_PLATE_HELMET),
                                 has(EquipmentItemsME.BLACK_URUK_PLATE_HELMET))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_COMMANDER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_URUK_COMMANDER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(Items.DYE.red())
@@ -2672,7 +2673,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.BLACK_URUK_PLATE_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_BLACK_NUMENOREAN_PLATE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_BLACK_NUMENOREAN_PLATE_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -2684,7 +2685,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.MAIL_HAUBERK),
                                 has(EquipmentItemsME.MAIL_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_BLACK_NUMENOREAN_PLATE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_BLACK_NUMENOREAN_PLATE_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.MAIL_SKIRT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -2695,7 +2696,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.MAIL_SKIRT),
                                 has(EquipmentItemsME.MAIL_SKIRT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_BLACK_NUMENOREAN_CAPE.getDefaultInstance(), "back_attachment", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORDOR_BLACK_NUMENOREAN_CAPE.asItem(), "back_attachment", DispositionType.EVIL)
                         .input(ResourceItemsME.STEEL_NUGGET)
                         .input(Items.STRING)
                         .input(ResourceItemsME.STEEL_NUGGET)
@@ -2711,14 +2712,14 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //endregion
 
                 //region DOL GULDUR
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_JAILER_COLLAR.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_JAILER_COLLAR.asItem(), "helmet", DispositionType.EVIL, XP_T2)
                     .input(ResourceItemsME.CRUDE_INGOT)
                     .input(ResourceItemsME.CRUDE_INGOT)
                     .input(ResourceItemsME.CRUDE_INGOT)
                     .unlockedBy(getHasName(ResourceItemsME.CRUDE_INGOT),
                             has(ResourceItemsME.CRUDE_INGOT))
                     .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_JAILER_COLLAR.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_JAILER_COLLAR.asItem(), "helmet", DispositionType.EVIL, XP_T2)
                     .input(ResourceItemsME.CRUDE_INGOT)
                     .input(ResourceItemsME.CRUDE_INGOT)
                     .input(ResourceItemsME.CRUDE_INGOT)
@@ -2726,7 +2727,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                             has(ResourceItemsME.CRUDE_INGOT))
                     .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_EXECUTIONER_HOOD.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_EXECUTIONER_HOOD.asItem(), "helmet", DispositionType.EVIL, XP_T2)
                     .input(Items.LEATHER)
                     .input(Items.LEATHER)
                     .input(Items.LEATHER)
@@ -2736,7 +2737,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                             has(Items.LEATHER))
                     .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_EXECUTIONER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_EXECUTIONER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2748,20 +2749,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE),
                                 has(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_EXECUTIONER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
-                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
-                        .input(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE)
-                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
-                        .input(ResourceItemsME.FABRIC)
-                        .input(ResourceItemsME.FABRIC)
-                        .input(ResourceItemsME.FABRIC)
-                        .unlockedBy(getHasName(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE),
-                                has(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE))
-                        .save(output);
-
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_PADDED_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_EXECUTIONER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2774,7 +2762,20 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_HUNTER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_PADDED_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
+                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
+                        .input(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE)
+                        .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
+                        .input(ResourceItemsME.FABRIC)
+                        .input(ResourceItemsME.FABRIC)
+                        .input(ResourceItemsME.FABRIC)
+                        .unlockedBy(getHasName(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE),
+                                has(EquipmentItemsME.ORCISH_LEATHER_CHESTPLATE))
+                        .save(output);
+
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_HUNTER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2784,7 +2785,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_RAIDER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_RAIDER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2793,7 +2794,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(burzumSteelArmorPlate.getItem()),
                                 has(burzumSteelArmorPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_RAIDER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_RAIDER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2802,7 +2803,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(burzumSteelArmorPlate.getItem()),
                                 has(burzumSteelArmorPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_RAIDER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_RAIDER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2814,7 +2815,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_MAIL_HAUBERK),
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_RAIDER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_RAIDER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2826,7 +2827,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_MAIL_HAUBERK),
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_RAIDER_COAT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_RAIDER_COAT.asItem(), "leggings", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -2837,7 +2838,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(burzumSteelScaleMail.getItem()),
                                 has(burzumSteelScaleMail.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_BOOTS.getDefaultInstance(), "boots", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_BOOTS.asItem(), "boots", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2845,7 +2846,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(burzumSteelArmorPlate.getItem()),
                                 has(burzumSteelArmorPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_BOOTS.getDefaultInstance(), "boots", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_BOOTS.asItem(), "boots", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -2855,7 +2856,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_MARAUDER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_MARAUDER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -2867,7 +2868,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_SCALE_VEST),
                                 has(EquipmentItemsME.ORCISH_SCALE_VEST))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_MARAUDER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_MARAUDER_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ORCISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2879,7 +2880,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_COAT))
                         .save(output);
                 // Weathered
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_MARAUDER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_MARAUDER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -2891,7 +2892,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_SCALE_VEST),
                                 has(EquipmentItemsME.ORCISH_SCALE_VEST))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_MARAUDER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_MARAUDER_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ORCISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2903,7 +2904,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_STALKER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_STALKER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -2915,7 +2916,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.DOL_GULDUR_RAIDER_CHESTPLATE),
                                 has(EquipmentItemsME.DOL_GULDUR_RAIDER_CHESTPLATE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_STALKER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.DOL_GULDUR_STALKER_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ORCISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2927,7 +2928,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_COAT))
                         .save(output);
                 // Weathered
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_STALKER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_STALKER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -2939,7 +2940,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.WEATHERED_DOL_GULDUR_RAIDER_CHESTPLATE),
                                 has(EquipmentItemsME.WEATHERED_DOL_GULDUR_RAIDER_CHESTPLATE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_STALKER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.WEATHERED_DOL_GULDUR_STALKER_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ORCISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -2951,7 +2952,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_REAVER_SHOULDER_CAPE.getDefaultInstance(), "back_attachment", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.BLACK_REAVER_SHOULDER_CAPE.asItem(), "back_attachment", DispositionType.EVIL)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.STRING)
                         .input(ResourceItemsME.FABRIC)
@@ -2966,7 +2967,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //endregion
 
                 //region ISENGARD
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LEATHER_SCOUT_CAP.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LEATHER_SCOUT_CAP.asItem(), "helmet", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -2976,7 +2977,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LEATHER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LEATHER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -2989,14 +2990,14 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_LEATHER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_LEATHER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(EquipmentItemsME.URUK_HAI_LEATHER_CHESTPLATE)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_LEATHER_CHESTPLATE),
                                 has(EquipmentItemsME.URUK_HAI_LEATHER_CHESTPLATE))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LEATHER_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LEATHER_HAUBERK.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -3009,7 +3010,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_BOOTS.getDefaultInstance(), "boots", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_BOOTS.asItem(), "boots", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -3018,7 +3019,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LIGHT_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_LIGHT_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -3028,14 +3029,14 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_LIGHT_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_LIGHT_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .input(EquipmentItemsME.URUK_HAI_LIGHT_HELMET)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_LIGHT_HELMET),
                                 has(EquipmentItemsME.URUK_HAI_LIGHT_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_REINFORCED_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_REINFORCED_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -3045,14 +3046,14 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_REINFORCED_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_REINFORCED_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .input(EquipmentItemsME.URUK_HAI_REINFORCED_HELMET)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_REINFORCED_HELMET),
                                 has(EquipmentItemsME.URUK_HAI_REINFORCED_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -3065,7 +3066,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_MAIL_COAT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_MAIL_COAT.asItem(), "leggings", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -3077,7 +3078,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_MAIL_SKIRT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_MAIL_SKIRT.asItem(), "leggings", DispositionType.EVIL, XP_T3)
                         .input(Items.LEATHER)
                         .input(EquipmentItemsME.URUK_HAI_MAIL_COAT)
                         .input(Items.LEATHER)
@@ -3090,7 +3091,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.URUK_HAI_MAIL_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_SOLDIER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_SOLDIER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -3100,14 +3101,14 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_SOLDIER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_SOLDIER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .input(EquipmentItemsME.URUK_HAI_SOLDIER_HELMET)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_SOLDIER_HELMET),
                                 has(EquipmentItemsME.URUK_HAI_SOLDIER_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_CUIRASS.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -3120,7 +3121,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelArmorPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PLATE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PLATE_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -3133,7 +3134,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.URUK_HAI_CUIRASS))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PLATE_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PLATE_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.URUK_HAI_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3145,28 +3146,28 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.URUK_HAI_MAIL_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_PLATE_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_PLATE_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .input(EquipmentItemsME.URUK_HAI_PLATE_HELMET)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_PLATE_HELMET),
                                 has(EquipmentItemsME.URUK_HAI_PLATE_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_SAPPER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_SAPPER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .input(EquipmentItemsME.URUK_HAI_SAPPER_HELMET)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_SAPPER_HELMET),
                                 has(EquipmentItemsME.URUK_HAI_SAPPER_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_BERSERKER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_BERSERKER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .input(EquipmentItemsME.URUK_HAI_BERSERKER_HELMET)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_BERSERKER_HELMET),
                                 has(EquipmentItemsME.URUK_HAI_BERSERKER_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_COMMANDER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_COMMANDER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.URUK_HAI_PLATE_HELMET)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3176,14 +3177,14 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.URUK_HAI_PLATE_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_COMMANDER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.URUK_HAI_PAINTED_COMMANDER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .input(EquipmentItemsME.URUK_HAI_COMMANDER_HELMET)
                         .input(ResourceItemsME.ISENGARD_BANNER_PATTERN)
                         .unlockedBy(getHasName(EquipmentItemsME.URUK_HAI_COMMANDER_HELMET),
                                 has(EquipmentItemsME.URUK_HAI_COMMANDER_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_GUARD_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_GUARD_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -3196,7 +3197,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_GUARD_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_GUARD_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.MAIL_SKIRT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(steelArmorPlate.getItem()), steelArmorPlate.getComponentsPatch()))
@@ -3208,7 +3209,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MAIL_SKIRT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_COMMANDER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_COMMANDER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .input(Items.FEATHER)
                         .input(EquipmentItemsME.ORTHANC_GUARD_HELMET)
                         .input(Items.FEATHER)
@@ -3218,7 +3219,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(steelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_GUARD_CAPE.getDefaultInstance(), "back_attachment", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.ORTHANC_GUARD_CAPE.asItem(), "back_attachment", DispositionType.EVIL)
                         .input(ResourceItemsME.FABRIC)
                         .input(Items.STRING)
                         .input(ResourceItemsME.FABRIC)
@@ -3235,7 +3236,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //endregion
 
                 //region MISTIES
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_BONE_PAULDRON.getDefaultInstance(), "chestplate", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_BONE_PAULDRON.asItem(), "chestplate", DispositionType.EVIL)
                         .input(Items.LEATHER)
                         .input(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "bones")))
                         .input(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "bones")))
@@ -3245,7 +3246,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SEEKER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SEEKER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .input(Items.LEATHER)
@@ -3255,7 +3256,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_LEATHER_SCALE_COAT.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_LEATHER_SCALE_COAT.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "bones")))
                         .input(Items.LEATHER)
@@ -3268,7 +3269,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_LEATHER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_LEATHER_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -3280,7 +3281,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_LACED_BOOTS.getDefaultInstance(), "boots", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_LACED_BOOTS.asItem(), "boots", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -3289,7 +3290,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SKULLCAP_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SKULLCAP_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironArmorPlate.getItem()), ironArmorPlate.getComponentsPatch()))
@@ -3299,7 +3300,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_MAIL_COIF.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_MAIL_COIF.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -3309,20 +3310,8 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_MAIL_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_MAIL_HAUBERK.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
-                        .unlockedBy(getHasName(ironChainmail.getItem()),
-                                has(ironChainmail.getItem()))
-                        .save(output);
-
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_MAIL_COAT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
@@ -3334,7 +3323,19 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ironChainmail.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SOLDIER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_MAIL_COAT.asItem(), "leggings", DispositionType.EVIL, XP_T3)
+                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
+                        .componentInput(new ComponentsIngredient(Ingredient.of(ironChainmail.getItem()), ironChainmail.getComponentsPatch()))
+                        .unlockedBy(getHasName(ironChainmail.getItem()),
+                                has(ironChainmail.getItem()))
+                        .save(output);
+
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SOLDIER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -3344,7 +3345,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SCREECHER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_SCREECHER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelScaleMail.getComponentsPatch()))
@@ -3354,7 +3355,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_REINFORCED_LEATHER_SCALE_COAT.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_REINFORCED_LEATHER_SCALE_COAT.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .input(Items.LEATHER)
                         .input(TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "bones")))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3367,7 +3368,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GUNDABAD_LEATHER_SCALE_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_REINFORCED_LEATHER_VEST.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_REINFORCED_LEATHER_VEST.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -3380,7 +3381,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_LEATHER_SCALE_VEST))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_HOBGOBLIN_PLATE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_HOBGOBLIN_PLATE_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -3393,7 +3394,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GUNDABAD_REINFORCED_LEATHER_VEST))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_HOBGOBLIN_MAIL_COAT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GUNDABAD_HOBGOBLIN_MAIL_COAT.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.GUNDABAD_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3407,7 +3408,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //endregion
 
                 //region MORIA
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_NASAL_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_NASAL_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.CRUDE_INGOT)
                         .input(Items.LEATHER)
@@ -3416,7 +3417,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.CRUDE_INGOT),
                                 has(ResourceItemsME.CRUDE_INGOT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.CRUDE_INGOT)
                         .input(Items.LEATHER)
@@ -3425,7 +3426,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.CRUDE_INGOT),
                                 has(ResourceItemsME.CRUDE_INGOT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_CUIRASS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_CUIRASS.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -3437,7 +3438,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.CRUDE_INGOT),
                                 has(ResourceItemsME.CRUDE_INGOT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_BELLY_PLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_BELLY_PLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -3449,7 +3450,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.CRUDE_INGOT),
                                 has(ResourceItemsME.CRUDE_INGOT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CLOTH_COAT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CLOTH_COAT.asItem(), "leggings", DispositionType.EVIL, XP_T2)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.CRUDE_NUGGET)
                         .input(ResourceItemsME.FABRIC)
@@ -3460,7 +3461,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.CRUDE_NUGGET),
                                 has(ResourceItemsME.CRUDE_NUGGET))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_SKIRT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SNAGA_SKIRT.asItem(), "leggings", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.CRUDE_NUGGET)
                         .input(Items.LEATHER)
@@ -3472,7 +3473,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.CRUDE_NUGGET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CRUDE_BOOTS.getDefaultInstance(), "boots", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CRUDE_BOOTS.asItem(), "boots", DispositionType.EVIL, XP_T2)
                         .input(ResourceItemsME.FUR)
                         .input(ResourceItemsME.FUR)
                         .input(ResourceItemsME.CRUDE_INGOT)
@@ -3481,7 +3482,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.CRUDE_INGOT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHARGER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHARGER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
@@ -3490,7 +3491,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ironHelmetPlate.getItem()),
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_RUINED_DWARVEN_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_RUINED_DWARVEN_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(ironHelmetPlate.getItem()), ironHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
@@ -3499,7 +3500,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ironHelmetPlate.getItem()),
                                 has(ironHelmetPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_HAUBERK.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .input(ResourceItemsME.CRUDE_INGOT)
                         .input(ResourceItemsME.CRUDE_INGOT)
                         .input(ResourceItemsME.CRUDE_NUGGET)
@@ -3511,7 +3512,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_MAIL_HAUBERK),
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_RUINED_DWARVEN_HAUBERK.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_RUINED_DWARVEN_HAUBERK.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .input(ResourceItemsME.CRUDE_INGOT)
                         .input(ResourceItemsME.CRUDE_INGOT)
                         .input(ResourceItemsME.KHAZAD_STEEL_NUGGET)
@@ -3524,7 +3525,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_HAUBERK))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_BITER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_BITER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3533,7 +3534,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(burzumSteelHelmetPlate.getItem()),
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_MANDIBLE_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_MANDIBLE_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelHelmetPlate.getItem()), burzumSteelHelmetPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelScaleMail.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3542,7 +3543,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(burzumSteelHelmetPlate.getItem()),
                                 has(burzumSteelHelmetPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_REINFORCED_COAT.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T4)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_REINFORCED_COAT.asItem(), "chestplate", DispositionType.EVIL, XP_T4)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3556,7 +3557,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .save(output);
 
                 //T5
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SCREECHER_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SCREECHER_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -3568,7 +3569,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.MORIA_GOBLIN_REINFORCED_COAT),
                                 has(EquipmentItemsME.MORIA_GOBLIN_REINFORCED_COAT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SCREECHER_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_SCREECHER_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ORCISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3580,7 +3581,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.ORCISH_MAIL_COAT))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHIEF_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHIEF_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelChainmail.getItem()), burzumSteelChainmail.getComponentsPatch()))
@@ -3592,7 +3593,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.MORIA_GOBLIN_REINFORCED_COAT),
                                 has(EquipmentItemsME.MORIA_GOBLIN_REINFORCED_COAT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHIEF_LEGGINGS.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHIEF_LEGGINGS.asItem(), "leggings", DispositionType.EVIL, XP_T5)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
                         .input(EquipmentItemsME.ORCISH_MAIL_COAT)
                         .componentInput(new ComponentsIngredient(Ingredient.of(burzumSteelArmorPlate.getItem()), burzumSteelArmorPlate.getComponentsPatch()))
@@ -3603,7 +3604,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.ORCISH_MAIL_COAT),
                                 has(EquipmentItemsME.ORCISH_MAIL_COAT))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHIEF_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T5)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.MORIA_GOBLIN_CHIEF_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T5)
                         .input(Items.GOAT_HORN)
                         .input(EquipmentItemsME.MORIA_GOBLIN_CAPTAIN_HELMET)
                         .input(Items.GOAT_HORN)
@@ -3611,7 +3612,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.MORIA_GOBLIN_CAPTAIN_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_KING_CROWN.getDefaultInstance(), "helmet", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_KING_CROWN.asItem(), "helmet", DispositionType.EVIL)
                         .input(ResourceItemsME.DIRTY_BONE)
                         .input(Items.LEATHER)
                         .input(ResourceItemsME.DIRTY_BONE)
@@ -3623,7 +3624,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                 //endregion
 
                 //region GOBLIN TOWN
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CAP.getDefaultInstance(), "helmet", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CAP.asItem(), "helmet", DispositionType.EVIL)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -3632,7 +3633,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.FABRIC),
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BONE_MANDIBLE_CAP.getDefaultInstance(), "helmet", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BONE_MANDIBLE_CAP.asItem(), "helmet", DispositionType.EVIL)
                         .input(Items.BONE)
                         .input(EquipmentItemsME.GOBLIN_TOWN_CAP)
                         .input(Items.BONE)
@@ -3641,7 +3642,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.GOBLIN_TOWN_CAP),
                                 has(EquipmentItemsME.GOBLIN_TOWN_CAP))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CROSSBONES_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CROSSBONES_HELMET.asItem(), "helmet", DispositionType.EVIL)
                         .input(Items.BONE)
                         .input(EquipmentItemsME.GOBLIN_TOWN_CAP)
                         .input(Items.BONE)
@@ -3651,7 +3652,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GOBLIN_TOWN_CAP))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_RIBCAGE.getDefaultInstance(), "chestplate", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_RIBCAGE.asItem(), "chestplate", DispositionType.EVIL)
                         .input(Items.BONE)
                         .input(Items.BONE)
                         .input(Items.BONE)
@@ -3663,7 +3664,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(Items.BONE),
                                 has(Items.BONE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BONE_STRAP.getDefaultInstance(), "chestplate", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BONE_STRAP.asItem(), "chestplate", DispositionType.EVIL)
                         .input(ResourceItemsME.FUR)
                         .input(Items.BONE)
                         .input(ResourceItemsME.FUR)
@@ -3675,7 +3676,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(Items.BONE),
                                 has(Items.BONE))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_LOINCLOTH.getDefaultInstance(), "leggings", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_LOINCLOTH.asItem(), "leggings", DispositionType.EVIL)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
                         .input(ResourceItemsME.FABRIC)
@@ -3686,7 +3687,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.FABRIC),
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_SANDALS.getDefaultInstance(), "boots", DispositionType.EVIL)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_SANDALS.asItem(), "boots", DispositionType.EVIL)
                         .input(Items.STICK)
                         .input(Items.STICK)
                         .input(ResourceItemsME.FABRIC)
@@ -3695,7 +3696,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.FABRIC))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
@@ -3704,7 +3705,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(crudeArmorPlate.getItem()),
                                 has(crudeArmorPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_MANDIBLE_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_MANDIBLE_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
@@ -3713,7 +3714,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(crudeArmorPlate.getItem()),
                                 has(crudeArmorPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_HEAVY_NASAL_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_HEAVY_NASAL_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .input(ResourceItemsME.CRUDE_NUGGET)
                         .input(EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET)
                         .input(ResourceItemsME.CRUDE_NUGGET)
@@ -3722,7 +3723,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET),
                                 has(EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_SKULKER_GUARD_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_SKULKER_GUARD_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .input(ResourceItemsME.CRUDE_INGOT)
                         .input(EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET)
                         .input(ResourceItemsME.CRUDE_INGOT)
@@ -3732,7 +3733,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_SKULL_CAP.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_SKULL_CAP.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
                         .input(Items.SKELETON_SKULL)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
@@ -3741,7 +3742,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(Items.SKELETON_SKULL),
                                 has(Items.SKELETON_SKULL))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_TUNNELER_HELMET.getDefaultInstance(), "helmet", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_TUNNELER_HELMET.asItem(), "helmet", DispositionType.EVIL, XP_T3)
                         .input(Items.CANDLE)
                         .input(EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET)
                         .input(Items.CANDLE)
@@ -3749,7 +3750,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(EquipmentItemsME.GOBLIN_TOWN_NASAL_HELMET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BONE_SCALE_COAT.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BONE_SCALE_COAT.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(ResourceItemsME.FUR)
                         .input(ResourceItemsME.FUR)
                         .input(Items.BONE)
@@ -3761,7 +3762,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.CRUDE_NUGGET),
                                 has(ResourceItemsME.CRUDE_NUGGET))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CRUDE_SCALE_CHESTPLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CRUDE_SCALE_CHESTPLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .input(Items.BONE)
                         .input(Items.BONE)
                         .componentInput(new ComponentsIngredient(Ingredient.of(crudeArmorPlate.getItem()), crudeArmorPlate.getComponentsPatch()))
@@ -3773,7 +3774,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(ResourceItemsME.CRUDE_NUGGET),
                                 has(ResourceItemsME.CRUDE_NUGGET))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CARAPACE_HARNESS.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_CARAPACE_HARNESS.asItem(), "chestplate", DispositionType.EVIL, XP_T2)
                         .input(Items.BONE)
                         .input(Items.BONE)
                         .input(ResourceItemsME.FUR)
@@ -3786,7 +3787,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(ResourceItemsME.CRUDE_NUGGET))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_LEATHER_SKIRT.getDefaultInstance(), "leggings", DispositionType.EVIL, XP_T2)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_LEATHER_SKIRT.asItem(), "leggings", DispositionType.EVIL, XP_T2)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
                         .input(Items.LEATHER)
@@ -3798,7 +3799,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                 has(Items.LEATHER))
                         .save(output);
 
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BELLY_PLATE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_BELLY_PLATE.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .input(Items.BONE)
                         .input(ResourceItemsME.FUR)
                         .input(Items.LEATHER)
@@ -3810,7 +3811,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         .unlockedBy(getHasName(crudeArmorPlate.getItem()),
                                 has(crudeArmorPlate.getItem()))
                         .save(output);
-                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_REINFORCED_CARAPACE.getDefaultInstance(), "chestplate", DispositionType.EVIL, XP_T3)
+                ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, EquipmentItemsME.GOBLIN_TOWN_REINFORCED_CARAPACE.asItem(), "chestplate", DispositionType.EVIL, XP_T3)
                         .input(Items.LEATHER)
                         .input(Items.BONE)
                         .input(ResourceItemsME.CRUDE_INGOT)
@@ -3853,8 +3854,8 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
 
                     if(recipe.noble()) {
                         if(recipe.disposition().equals(DispositionType.GOOD)) {
-                            lowerIngredient = Items.GOLD_INGOT.getDefaultInstance();
-                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().getDefaultInstance(), "helmet", recipe.disposition(), XP_T5)
+                            lowerIngredient = new ItemStack(Items.GOLD_INGOT);
+                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().asItem(), "helmet", recipe.disposition(), XP_T5)
                                     .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
                                     .componentInput(new ComponentsIngredient(Ingredient.of(helmetIngredient.getItem()), helmetIngredient.getComponentsPatch()))
                                     .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
@@ -3865,7 +3866,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                     .save(output);
                         } else {
                             lowerIngredient = silverArmorPlate;
-                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().getDefaultInstance(), "helmet", recipe.disposition(), XP_T5)
+                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().asItem(), "helmet", recipe.disposition(), XP_T5)
                                     .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
                                     .componentInput(new ComponentsIngredient(Ingredient.of(helmetIngredient.getItem()), helmetIngredient.getComponentsPatch()))
                                     .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
@@ -3876,7 +3877,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                     .save(output);
                         }
                     } else {
-                        ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().getDefaultInstance(), "helmet", recipe.disposition(), XP_T5)
+                        ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().asItem(), "helmet", recipe.disposition(), XP_T5)
                                 .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
                                 .componentInput(new ComponentsIngredient(Ingredient.of(helmetIngredient.getItem()), helmetIngredient.getComponentsPatch()))
                                 .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
@@ -3898,8 +3899,8 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                     };
                     if(recipe.noble()) {
                         if(recipe.disposition().equals(DispositionType.GOOD)) {
-                            upperIngredient = Items.GOLD_INGOT.getDefaultInstance();
-                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().getDefaultInstance(), "boots", recipe.disposition(), XP_T5)
+                            upperIngredient = new ItemStack(Items.GOLD_INGOT);
+                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().asItem(), "boots", recipe.disposition(), XP_T5)
                                     .input(upperIngredient.getItem())
                                     .input(upperIngredient.getItem())
                                     .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
@@ -3909,7 +3910,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                                     .save(output);
                         } else {
                             upperIngredient = silverArmorPlate;
-                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().getDefaultInstance(), "boots", recipe.disposition(), XP_T5)
+                            ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().asItem(), "boots", recipe.disposition(), XP_T5)
                                     .componentInput(new ComponentsIngredient(Ingredient.of(upperIngredient.getItem()), upperIngredient.getComponentsPatch()))
                                     .componentInput(new ComponentsIngredient(Ingredient.of(upperIngredient.getItem()), upperIngredient.getComponentsPatch()))
                                     .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))
@@ -3920,7 +3921,7 @@ public class ArtisanTableArmorRecipeProvider extends net.sevenstars.middleearth.
                         }
                     } else {
                         upperIngredient = mainIngredient;
-                        ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().getDefaultInstance(), "boots", recipe.disposition(), XP_T5)
+                        ArtisanTableRecipeJsonBuilder.createArtisanRecipe(itemLookup, RecipeCategory.COMBAT, recipe.output().asItem(), "boots", recipe.disposition(), XP_T5)
                                 .componentInput(new ComponentsIngredient(Ingredient.of(upperIngredient.getItem()), upperIngredient.getComponentsPatch()))
                                 .componentInput(new ComponentsIngredient(Ingredient.of(upperIngredient.getItem()), upperIngredient.getComponentsPatch()))
                                 .componentInput(new ComponentsIngredient(Ingredient.of(mainIngredient.getItem()), mainIngredient.getComponentsPatch()))

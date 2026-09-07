@@ -16,7 +16,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
@@ -33,7 +32,7 @@ public class ArtisanTableRecipeJsonBuilder implements RecipeBuilder {
     private final RecipeCategory category;
     private final String tab;
     private final NonNullList<Ingredient> inputs = NonNullList.create();
-    private final ItemStack output;
+    private final ItemLike output;
     private final DispositionType dispositionType;
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
     private final int xp;
@@ -41,7 +40,7 @@ public class ArtisanTableRecipeJsonBuilder implements RecipeBuilder {
 
     private final HolderGetter<Item> registryLookup;
 
-    public ArtisanTableRecipeJsonBuilder(HolderGetter<Item> registryLookup, RecipeCategory category, ItemStack output,
+    public ArtisanTableRecipeJsonBuilder(HolderGetter<Item> registryLookup, RecipeCategory category, ItemLike output,
                                          String tab, DispositionType dispositionType, int xp) {
         this.registryLookup = registryLookup;
         this.category = category;
@@ -57,13 +56,27 @@ public class ArtisanTableRecipeJsonBuilder implements RecipeBuilder {
         return this;
     }
 
+    public static ArtisanTableRecipeJsonBuilder createArtisanRecipe(HolderGetter<Item> registryLookup, RecipeCategory category,
+                                                                    ItemLike output, String tab, DispositionType dispositionType, int xp) {
+        return new ArtisanTableRecipeJsonBuilder(registryLookup, category, output, tab, dispositionType, xp);
+    }
+
+    public static ArtisanTableRecipeJsonBuilder createArtisanRecipe(HolderGetter<Item> registryLookup, RecipeCategory category,
+                                                                    ItemLike output, String tab, DispositionType dispositionType) {
+        return new ArtisanTableRecipeJsonBuilder(registryLookup, category, output, tab, dispositionType, 0);
+    }
+
+    public static ArtisanTableRecipeJsonBuilder createArtisanRecipe(HolderGetter<Item> registryLookup, RecipeCategory category, ItemLike output, String tab) {
+        return new ArtisanTableRecipeJsonBuilder(registryLookup, category, output, tab, null, 0);
+    }
+
     public Item getResult() {
-        return this.output.getItem();
+        return this.output.asItem();
     }
 
     @Override
     public ResourceKey<Recipe<?>> defaultId() {
-        return ResourceKey.create(Registries.RECIPE, BuiltInRegistries.ITEM.getKey(this.output.getItem()));
+        return ResourceKey.create(Registries.RECIPE, BuiltInRegistries.ITEM.getKey(this.output.asItem()));
     }
 
     @Override
@@ -72,22 +85,8 @@ public class ArtisanTableRecipeJsonBuilder implements RecipeBuilder {
         Advancement.Builder builder = exporter.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeKey)).rewards(AdvancementRewards.Builder.recipe(recipeKey)).requirements(AdvancementRequirements.Strategy.OR);
         Objects.requireNonNull(builder);
         this.criteria.forEach(builder::addCriterion);
-        ArtisanRecipe artisanRecipe = new ArtisanRecipe(this.tab, this.output, this.inputs, this.dispositionType.toString().toLowerCase(), this.xp);
+        ArtisanRecipe artisanRecipe = new ArtisanRecipe(this.tab, this.output.asItem(), this.inputs, this.dispositionType.toString().toLowerCase(), this.xp);
         exporter.accept(recipeKey, artisanRecipe, builder.build(recipeKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
-    }
-
-    public static ArtisanTableRecipeJsonBuilder createArtisanRecipe(HolderGetter<Item> registryLookup, RecipeCategory category,
-                                                                    ItemStack output, String tab, DispositionType dispositionType, int xp) {
-        return new ArtisanTableRecipeJsonBuilder(registryLookup, category, output, tab, dispositionType, xp);
-    }
-
-    public static ArtisanTableRecipeJsonBuilder createArtisanRecipe(HolderGetter<Item> registryLookup, RecipeCategory category,
-                                                                    ItemStack output, String tab, DispositionType dispositionType) {
-        return new ArtisanTableRecipeJsonBuilder(registryLookup, category, output, tab, dispositionType, 0);
-    }
-
-    public static ArtisanTableRecipeJsonBuilder createArtisanRecipe(HolderGetter<Item> registryLookup, RecipeCategory category, ItemStack output, String tab) {
-        return new ArtisanTableRecipeJsonBuilder(registryLookup, category, output, tab, null, 0);
     }
 
     public ArtisanTableRecipeJsonBuilder input(TagKey<Item> tag) {

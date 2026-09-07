@@ -8,7 +8,7 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "type": "middle-earth:spawn_of_shelob"
+              "minecraft:entity_type": "middle-earth:spawn_of_shelob"
             }
           }
         ]

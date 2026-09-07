@@ -48,6 +48,7 @@ public class BlockLootTableProvider extends FabricBlockLootSubProvider {
 
     @Override
     public void generate() {
+        BlockDrops.ensureCatalogPopulated();
 
         for (Block block : BlockDrops.blocks) {
             if (BuiltInRegistries.BLOCK.getKey(block).getPath().equals("nurgon")) {

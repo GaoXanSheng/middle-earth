@@ -6,8 +6,6 @@
     "minecraft:beetroot",
     "minecraft:water_bucket"
   ],
-  "output": {
-    "count": 3,
-    "id": "minecraft:beetroot_soup"
-  }
+  "output": "minecraft:beetroot_soup",
+  "count": 3
 }

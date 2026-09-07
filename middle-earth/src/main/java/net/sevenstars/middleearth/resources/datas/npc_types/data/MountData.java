@@ -4,15 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.*;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -39,24 +34,26 @@ public class MountData {
     public static final Codec<MountData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf(Fields.ENTITY_TYPE).forGetter(MountData::getEntityType),
             Identifier.CODEC.optionalFieldOf(Fields.NPC_TYPE).forGetter(MountData::getOptionalNpcType),
-            ItemStack.CODEC.optionalFieldOf(Fields.ARMOR).forGetter(MountData::getOptionalArmor),
+            BuiltInRegistries.ITEM.byNameCodec().optionalFieldOf(Fields.ARMOR).forGetter(MountData::getOptionalArmorItem),
             MountPassengerSlotData.CODEC.listOf().fieldOf(Fields.PASSENGER_SLOTS).forGetter(MountData::getPassengerSlots)
     ).apply(instance, MountData::new));
 
     private Identifier entityType;
     private Identifier npcType;
     private ItemStack armor;
+    private Item armorItem;
+    private DyedItemColor armorColor;
     private List<MountPassengerSlotData> passengerSlots;
 
     private MountData(
             Identifier entityType,
             Optional<Identifier> npcType,
-            Optional<ItemStack> armor,
+            Optional<Item> armor,
             List<MountPassengerSlotData> passengerSlots
     ) {
         this.entityType = entityType;
         this.npcType = npcType.orElse(null);
-        this.armor = armor.orElse(null);
+        this.armorItem = armor.orElse(null);
         this.passengerSlots = passengerSlots;
     }
 
@@ -71,20 +68,26 @@ public class MountData {
     }
 
     public MountData withArmor(ItemStack armorItem){
-        this.armor = armorItem;
-        return this;
+        return withArmor(armorItem.getItem());
     }
 
     public MountData withArmor(Item armorItem){
-        this.armor = armorItem.getDefaultInstance();
+        this.armorItem = armorItem;
         return this;
     }
 
     public MountData withColor(DyedItemColor color){
-        if(this.armor == null)
-            return this;
-        this.armor.set(DataComponents.DYED_COLOR, color);
+        this.armorColor = color;
         return this;
+    }
+
+    private ItemStack getArmorStack(){
+        if(armor == null && armorItem != null){
+            armor = armorItem.getDefaultInstance();
+            if(armorColor != null)
+                armor.set(DataComponents.DYED_COLOR, armorColor);
+        }
+        return armor;
     }
 
     private Identifier getEntityType() {
@@ -93,8 +96,8 @@ public class MountData {
     private Optional<Identifier> getOptionalNpcType() {
         return Optional.ofNullable(npcType);
     }
-    private Optional<ItemStack> getOptionalArmor() {
-        return Optional.ofNullable(armor);
+    private Optional<Item> getOptionalArmorItem() {
+        return Optional.ofNullable(armorItem != null ? armorItem : armor != null ? armor.getItem() : null);
     }
 
     private List<MountPassengerSlotData> getPassengerSlots() {
@@ -118,8 +121,8 @@ public class MountData {
         if(notLiving instanceof LivingEntity entity){
             entity.setPos(owner.position());
             entity.setItemSlot(EquipmentSlot.SADDLE, Items.SADDLE.asItem().getDefaultInstance());
-            if(armor != null)
-                entity.setItemSlot(EquipmentSlot.BODY, this.armor);
+            if(getArmorStack() != null)
+                entity.setItemSlot(EquipmentSlot.BODY, getArmorStack());
 
             if (entity instanceof Mob mob) {
                 mob.finalizeSpawn(

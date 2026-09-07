@@ -14,7 +14,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
@@ -64,7 +63,7 @@ public class AnvilShapingRecipeJsonBuilder implements RecipeBuilder {
         Advancement.Builder builder = exporter.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeKey)).rewards(AdvancementRewards.Builder.recipe(recipeKey)).requirements(AdvancementRequirements.Strategy.OR);
         Objects.requireNonNull(builder);
         this.criteria.forEach(builder::addCriterion);
-        AnvilShapingRecipe anvilShapingRecipe = new AnvilShapingRecipe(this.input, new ItemStack(this.output), this.amount);
+        AnvilShapingRecipe anvilShapingRecipe = new AnvilShapingRecipe(this.input, this.output, this.amount);
         exporter.accept(recipeKey, anvilShapingRecipe, builder.build(recipeKey.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/")));
     }
 
