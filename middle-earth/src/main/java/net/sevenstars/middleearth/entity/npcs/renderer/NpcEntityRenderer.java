@@ -13,25 +13,18 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.client.RenderUtil;
 import net.sevenstars.middleearth.config.ModClientConfigs;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.npcs.NpcEntity;
@@ -42,13 +35,10 @@ import net.sevenstars.middleearth.entity.npcs.renderer.features.hair.HairFeature
 import net.sevenstars.middleearth.entity.npcs.renderer.features.nose.NoseFeatureRenderer;
 import net.sevenstars.middleearth.item.DataComponentTypesME;
 import net.sevenstars.middleearth.registries.AtlasesME;
-import net.sevenstars.middleearth.registries.CharacterClothesRegistryME;
 import net.sevenstars.middleearth.utils.ItemTagsME;
 import org.jetbrains.annotations.Nullable;
 
 public class NpcEntityRenderer extends HumanoidMobRenderer<NpcEntity, NpcEntityRenderState, NpcEntityModel> {
-    private TextureAtlas characterTextureAtlas;
-
     public final static int HURT_COLOR = 0xff7e75;
 
     public final static int LIGHT_LEVEL_EMISSIVE_EYES = 8;
@@ -61,6 +51,7 @@ public class NpcEntityRenderer extends HumanoidMobRenderer<NpcEntity, NpcEntityR
         this.layers.removeIf(x -> x.getClass() == WingsLayer.class);
         this.layers.removeIf(x -> x.getClass() == CustomHeadLayer.class);
 
+        this.addLayer(new NpcBodyTextureLayer(this));
         this.addLayer(new HumanoidArmorLayer<>(this, ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, context.getModelSet(), HumanoidModel::new), context.getEquipmentRenderer()));
         this.addLayer(new HairFeatureRenderer(this, context.getModelSet()));
         this.addLayer(new EarFeatureRenderer(this, context.getModelSet()));
@@ -158,127 +149,28 @@ public class NpcEntityRenderer extends HumanoidMobRenderer<NpcEntity, NpcEntityR
     @Nullable
     @Override
     protected RenderType getRenderType(NpcEntityRenderState state, boolean showBody, boolean translucent, boolean showOutline) {
-        Identifier identifier = this.getTextureLocation(state);
-        if (translucent) {
-            return RenderTypes.entityTranslucent(identifier);
-        } else if (showBody) {
-            return this.model.renderType(identifier);
-        } else {
-            return showOutline ? RenderTypes.outline(identifier) : null;
-        }
+        // The body is fully drawn by NpcBodyTextureLayer with atlas sprites; submitting the base
+        // model as well would bind the whole atlas page with unmapped UVs (texture-sheet garbage).
+        // Only the glowing outline still needs a texture-bound render type.
+        return showOutline ? RenderTypes.outline(this.getTextureLocation(state)) : null;
     }
 
     @Override
     public void submit(NpcEntityRenderState state, PoseStack matrices, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
-        boolean simplified = ModClientConfigs.ENABLE_SIMPLIFIED_CHARACTER_RENDERING && state.simplifiedSkinId != null;
-
-        if(!simplified && (state.skinId == null || state.headId == null || state.eyesId == null))
-            return;
-
-        matrices.pushPose();
-        if (state.hasPose(Pose.SLEEPING)) {
-            Direction direction = state.bedOrientation;
-            if (direction != null) {
-                float f = state.eyeHeight - 0.1F;
-                matrices.translate((float)(-direction.getStepX()) * f, 0.0F, (float)(-direction.getStepZ()) * f);
-            }
-        }
-        else if (state.isPassenger) {
+        if (state.isPassenger) {
+            matrices.pushPose();
             matrices.translate(0, -0.5F, 0);
+            super.submit(state, matrices, submitNodeCollector, cameraRenderState);
+            matrices.popPose();
+            return;
         }
-
-        float g = state.scale;
-        float widthScale = state.widthScale;
-
-        matrices.scale(g * widthScale, g, g * widthScale);
-        this.setupRotations(state, matrices, state.bodyRot, g);
-        matrices.scale(-widthScale, -1.0f, widthScale);
-        this.scale(state, matrices);
-        matrices.translate(0.0f, -1.501f, 0.0f);
-
-        this.model.setupAnim(state);
-        int overlay = state.hasRedOverlay ? getOverlayCoords(state, this.getWhiteOverlayProgress(state)) : OverlayTexture.NO_OVERLAY;
-
-        if(simplified){
-            renderTexture(matrices, submitNodeCollector, state.simplifiedSkinId, state.lightCoords, overlay, false);
-        } else {
-            renderComplexVersion(matrices, submitNodeCollector, state.lightCoords, overlay, state);
-        }
-
-        if (this.shouldRenderLayers(state) && state.LOD < ModClientConfigs.LOD_NPC_ARMOR_DISTANCE) {
-            for (RenderLayer<NpcEntityRenderState, NpcEntityModel> feature : this.layers) {
-                if (feature instanceof EarFeatureRenderer)
-                    if ((state.simplifiedEarId == null && state.earId == null) || state.LOD > ModClientConfigs.LOD_NPC_FEATURES_DISTANCE)
-                        continue;
-                if (feature instanceof NoseFeatureRenderer)
-                    if ((state.simplifiedNoseId == null && state.noseId == null) || state.LOD > ModClientConfigs.LOD_NPC_FEATURES_DISTANCE)
-                        continue;
-                if (feature instanceof HairFeatureRenderer)
-                    if ((state.simplifiedHairAddonId == null && state.hairAddonId == null && state.beardAddonId == null)
-                            || state.LOD > ModClientConfigs.LOD_NPC_FEATURES_DISTANCE)
-                        continue;
-                if(feature instanceof FeetFeatureRenderer)
-                    if((state.simplifiedFeetId == null && state.feetId == null) || state.LOD > ModClientConfigs.LOD_NPC_FEATURES_DISTANCE)
-                        continue;
-                feature.submit(matrices, submitNodeCollector, state.lightCoords, state, state.yRot, state.xRot);
-            }
-        }
-
-        matrices.popPose();
-
         super.submit(state, matrices, submitNodeCollector, cameraRenderState);
     }
 
-    private void renderComplexVersion(PoseStack matrices, SubmitNodeCollector submitNodeCollector, int light, int overlay, NpcEntityRenderState state) {
-        // Will always be shown
-        renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.skinId, AtlasesME.SKIN_PREFIX), light, overlay, false);
-
-        renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.headId, AtlasesME.SKIN_PREFIX), light, overlay, false);
-
-        if(!state.blinking){
-            renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.eyesId, AtlasesME.EYE_PREFIX), light, overlay, false);
-        }
-        // Optionally shown, only if the value is present
-        if(state.eyebrowId != null)
-            renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.eyebrowId, AtlasesME.HAIR_PREFIX), light, overlay, false);
-
-        if(state.scarId != null)
-            renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.scarId, AtlasesME.SKIN_PREFIX), light, overlay, false);
-
-        if(state.beardId != null)
-            renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.beardId, AtlasesME.HAIR_PREFIX), light, overlay, false);
-
-        if(state.clothingBase == null && state.clothingOver == null && state.clothingExtra == null){
-            renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(CharacterClothesRegistryME.Base.THONG_BROWN, AtlasesME.CLOTHES_BASE_PREFIX), light, overlay, false);
-        }
-        else {
-            if(state.clothingBase != null)
-                renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.clothingBase, AtlasesME.CLOTHES_BASE_PREFIX), light, overlay, false);
-
-            if(state.clothingOver != null)
-                renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.clothingOver, AtlasesME.CLOTHES_OVER_PREFIX), light, overlay, false);
-
-            if(state.clothingExtra != null)
-                renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.clothingExtra, AtlasesME.CLOTHES_EXTRA_PREFIX), light, overlay, false);
-        }
-
-        if(state.hairId != null)
-            renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.hairId, AtlasesME.HAIR_PREFIX), light, overlay, false);
-
-        if(!state.blinking && state.haveEmissiveEyes){
-            renderTexture(matrices, submitNodeCollector, MiddleEarth.ofPrefix(state.eyesEmissiveId, AtlasesME.EYE_PREFIX), light, overlay, true);
-        }
-    }
-
-    private void renderTexture(PoseStack matrices, SubmitNodeCollector submitNodeCollector, Identifier textureId, int light, int overlay, boolean isEmissive){
-        if (characterTextureAtlas == null) {
-            characterTextureAtlas = AtlasesME.getAtlasFromPath(AtlasesME.CHARACTER_TEXTURES);
-        }
-        if (isEmissive) {
-            RenderUtil.renderAtlasEmissiveTexture(characterTextureAtlas, model, matrices, submitNodeCollector, textureId, light, overlay);
-        } else {
-            RenderUtil.renderAtlasTexture(characterTextureAtlas, model, matrices, submitNodeCollector, textureId, light, overlay);
-        }
+    @Override
+    protected void scale(NpcEntityRenderState state, PoseStack matrices) {
+        float widthScale = state.widthScale;
+        matrices.scale(widthScale * widthScale, 1.0f, widthScale * widthScale);
     }
 
     @Override
@@ -290,8 +182,8 @@ public class NpcEntityRenderer extends HumanoidMobRenderer<NpcEntity, NpcEntityR
 
     @Override
     public Identifier getTextureLocation(NpcEntityRenderState state) {
-        // Custom layer rendering binds the atlas sprites directly in submit(); the base
-        // model's render type only needs a valid bound texture, which is the atlas itself.
+        // The body layers bind atlas sprites directly in submit(); this texture is only used by
+        // the glowing outline render type.
         return AtlasesME.getAtlasPath(AtlasesME.CHARACTER_TEXTURES);
     }
 

@@ -34,7 +34,7 @@ public class EnwebbedFeatureRenderer <S extends HumanoidRenderState, M extends E
         if(renderStateAccess.isRestrained()) {
             EnwebbedModel entityModel = this.model;
             entityModel.setupAnim(bipedEntityRenderState);
-            submitNodeCollector.submitModel(entityModel, bipedEntityRenderState, matrixStack, RenderTypes.entityTranslucent(TEXTURE), light, OverlayTexture.NO_OVERLAY, -1, null);
+            submitNodeCollector.submitModel(entityModel, bipedEntityRenderState, matrixStack, RenderTypes.entityTranslucent(TEXTURE), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
         }
     }
 }

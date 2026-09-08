@@ -32,6 +32,8 @@ public class FeetFeatureRenderer extends RenderLayer<NpcEntityRenderState, NpcEn
 
     @Override
     public void submit(PoseStack matrices, SubmitNodeCollector submitNodeCollector, int light, NpcEntityRenderState state, float limbAngle, float limbDistance) {
+        if (state.LOD > ModClientConfigs.LOD_NPC_FEATURES_DISTANCE)
+            return;
         if (characterTexturesAtlas == null) {
             characterTexturesAtlas = AtlasesME.getAtlasFromPath(AtlasesME.CHARACTER_TEXTURES);
         }

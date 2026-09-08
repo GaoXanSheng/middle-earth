@@ -3,44 +3,82 @@
 <img src="https://cdn.modrinth.com/data/cached_images/878f02d73c5caa5506ec2486457b65d1eb199978.png" style="width: 50%;"><br>
 
 -----
-<h2>Welcome to this source-available project of <img src="./.idea/icon.png" width="18"> Middle-earth <img src="./.idea/icon.png" width="18"> mod.</h2>
-<p>This mod is about the famous universe of the Middle Earth, from J. R. R. Tolkien's work, into Minecraft.</p> 
-<p>You'll find a brand new dimension with custom blocks, items, entity, generation, etc.</p>
-<a href="https://discord.gg/9yQ7UWkVUz"><img src="https://dcbadge.limes.pink/api/server/9yQ7UWkVUz?style=flat" alt="Discord"/></a>
-<br>
-<a href="https://github.com/Jukoz/middle-earth"><img src="https://img.shields.io/github/stars/Jukoz/middle-earth"></a>
-<a href="https://modrinth.com/mod/middle-earth"><img src="https://img.shields.io/modrinth/dt/middle-earth?logo=modrinth&label=&suffix=%20&style=flat&color=242629&labelColor=5ca424&logoColor=ffffff" alt="Modrinth"></a>
-<a href="https://www.curseforge.com/minecraft/mc-mods/middle-earth"><img src="https://img.shields.io/curseforge/dt/864574?logo=curseforge&label=&suffix=%20&style=flat&color=242629&labelColor=f16537&logoColor=ffffff" alt="Curseforge"></a>
-<a href="https://middleearthmcmod.wiki.gg/wiki/Middle_Earth_Minecraft_Mod_Wiki"><img src="https://img.shields.io/badge/wiki-b79c80?logo=wikidotgg&&logoColor=ffffff"></a>
-<br>
-<img src="https://cf.way2muchnoise.eu/versions/864574.svg">
+<h2>Middle-earth — Unofficial 26.2 Port</h2>
+<p><b>This is an unofficial, community-maintained fork</b> of the <a href="https://github.com/Jukoz/middle-earth">Middle-earth mod</a>,
+back-ported / migrated to <b>Minecraft 26.2 (Fabric)</b>.</p>
+<p>It is <b>not</b> affiliated with, endorsed by, or supported by the original Middle-earth development team.
+All credit for the original content goes to them — see <a href="#credits">Credits</a>.</p>
+
+<a href="https://github.com/GaoXanSheng/middle-earth"><img src="https://img.shields.io/badge/unofficial%20fork-GaoXanSheng%2Fmiddle--earth-blue" alt="Unofficial fork"></a>
+<img src="https://img.shields.io/badge/Minecraft-26.2%20only-62cd5c" alt="Minecraft 26.2">
+<img src="https://img.shields.io/badge/Loader-Fabric-db7093" alt="Fabric">
+<img src="https://img.shields.io/badge/status-beta-orange" alt="Beta">
+
 </div>
 
 -----
 
-## Current state of the mod
-As of now, the mod is in the Alpha development stage, meaning this project is still a prototype, and missing many core features we are planning on adding.
+> [!WARNING]
+> **This fork only supports Minecraft 26.2.** No other Minecraft version is or will be supported here.
+> If you are looking for the official mod and its supported versions, visit the
+> [official repository](https://github.com/Jukoz/middle-earth), [Modrinth](https://modrinth.com/mod/middle-earth)
+> or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/middle-earth).
 
-## Planned Features
-> - <b>Brews and stews</b><br>
-    <i>Features related to cooking and fancy beverage preparation.</i>
-> - <b>Trading mechanics</b><br>
-    <i>A new trading feature.</i>
-> - <b>Next iteration on smithing & attributes system</b><br>
-    <i>Mechanics related to smithing and gear upgrades.</i>
-> - <b>Structures mechanics & Settlements</b><br>
-    <i>Immersive structures and settlements, aiming to have a cohesive environment.</i>
-> - <b>Hiring units</b><br>
-    <i>Creating a mechanic so npcs can join in the player's adventures!</i>
-> - <b>New factions</b><br>
-    <i>Each update we will deliver more and more factions with custom content for each such as armors, weapons, structures and mounts (or mount armor)! We have a list of factions we want to offer in the team design plans.</i>
+## About
 
+This mod brings the famous universe of Middle-earth, from J. R. R. Tolkien's work, into Minecraft.
+You'll find a brand new dimension with custom blocks, items, entities, generation, and more.
+
+This repository is a fork of the official source-available project, kept alive on the **26.2** version
+of the game. Expect bugs, missing content, and differences compared to official releases — this is a
+migration branch (`26.2-migration`), currently in **beta** (`1.0.2-26.2-beta`).
+
+## Requirements & Installation
+
+| | |
+|---|---|
+| Minecraft | **26.2** (only) |
+| Mod loader | Fabric Loader **0.19.5** or newer |
+| Dependencies | Fabric API **0.159.0+26.2** or newer |
+| Java | Java 25 |
+
+1. Install the [Fabric Loader](https://fabricmc.net/use/) for Minecraft 26.2.
+2. Download this fork's jar from the [Releases](https://github.com/GaoXanSheng/middle-earth/releases) page (or build it yourself, see below).
+3. Drop the jar, together with a matching Fabric API jar, into your `mods` folder.
+
+## Building from source
+
+Prerequisites: **JDK 25**.
+
+```bash
+git clone https://github.com/GaoXanSheng/middle-earth.git
+cd middle-earth
+./gradlew build
+```
+
+The project contains three modules:
+
+| Module | Content |
+|---|---|
+| `middle-earth` | The main Middle-earth mod |
+| `sevenstars-api` | Shared API/library code |
+| `of-beasts-and-wild-things` | Companion creatures module |
+
+Built jars end up in `<module>/build/libs/`. The main playable jar is
+`middle-earth/build/libs/Middle-earth-<version>.jar`.
+
+## Issues
+
+Bugs related to the 26.2 migration (crashes, broken rendering, missing content) should be reported on
+[this fork's issue tracker](https://github.com/GaoXanSheng/middle-earth/issues).
+Bugs that also exist in the official mod are better reported upstream to the original team.
 
 -----
 
 ## Credits
-<details open>
-<summary><b>Click to Fold / Unfold</b></summary>
+
+All original content of this mod was created by the official Middle-earth team.
+This fork would not exist without their work.
 
 ### Developers
 > - Jukoz
@@ -81,32 +119,17 @@ As of now, the mod is in the Alpha development stage, meaning this project is st
 
 ### Special Thanks
 dylanhugh and Angmarzku for their ideas & arts for Gundabad and more.
-</details>
+
+### 26.2 port
+Migration to Minecraft 26.2 is maintained by [GaoXanSheng](https://github.com/GaoXanSheng) and contributors in this repository.
 
 -----
 
 ## License
-All of our content is under the **ARR** license (**All Right Reserved**), meaning you cannot use our code without our written consent. If you want to use our code in any way, please write an issue using the [request template in our Github](https://github.com/Jukoz/middle-earth/issues/new?assignees=&labels=request&projects=&template=code_use_permission_request.yml).
+
+The original mod content is under the **ARR** license (**All Rights Reserved**) — see [LICENSE](./LICENSE).
+This unofficial fork does not change that: the code may not be reused without the original team's
+written consent. Permission requests should go through the
+[request template in the official repository](https://github.com/Jukoz/middle-earth/issues/new?assignees=&labels=request&projects=&template=code_use_permission_request.yml).
+
 > **Please be aware that this project is a Minecraft Parody set in the Middle-earth universe and all rights are reserved under Tolkien domain.**
-
------
-
-## Contribution
-### Contributing to the source code
-If you want to help us, please join our [Discord server][discord].
-
-### Translate our mod to different languages
-Current translation progress is as shown below:
-
-<details>
-<summary><b>Click to Fold / Unfold</b></summary>
-<a href="https://crowdin.com/project/middle-earth-mod">
-    <img src="https://badges.awesome-crowdin.com/translation-16338834-668804.png" width="50%" alt="Crowdin">
-</a>
-</details>
-
-if you want to participate in the localization, please join our [Discord server][discord] or contribute directly in our [Crowdin project][crowdin].
-
-[github]: https://github.com/Jukoz/middle-earth
-[discord]: https://discord.gg/9yQ7UWkVUz
-[crowdin]: https://crowdin.com/project/middle-earth-mod
