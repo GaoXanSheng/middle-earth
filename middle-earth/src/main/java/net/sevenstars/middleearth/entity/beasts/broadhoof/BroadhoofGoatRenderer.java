@@ -67,7 +67,8 @@ public class BroadhoofGoatRenderer extends MobRenderer<BroadhoofGoatEntity, Broa
             )
     );
 
-    public void updateRenderState(BroadhoofGoatEntity goat, BroadhoofGoatEntityRenderState state, float f) {
+    @Override
+    public void extractRenderState(BroadhoofGoatEntity goat, BroadhoofGoatEntityRenderState state, float f) {
         super.extractRenderState(goat, state, f);
 
         state.color = goat.getGoatColor();

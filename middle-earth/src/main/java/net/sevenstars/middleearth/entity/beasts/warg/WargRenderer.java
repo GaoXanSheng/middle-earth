@@ -2,16 +2,17 @@ package net.sevenstars.middleearth.entity.beasts.warg;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.SimpleEquipmentLayer;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.entity.beasts.warg.features.*;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
+import net.sevenstars.middleearth.entity.beasts.warg.features.*;
+
 import java.util.Map;
 
 public class WargRenderer extends MobRenderer<WargEntity, WargEntityRenderState, WargModel> {
@@ -73,7 +74,8 @@ public class WargRenderer extends MobRenderer<WargEntity, WargEntityRenderState,
         return LOCATION_BY_VARIANT.get(state.variant);
     }
 
-    public void updateRenderState(WargEntity warg, WargEntityRenderState state, float f) {
+    @Override
+    public void extractRenderState(WargEntity warg, WargEntityRenderState state, float f) {
         super.extractRenderState(warg, state, f);
 
         state.variant = warg.getVariant();

@@ -1,10 +1,10 @@
 package net.sevenstars.middleearth.entity.beasts.cave_troll;
 
 import com.google.common.collect.Maps;
-import net.minecraft.util.Util;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
@@ -54,7 +54,8 @@ public class CaveTrollRenderer extends MobRenderer<CaveTrollEntity, CaveTrollEnt
         return new CaveTrollEntityRenderState();
     }
 
-    public void updateRenderState(CaveTrollEntity troll, CaveTrollEntityRenderState state, float f) {
+    @Override
+    public void extractRenderState(CaveTrollEntity troll, CaveTrollEntityRenderState state, float f) {
         super.extractRenderState(troll, state, f);
         CaveTrollEntityRenderState.updateRenderState(troll, state, this.itemModelResolver);
 

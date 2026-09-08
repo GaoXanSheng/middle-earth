@@ -38,7 +38,7 @@ public class BlockModelProvider extends FabricModelProvider {
             "_plate", "_door", "_stool", "_chair", "_table", "_bench", "_ladder", "_bricks", "_brick",
             "_tiles", "_tile", "_pillar", "_carving", "_carpet", "_bars", "_rocks", "_beam", "_boards",
             "_window", "_pane", "_trim", "_base", "_sign", "_leaves", "_layer", "_planks", "_wood",
-            "_log", "_stem", "_block"
+            "_log", "_stem", "_block", "_bottom", "_side", "_top"
     };
     private Set<String> modBlockTextures;
 
@@ -90,15 +90,31 @@ public class BlockModelProvider extends FabricModelProvider {
         if (vanillaBlockTextures.contains(path)) {
             return "minecraft:block/" + path;
         }
+        if (path.startsWith("waxed_")) {
+            String unwaxed = path.substring("waxed_".length());
+            String resolved = resolveTexture(unwaxed, depth + 1);
+            if (resolved != null) {
+                return resolved;
+            }
+        }
         if (depth >= 3) {
             return null;
+        }
+        // plain paths without a family suffix can still map to their material texture
+        for (String candidate : new String[]{path + "_planks", path + "_side", path + "_top", path + "_block"}) {
+            if (modBlockTextures.contains(candidate)) {
+                return MiddleEarth.MOD_ID + ":block/" + candidate;
+            }
+            if (vanillaBlockTextures.contains(candidate)) {
+                return "minecraft:block/" + candidate;
+            }
         }
         for (String suffix : SUFFIXES) {
             if (!path.endsWith(suffix)) {
                 continue;
             }
             String base = path.substring(0, path.length() - suffix.length());
-            for (String candidate : new String[]{base, base + "_planks", base + "s", base + "_block", base + "wood", base + "_side"}) {
+            for (String candidate : new String[]{base, base + "_planks", base + "s", base + "_block", base + "wood", base + "_side", base + "_top", base + "_brickwork"}) {
                 if (modBlockTextures.contains(candidate)) {
                     return MiddleEarth.MOD_ID + ":block/" + candidate;
                 }

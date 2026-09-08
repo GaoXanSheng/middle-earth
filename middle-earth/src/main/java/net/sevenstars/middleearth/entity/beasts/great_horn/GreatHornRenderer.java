@@ -1,10 +1,10 @@
 package net.sevenstars.middleearth.entity.beasts.great_horn;
 
 import com.google.common.collect.Maps;
-import net.minecraft.util.Util;
 import net.minecraft.client.renderer.entity.AgeableMobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
@@ -53,10 +53,14 @@ public class GreatHornRenderer extends AgeableMobRenderer<GreatHornEntity, Great
 
     @Override
     public Identifier getTextureLocation(GreatHornEntityRenderState state) {
-        return state.greatHornVariant.assetInfo().id();
+        if (state.greatHornVariant != null && state.greatHornVariant.assetInfo() != null) {
+            return state.greatHornVariant.assetInfo().id();
+        }
+        return Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, PATH + "brown_great_horn.png");
     }
 
-    public void updateRenderState(GreatHornEntity greatHornEntity, GreatHornEntityRenderState state, float f) {
+    @Override
+    public void extractRenderState(GreatHornEntity greatHornEntity, GreatHornEntityRenderState state, float f) {
         super.extractRenderState(greatHornEntity, state, f);
 
         state.idleAnimationState.copyFrom(greatHornEntity.idleAnimationState);

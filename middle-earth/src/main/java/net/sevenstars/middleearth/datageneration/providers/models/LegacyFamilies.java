@@ -59,6 +59,18 @@ final class LegacyFamilies {
                 .replaceAll("treated_log", "treated_wood").replaceAll("aged_log", "aged_wood");
     }
 
+    static Identifier texResolved(Block block) {
+        return resolve(BuiltInRegistries.BLOCK.getKey(block).getPath());
+    }
+
+    static Identifier woodTexResolved(Block origin) {
+        return resolve(woodSub(BuiltInRegistries.BLOCK.getKey(origin).getPath()));
+    }
+
+    static Identifier vanillaWoodTexResolved(Block origin) {
+        return resolve(woodSub(BuiltInRegistries.BLOCK.getKey(origin).getPath()));
+    }
+
     static TextureMapping mapAll(Identifier texture) {
         return new TextureMapping().put(TextureSlot.ALL, new Material(texture)).put(TextureSlot.PARTICLE, new Material(texture));
     }
@@ -121,6 +133,24 @@ final class LegacyFamilies {
         farmlandAndPaths(g, handled);
         hangingMoss(g, handled);
         topWater(g, handled);
+        stoneLectern(g, handled);
+        decorativeRods(g, handled);
+    }
+
+    private static void decorativeRods(BlockModelGenerators g, Set<Block> handled) {
+        for (Block rod : new Block[]{ModDecorativeBlocks.CRUDE_ROD, ModDecorativeBlocks.TREATED_STEEL_ROD}) {
+            if (!handled.add(rod)) {
+                continue;
+            }
+            simpleItem(g, rod, ModelLocationUtils.getModelLocation(rod));
+        }
+    }
+
+    private static void stoneLectern(BlockModelGenerators g, Set<Block> handled) {
+        if (!handled.add(ModDecorativeBlocks.STONE_LECTERN)) {
+            return;
+        }
+        simpleItem(g, ModDecorativeBlocks.STONE_LECTERN, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "block/stone_lectern"));
     }
 
     // region simple cubes / leaves / axis rotated
@@ -207,8 +237,8 @@ final class LegacyFamilies {
             if (!handled.add(block.base())) {
                 continue;
             }
-            Identifier side = tex(block.base());
-            Identifier top = tex(block.origin());
+            Identifier side = texResolved(block.base());
+            Identifier top = resolve(BuiltInRegistries.BLOCK.getKey(block.origin()).getPath() + "_top");
             TextureMapping mapping = new TextureMapping()
                     .put(TextureSlot.END, new Material(top))
                     .put(TextureSlot.SIDE, new Material(side))
@@ -224,22 +254,22 @@ final class LegacyFamilies {
 
     private static void slabs(BlockModelGenerators g, Set<Block> handled) {
         for (SimpleSlabModel.Slab slab : SimpleSlabModel.slabs) {
-            slab(g, handled, slab.origin(), slab.slab(), tex(slab.origin()));
+            slab(g, handled, slab.origin(), slab.slab(), texResolved(slab.origin()));
         }
         for (SimpleSlabModel.Slab slab : SimpleSlabModel.woodSlabs) {
-            slab(g, handled, slab.origin(), slab.slab(), woodTexture(slab.origin()));
+            slab(g, handled, slab.origin(), slab.slab(), woodTexResolved(slab.origin()));
         }
         for (SimpleSlabModel.Slab slab : SimpleSlabModel.strippedSlabs) {
-            slab(g, handled, slab.origin(), slab.slab(), woodTexture(slab.origin()));
+            slab(g, handled, slab.origin(), slab.slab(), woodTexResolved(slab.origin()));
         }
         for (SimpleSlabModel.Slab slab : SimpleSlabModel.vanillaWoodSlabs) {
-            slab(g, handled, slab.origin(), slab.slab(), vanillaWoodTexture(slab.origin()));
+            slab(g, handled, slab.origin(), slab.slab(), vanillaWoodTexResolved(slab.origin()));
         }
         for (SimpleSlabModel.Slab slab : SimpleSlabModel.vanillaStrippedSlab) {
-            slab(g, handled, slab.origin(), slab.slab(), vanillaWoodTexture(slab.origin()));
+            slab(g, handled, slab.origin(), slab.slab(), vanillaWoodTexResolved(slab.origin()));
         }
         for (SimpleSlabModel.Slab slab : SimpleSlabModel.vanillaSlabs) {
-            slab(g, handled, slab.origin(), slab.slab(), vanillaWoodTexture(slab.origin()));
+            slab(g, handled, slab.origin(), slab.slab(), vanillaWoodTexResolved(slab.origin()));
         }
     }
 
@@ -266,22 +296,22 @@ final class LegacyFamilies {
 
     private static void stairs(BlockModelGenerators g, Set<Block> handled) {
         for (SimpleStairModel.Stair stair : SimpleStairModel.stairs) {
-            stairs(g, handled, stair.origin(), stair.stairs(), tex(stair.origin()));
+            stairs(g, handled, stair.origin(), stair.stairs(), texResolved(stair.origin()));
         }
         for (SimpleStairModel.Stair stair : SimpleStairModel.woodStairs) {
-            stairs(g, handled, stair.origin(), stair.stairs(), woodTexture(stair.origin()));
+            stairs(g, handled, stair.origin(), stair.stairs(), woodTexResolved(stair.origin()));
         }
         for (SimpleStairModel.Stair stair : SimpleStairModel.strippedStairs) {
-            stairs(g, handled, stair.origin(), stair.stairs(), woodTexture(stair.origin()));
+            stairs(g, handled, stair.origin(), stair.stairs(), woodTexResolved(stair.origin()));
         }
         for (SimpleStairModel.Stair stair : SimpleStairModel.vanillaWoodStairs) {
-            stairs(g, handled, stair.origin(), stair.stairs(), vanillaWoodTexture(stair.origin()));
+            stairs(g, handled, stair.origin(), stair.stairs(), vanillaWoodTexResolved(stair.origin()));
         }
         for (SimpleStairModel.Stair stair : SimpleStairModel.vanillaStrippedStairs) {
-            stairs(g, handled, stair.origin(), stair.stairs(), vanillaWoodTexture(stair.origin()));
+            stairs(g, handled, stair.origin(), stair.stairs(), vanillaWoodTexResolved(stair.origin()));
         }
         for (SimpleStairModel.Stair stair : SimpleStairModel.vanillaStairs) {
-            stairs(g, handled, stair.origin(), stair.stairs(), vanillaWoodTexture(stair.origin()));
+            stairs(g, handled, stair.origin(), stair.stairs(), vanillaWoodTexResolved(stair.origin()));
         }
     }
 
@@ -323,7 +353,7 @@ final class LegacyFamilies {
         if (!handled.add(wall)) {
             return;
         }
-        Identifier texture = Identifier.fromNamespaceAndPath(namespace, "block/" + texturePath);
+        Identifier texture = resolve(texturePath);
         TextureMapping mapping = new TextureMapping().put(TextureSlot.ALL, new Material(texture)).put(TextureSlot.PARTICLE, new Material(texture));
         Identifier inventory = ModelTemplates.WALL_INVENTORY.create(wall, mapping, g.modelOutput);
         Identifier post = ModelTemplates.WALL_POST.create(wall, mapping, g.modelOutput);
@@ -340,9 +370,9 @@ final class LegacyFamilies {
             }
             Identifier id = BuiltInRegistries.BLOCK.getKey(wall.wall());
             String sidePath = id.getPath().replaceAll("_wall", "");
-            String topBottomPath = (id.getPath() + "_top").replaceAll("_wall", "");
-            Identifier side = Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + sidePath);
-            Identifier topBottom = Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + topBottomPath);
+            String topBottomPath = sidePath + "_top";
+            Identifier side = resolve(sidePath);
+            Identifier topBottom = resolve(topBottomPath);
             TextureMapping mapping = new TextureMapping()
                     .put(TextureSlot.TOP, new Material(topBottom))
                     .put(TextureSlot.BOTTOM, new Material(topBottom))
@@ -376,7 +406,7 @@ final class LegacyFamilies {
         if (!handled.add(fence)) {
             return;
         }
-        Identifier texture = Identifier.fromNamespaceAndPath(namespace, "block/" + texturePath);
+        Identifier texture = resolve(texturePath);
         TextureMapping mapping = new TextureMapping().put(TextureSlot.ALL, new Material(texture)).put(TextureSlot.PARTICLE, new Material(texture));
         Identifier post = ModelTemplates.FENCE_POST.create(fence, mapping, g.modelOutput);
         Identifier side = ModelTemplates.FENCE_SIDE.create(fence, mapping, g.modelOutput);
@@ -408,7 +438,7 @@ final class LegacyFamilies {
             if (!handled.add(button.button())) {
                 continue;
             }
-            Identifier texture = tex(button.block());
+            Identifier texture = texResolved(button.block());
             TextureMapping mapping = new TextureMapping().put(TextureSlot.ALL, new Material(texture));
             Identifier unpressed = ModelTemplates.BUTTON.create(button.button(), mapping, g.modelOutput);
             Identifier pressed = ModelTemplates.BUTTON_PRESSED.create(button.button(), mapping, g.modelOutput);
@@ -423,7 +453,7 @@ final class LegacyFamilies {
             if (!handled.add(plate.pressurePlate())) {
                 continue;
             }
-            Identifier texture = tex(plate.block());
+            Identifier texture = texResolved(plate.block());
             TextureMapping mapping = new TextureMapping().put(TextureSlot.ALL, new Material(texture));
             Identifier up = ModelTemplates.PRESSURE_PLATE_UP.create(plate.pressurePlate(), mapping, g.modelOutput);
             Identifier down = ModelTemplates.PRESSURE_PLATE_DOWN.create(plate.pressurePlate(), mapping, g.modelOutput);
@@ -448,8 +478,14 @@ final class LegacyFamilies {
             if (!handled.add(trapdoor.trapdoor())) {
                 continue;
             }
-            // vanilla createTrapdoor uses the block's own texture; orientable variants are a TODO.
-            g.createTrapdoor(trapdoor.trapdoor());
+            String originPath = BuiltInRegistries.BLOCK.getKey(trapdoor.trapdoor()).getPath().replace("_trapdoor", "");
+            Identifier texture = resolve(originPath);
+            TextureMapping mapping = new TextureMapping().put(TextureSlot.TEXTURE, new Material(texture));
+            Identifier top = ModelTemplates.TRAPDOOR_TOP.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+            Identifier bottom = ModelTemplates.TRAPDOOR_BOTTOM.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+            Identifier open = ModelTemplates.TRAPDOOR_OPEN.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+            simpleItem(g, trapdoor.trapdoor(), bottom);
+            g.blockStateOutput.accept(g.createTrapdoor(trapdoor.trapdoor(), model(trapdoor.trapdoor(), top), model(trapdoor.trapdoor(), bottom), model(trapdoor.trapdoor(), open)));
         }
     }
 
@@ -471,6 +507,13 @@ final class LegacyFamilies {
         MultiVariant base = model(ladder, model);
         MultiVariant x90 = base.with(net.minecraft.client.renderer.block.dispatch.VariantMutator.X_ROT.withValue(Quadrant.R90));
         MultiVariant x180 = base.with(net.minecraft.client.renderer.block.dispatch.VariantMutator.X_ROT.withValue(Quadrant.R180));
+        var attach = net.minecraft.world.level.block.state.properties.BlockStateProperties.ATTACH_FACE;
+        var facingP = net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+        if (!ladder.defaultBlockState().hasProperty(attach) || !ladder.defaultBlockState().hasProperty(facingP)) {
+            g.blockStateOutput.accept(MultiVariantGenerator.dispatch(ladder, base));
+            simpleItem(g, ladder, model);
+            return;
+        }
         g.blockStateOutput.accept(MultiVariantGenerator.dispatch(ladder)
                 .with(PropertyDispatch.initial(net.minecraft.world.level.block.state.properties.BlockStateProperties.ATTACH_FACE,
                                 net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING)
@@ -552,7 +595,8 @@ final class LegacyFamilies {
         Identifier top = ModelTemplates.CROSS.createWithSuffix(block, "_top",
                 new TextureMapping().put(TextureSlot.CROSS, new Material(resolve(path + "_top"))), g.modelOutput);
         simpleItem(g, block, bottom);
-        g.createDoubleBlock(block, model(block, bottom), model(block, top));
+        // 26.2 createDoubleBlock binds the FIRST variant to half=upper
+        g.createDoubleBlock(block, model(block, top), model(block, bottom));
     }
 
     // endregion
@@ -561,9 +605,10 @@ final class LegacyFamilies {
 
     private static void verticalSlabs(BlockModelGenerators g, Set<Block> handled) {
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.verticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), Identifier.fromNamespaceAndPath(
-                    BuiltInRegistries.BLOCK.getKey(vs.block()).getNamespace(),
-                    "block/" + BuiltInRegistries.BLOCK.getKey(vs.block()).getPath()));
+            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), texResolved(vs.block()));
+        }
+        for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.columnVerticalSlabs) {
+            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), texResolved(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.woodVerticalSlabs) {
             verticalSlab(g, handled, vs.verticalSlab(), vs.block(), woodTexture(vs.block()));
@@ -573,6 +618,15 @@ final class LegacyFamilies {
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.plansVerticalSlabs) {
             verticalSlab(g, handled, vs.verticalSlab(), vs.block(), tex(vs.block()));
+        }
+        for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.vanillaVerticalSlabs) {
+            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), texResolved(vs.block()));
+        }
+        for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.vanillaWoodVerticalSlabs) {
+            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), vanillaWoodTexResolved(vs.block()));
+        }
+        for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.vanillaStrippedVerticalSlabs) {
+            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), vanillaWoodTexResolved(vs.block()));
         }
     }
 
@@ -649,7 +703,7 @@ final class LegacyFamilies {
         if (!handled.add(rocksBlock)) {
             return;
         }
-        Identifier texture = tex(origin);
+        Identifier texture = texResolved(origin);
         ModelTemplate[] stages = {MEModels.ROCKS_STAGE_0, MEModels.ROCKS_STAGE_1, MEModels.ROCKS_STAGE_2, MEModels.ROCKS_STAGE_3};
         PropertyDispatch.C2<MultiVariant, Direction, Integer> dispatch = PropertyDispatch.initial(
                 net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING, RocksBlock.STAGE);
@@ -684,13 +738,13 @@ final class LegacyFamilies {
             facingModel(g, handled, block, MEModels.WOOD_CHAIR, tex(block));
         }
         for (SimpleStoneStoolModel.Stool stool : SimpleStoneStoolModel.stools) {
-            facingModel(g, handled, stool.stool(), MEModels.STONE_STOOL, tex(stool.base()));
+            facingModel(g, handled, stool.stool(), MEModels.STONE_STOOL, texResolved(stool.base()));
         }
         for (SimpleStoneTableModel.Table table : SimpleStoneTableModel.tables) {
-            facingModel(g, handled, table.table(), MEModels.STONE_TABLE, tex(table.base()));
+            facingModel(g, handled, table.table(), MEModels.STONE_TABLE, texResolved(table.base()));
         }
         for (SimpleStoneChairModel.Chair chair : SimpleStoneChairModel.chairs) {
-            facingModel(g, handled, chair.chair(), MEModels.STONE_CHAIR, tex(chair.base()));
+            facingModel(g, handled, chair.chair(), MEModels.STONE_CHAIR, texResolved(chair.base()));
         }
     }
 
@@ -701,12 +755,18 @@ final class LegacyFamilies {
         }
         Identifier model = template.create(block, mapAll(texture), g.modelOutput);
         MultiVariant base = model(block, model);
-        g.blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(PropertyDispatch
-                .initial(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING)
-                .select(Direction.NORTH, base)
-                .select(Direction.EAST, yRot(base, Quadrant.R90))
-                .select(Direction.SOUTH, yRot(base, Quadrant.R180))
-                .select(Direction.WEST, yRot(base, Quadrant.R270))));
+        var facing = net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+        if (block.defaultBlockState().hasProperty(facing)) {
+            g.blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(PropertyDispatch
+                    .initial(facing)
+                    .select(Direction.NORTH, base)
+                    .select(Direction.EAST, yRot(base, Quadrant.R90))
+                    .select(Direction.SOUTH, yRot(base, Quadrant.R180))
+                    .select(Direction.WEST, yRot(base, Quadrant.R270))));
+        } else {
+            // 26.2 migration dropped FACING from some furniture blocks
+            g.blockStateOutput.accept(MultiVariantGenerator.dispatch(block, base));
+        }
         simpleItem(g, block, model);
     }
 
@@ -786,25 +846,27 @@ final class LegacyFamilies {
 
     private static void panes(BlockModelGenerators g, Set<Block> handled) {
         for (SimplePaneModel.Pane pane : SimplePaneModel.panes) {
-            paneModel(g, handled, pane.pane(), tex(pane.pane()));
+            Identifier paneTex = texResolved(pane.glass());
+            Identifier edgeTex = texResolved(pane.pane());
+            paneModel(g, handled, pane.pane(), paneTex, edgeTex);
         }
-        paneModel(g, handled, ModBlocks.NET, tex(ModBlocks.NET));
-        paneModel(g, handled, ModBlocks.GILDED_BARS, tex(ModBlocks.GILDED_BARS));
+        paneModel(g, handled, ModBlocks.NET, texResolved(ModBlocks.NET), texResolved(ModBlocks.NET));
+        paneModel(g, handled, ModBlocks.GILDED_BARS, texResolved(ModBlocks.GILDED_BARS), texResolved(ModBlocks.GILDED_BARS));
         for (Block bars : new Block[]{ModBlocks.COPPER_BARS, ModBlocks.EXPOSED_COPPER_BARS, ModBlocks.WEATHERED_COPPER_BARS,
                 ModBlocks.OXIDIZED_COPPER_BARS, ModBlocks.WAXED_COPPER_BARS, ModBlocks.WAXED_EXPOSED_COPPER_BARS,
                 ModBlocks.WAXED_WEATHERED_COPPER_BARS, ModBlocks.WAXED_OXIDIZED_COPPER_BARS, ModBlocks.BRONZE_BARS,
                 ModBlocks.CRUDE_BARS, ModBlocks.TREATED_STEEL_BARS, ModBlocks.BURZUM_BARS, ModBlocks.SILVER_BARS}) {
-            paneModel(g, handled, bars, tex(bars));
+            paneModel(g, handled, bars, texResolved(bars), texResolved(bars));
         }
     }
 
-    private static void paneModel(BlockModelGenerators g, Set<Block> handled, Block pane, Identifier texture) {
+    private static void paneModel(BlockModelGenerators g, Set<Block> handled, Block pane, Identifier paneTexture, Identifier edgeTexture) {
         if (!handled.add(pane)) {
             return;
         }
         TextureMapping mapping = new TextureMapping()
-                .put(TextureSlot.PANE, new Material(texture))
-                .put(TextureSlot.EDGE, new Material(texture));
+                .put(TextureSlot.PANE, new Material(paneTexture))
+                .put(TextureSlot.EDGE, new Material(edgeTexture));
         Identifier post = ModelTemplates.STAINED_GLASS_PANE_POST.create(pane, mapping, g.modelOutput);
         Identifier side = ModelTemplates.STAINED_GLASS_PANE_SIDE.create(pane, mapping, g.modelOutput);
         Identifier sideAlt = ModelTemplates.STAINED_GLASS_PANE_SIDE_ALT.create(pane, mapping, g.modelOutput);
@@ -848,7 +910,9 @@ final class LegacyFamilies {
         if (!handled.add(block)) {
             return;
         }
-        simpleItem(g, block, ModelLocationUtils.getModelLocation(block.asItem()));
+        Identifier itemId = Identifier.fromNamespaceAndPath(BuiltInRegistries.BLOCK.getKey(block).getNamespace(), "item/" + BuiltInRegistries.BLOCK.getKey(block).getPath());
+        ModelTemplates.FLAT_ITEM.create(itemId, TextureMapping.layer0(new Material(itemId)), g.modelOutput);
+        simpleItem(g, block, itemId);
         PropertyDispatch.C2<MultiVariant, Direction, net.minecraft.world.level.block.state.properties.SpeleothemThickness> dispatch = PropertyDispatch.initial(
                 net.minecraft.world.level.block.state.properties.BlockStateProperties.VERTICAL_DIRECTION,
                 net.sevenstars.middleearth.block.special.pointedBlocks.PointedIzherabanBlock.THICKNESS);
@@ -880,7 +944,16 @@ final class LegacyFamilies {
         if (!handled.add(block)) {
             return;
         }
-        g.createCropBlock(block, age, stages);
+        Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
+        PropertyDispatch.C1<MultiVariant, Integer> dispatch = PropertyDispatch.initial(age);
+        for (int stage : stages) {
+            Identifier texture = resolve(blockId.getPath() + "stage" + stage);
+            Identifier model = ModelTemplates.CROP.create(
+                    Identifier.fromNamespaceAndPath(blockId.getNamespace(), "block/" + blockId.getPath() + stage),
+                    new TextureMapping().put(TextureSlot.CROP, new Material(texture)), g.modelOutput);
+            dispatch.select(stage, g.plainVariant(model));
+        }
+        g.blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(dispatch));
     }
 
     private static void multiface(BlockModelGenerators g, Set<Block> handled) {
@@ -956,9 +1029,9 @@ final class LegacyFamilies {
         }
         Identifier id = BuiltInRegistries.BLOCK.getKey(block);
         Identifier tip = MEModels.CROP_VINE.createWithSuffix(block, "_tip",
-                new TextureMapping().put(TextureSlot.CROSS, new Material(Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_tip"))), g.modelOutput);
+                new TextureMapping().put(TextureSlot.CROP, new Material(Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_tip"))), g.modelOutput);
         Identifier body = MEModels.CROP_VINE.create(block,
-                new TextureMapping().put(TextureSlot.CROSS, new Material(Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath()))), g.modelOutput);
+                new TextureMapping().put(TextureSlot.CROP, new Material(Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath()))), g.modelOutput);
         simpleItem(g, block, body);
         g.blockStateOutput.accept(MultiVariantGenerator.dispatch(block).with(PropertyDispatch.initial(HangingMossBlock.TIP)
                 .select(true, model(block, tip))

@@ -18,7 +18,7 @@
       "x": 90,
       "y": 180
     },
-    "facing=up,": {
+    "facing=up": {
       "model": "middle-earth:block/crude_rod"
     },
     "facing=west": {
