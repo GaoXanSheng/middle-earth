@@ -478,14 +478,28 @@ final class LegacyFamilies {
             if (!handled.add(trapdoor.trapdoor())) {
                 continue;
             }
-            String originPath = BuiltInRegistries.BLOCK.getKey(trapdoor.trapdoor()).getPath().replace("_trapdoor", "");
-            Identifier texture = resolve(originPath);
-            TextureMapping mapping = new TextureMapping().put(TextureSlot.TEXTURE, new Material(texture));
-            Identifier top = ModelTemplates.TRAPDOOR_TOP.create(trapdoor.trapdoor(), mapping, g.modelOutput);
-            Identifier bottom = ModelTemplates.TRAPDOOR_BOTTOM.create(trapdoor.trapdoor(), mapping, g.modelOutput);
-            Identifier open = ModelTemplates.TRAPDOOR_OPEN.create(trapdoor.trapdoor(), mapping, g.modelOutput);
-            simpleItem(g, trapdoor.trapdoor(), bottom);
-            g.blockStateOutput.accept(g.createTrapdoor(trapdoor.trapdoor(), model(trapdoor.trapdoor(), top), model(trapdoor.trapdoor(), bottom), model(trapdoor.trapdoor(), open)));
+            if (trapdoor.orientable()) {
+                Identifier texture = tex(trapdoor.trapdoor());
+                TextureMapping mapping = new TextureMapping().put(TextureSlot.TEXTURE, new Material(texture));
+                Identifier top = ModelTemplates.ORIENTABLE_TRAPDOOR_TOP.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+                Identifier bottom = ModelTemplates.ORIENTABLE_TRAPDOOR_BOTTOM.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+                Identifier open = ModelTemplates.ORIENTABLE_TRAPDOOR_OPEN.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+                simpleItem(g, trapdoor.trapdoor(), bottom);
+                g.blockStateOutput.accept(g.createOrientableTrapdoor(trapdoor.trapdoor(), model(trapdoor.trapdoor(), top), model(trapdoor.trapdoor(), bottom), model(trapdoor.trapdoor(), open)));
+            } else {
+                Identifier texture;
+                if (trapdoor.block() == net.minecraft.world.level.block.Blocks.BASALT) {
+                    texture = Identifier.parse("minecraft:block/basalt_side");
+                } else {
+                    texture = texResolved(trapdoor.block());
+                }
+                TextureMapping mapping = new TextureMapping().put(TextureSlot.TEXTURE, new Material(texture));
+                Identifier top = ModelTemplates.TRAPDOOR_TOP.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+                Identifier bottom = ModelTemplates.TRAPDOOR_BOTTOM.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+                Identifier open = ModelTemplates.TRAPDOOR_OPEN.create(trapdoor.trapdoor(), mapping, g.modelOutput);
+                simpleItem(g, trapdoor.trapdoor(), bottom);
+                g.blockStateOutput.accept(g.createTrapdoor(trapdoor.trapdoor(), model(trapdoor.trapdoor(), top), model(trapdoor.trapdoor(), bottom), model(trapdoor.trapdoor(), open)));
+            }
         }
     }
 
@@ -1021,6 +1035,8 @@ final class LegacyFamilies {
 
     private static void hangingMoss(BlockModelGenerators g, Set<Block> handled) {
         hangingVine(g, handled, ModNatureBlocks.WILLOW_VINES);
+        hangingVine(g, handled, ModNatureBlocks.MIRKWOOD_VINES);
+        hangingVine(g, handled, ModNatureBlocks.HANGING_WEBS);
     }
 
     private static void hangingVine(BlockModelGenerators g, Set<Block> handled, Block block) {
