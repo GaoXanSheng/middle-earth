@@ -9,3 +9,21 @@ mutable field net/minecraft/world/level/block/entity/BlockEntityType validBlocks
 accessible field net/minecraft/client/resources/model/sprite/AtlasManager KNOWN_ATLASES Ljava/util/List;
 mutable field net/minecraft/client/resources/model/sprite/AtlasManager KNOWN_ATLASES Ljava/util/List;
 
+accessible field net/minecraft/client/data/models/BlockModelGenerators$PlantType TINTED Lnet/minecraft/client/data/models/BlockModelGenerators$PlantType;
+accessible field net/minecraft/client/data/models/BlockModelGenerators$PlantType NOT_TINTED Lnet/minecraft/client/data/models/BlockModelGenerators$PlantType;
+accessible field net/minecraft/client/data/models/BlockModelGenerators$PlantType EMISSIVE_NOT_TINTED Lnet/minecraft/client/data/models/BlockModelGenerators$PlantType;
+
+accessible method net/minecraft/client/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createStairs (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createWall (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createFenceGate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;Z)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createButton (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createPressurePlate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createRotatedPillar ()Lnet/minecraft/client/data/models/blockstates/PropertyDispatch;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createRotatedPillarWithHorizontalVariant (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)Lnet/minecraft/client/data/models/blockstates/BlockModelDefinitionGenerator;
+accessible method net/minecraft/client/data/models/BlockModelGenerators createDoubleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/client/data/models/MultiVariant;Lnet/minecraft/client/data/models/MultiVariant;)V
+accessible method net/minecraft/client/data/models/BlockModelGenerators createCropBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/properties/Property;[I)V
+accessible method net/minecraft/client/data/models/BlockModelGenerators createMultiface (Lnet/minecraft/world/level/block/Block;)V
+accessible method net/minecraft/client/data/models/BlockModelGenerators createFlowerBed (Lnet/minecraft/world/level/block/Block;)V
+

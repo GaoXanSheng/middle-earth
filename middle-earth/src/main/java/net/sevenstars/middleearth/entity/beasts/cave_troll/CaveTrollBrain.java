@@ -33,11 +33,15 @@ public class CaveTrollBrain {
     }
 
     private static Optional<? extends LivingEntity> getAttackTarget(ServerLevel world, CaveTrollEntity troll) {
-        return (troll.isSleeping() || troll.isSitting()) ? troll.getBrain().getMemory(MemoryModuleType.HURT_BY_ENTITY) : troll.getBrain().getMemory(MemoryModuleType.NEAREST_ATTACKABLE);
+        return (troll.isSleeping() || troll.isSitting()) ? getMemoryIfRegistered(troll, MemoryModuleType.HURT_BY_ENTITY) : getMemoryIfRegistered(troll, MemoryModuleType.NEAREST_ATTACKABLE);
     }
 
     private static Optional<? extends LivingEntity> getHurtBy (ServerLevel world, CaveTrollEntity troll) {
-        return troll.getBrain().getMemory(MemoryModuleType.HURT_BY_ENTITY);
+        return getMemoryIfRegistered(troll, MemoryModuleType.HURT_BY_ENTITY);
+    }
+
+    private static Optional<? extends LivingEntity> getMemoryIfRegistered(CaveTrollEntity troll, MemoryModuleType<LivingEntity> type) {
+        return troll.getBrain().hasMemoryValue(type) ? troll.getBrain().getMemory(type) : Optional.empty();
     }
 
     public static void updateActivities(CaveTrollEntity troll) {

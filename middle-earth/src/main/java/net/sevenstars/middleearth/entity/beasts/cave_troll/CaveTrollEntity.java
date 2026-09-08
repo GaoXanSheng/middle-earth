@@ -2,20 +2,17 @@ package net.sevenstars.middleearth.entity.beasts.cave_troll;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.util.Util;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -23,23 +20,17 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityEvent;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -300,10 +291,13 @@ public class CaveTrollEntity extends AbstractBeastEntity {
             setupAnimationStates();
         }
         else {
-            if(this.getTargetFromBrain() != null && !this.isSprinting()) {
+            // The live brain may be the vanilla horse brain, which does not register ATTACK_TARGET;
+            // fetching an unregistered memory throws in 26.2, so guard with hasMemoryValue.
+            boolean hasAttackTarget = this.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) && this.getTargetFromBrain() != null;
+            if(hasAttackTarget && !this.isSprinting()) {
                 this.setSprinting(true);
             }
-            else if(this.getTargetFromBrain() == null && this.isSprinting()) {
+            else if(!hasAttackTarget && this.isSprinting()) {
                 this.setSprinting(false);
             }
 
@@ -506,7 +500,7 @@ public class CaveTrollEntity extends AbstractBeastEntity {
     @Nullable
     @Override
     public LivingEntity getTarget() {
-        return getTargetFromBrain();
+        return this.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET) ? getTargetFromBrain() : null;
     }
 
     @Override

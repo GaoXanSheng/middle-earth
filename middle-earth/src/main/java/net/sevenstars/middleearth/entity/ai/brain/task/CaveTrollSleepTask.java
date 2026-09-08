@@ -35,7 +35,7 @@ public class CaveTrollSleepTask extends Behavior<CaveTrollEntity> {
 
     @Override
     protected boolean canStillUse(ServerLevel world, CaveTrollEntity entity, long time) {
-        return entity.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).isEmpty();
+        return !entity.getBrain().hasMemoryValue(MemoryModuleType.ATTACK_TARGET);
     }
 
     @Override

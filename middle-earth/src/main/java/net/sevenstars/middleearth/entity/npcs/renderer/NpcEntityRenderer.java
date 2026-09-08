@@ -1,17 +1,13 @@
 package net.sevenstars.middleearth.entity.npcs.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ArmorModelSet;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
@@ -19,6 +15,9 @@ import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.Direction;
@@ -32,7 +31,6 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.client.ModTexturedRenderLayers;
 import net.sevenstars.middleearth.client.RenderUtil;
 import net.sevenstars.middleearth.config.ModClientConfigs;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
@@ -274,7 +272,7 @@ public class NpcEntityRenderer extends HumanoidMobRenderer<NpcEntity, NpcEntityR
 
     private void renderTexture(PoseStack matrices, SubmitNodeCollector submitNodeCollector, Identifier textureId, int light, int overlay, boolean isEmissive){
         if (characterTextureAtlas == null) {
-            characterTextureAtlas = AtlasesME.getAtlasFromPath(ModTexturedRenderLayers.CHARACTER_ATLAS_TEXTURES);
+            characterTextureAtlas = AtlasesME.getAtlasFromPath(AtlasesME.CHARACTER_TEXTURES);
         }
         if (isEmissive) {
             RenderUtil.renderAtlasEmissiveTexture(characterTextureAtlas, model, matrices, submitNodeCollector, textureId, light, overlay);
@@ -292,8 +290,9 @@ public class NpcEntityRenderer extends HumanoidMobRenderer<NpcEntity, NpcEntityR
 
     @Override
     public Identifier getTextureLocation(NpcEntityRenderState state) {
-        // Made custom in the render method
-        return null;
+        // Custom layer rendering binds the atlas sprites directly in submit(); the base
+        // model's render type only needs a valid bound texture, which is the atlas itself.
+        return AtlasesME.getAtlasPath(AtlasesME.CHARACTER_TEXTURES);
     }
 
     private HumanoidModel.ArmPose getArmPose(NpcEntity npc, ItemStack stack, InteractionHand hand) {
