@@ -2,16 +2,11 @@ package net.sevenstars.middleearth.datageneration.providers.models;
 
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.color.item.Dye;
-import net.minecraft.client.data.*;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelInstance;
-import net.minecraft.client.data.models.model.ModelLocationUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.*;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.client.renderer.item.SelectItemModel;
@@ -25,8 +20,8 @@ import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.renderer.item.properties.select.TrimMaterialProperty;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -353,7 +348,8 @@ public class ItemModelProvider extends FabricModelProvider {
         ItemModel.Unbaked unbaked3 = ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_pulling_1", ModelTemplates.CROSSBOW));
         ItemModel.Unbaked unbaked4 = ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_pulling_2", ModelTemplates.CROSSBOW));
         ItemModel.Unbaked unbaked5 = ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_arrow", ModelTemplates.CROSSBOW));
-        ItemModel.Unbaked unbaked6 = ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_firework", ModelTemplates.CROSSBOW));
+        // No per-faction firework loading textures exist; reuse the vanilla crossbow_firework model.
+        ItemModel.Unbaked unbaked6 = ItemModelUtils.plainModel(Identifier.withDefaultNamespace("item/crossbow_firework"));
         itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.select(new Charge(), ItemModelUtils.conditional(ItemModelUtils.isUsingItem(), ItemModelUtils.rangeSelect(new CrossbowPull(), unbaked2, new RangeSelectItemModel.Entry[]{ItemModelUtils.override(unbaked3, 0.58F), ItemModelUtils.override(unbaked4, 1.0F)}), unbaked), new SelectItemModel.SwitchCase[]{ItemModelUtils.when(CrossbowItem.ChargeType.ARROW, unbaked5), ItemModelUtils.when(CrossbowItem.ChargeType.ROCKET, unbaked6)}));
     }
 
@@ -395,7 +391,10 @@ public class ItemModelProvider extends FabricModelProvider {
         ModelTemplates.FLAT_ITEM.create(identifierItem, TextureMapping.layer0(identifier2), itemModelGenerator.modelOutput);
         unbaked2 = ItemModelUtils.plainModel(identifierItem);
 
-        ItemModel.Unbaked unbakedHotItem = ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_hot", ModelTemplates.FLAT_ITEM));
+        // Only emit the heated-state model when its texture exists; otherwise the heated state just reuses the plain model.
+        ItemModel.Unbaked unbakedHotItem = itemTextureExists(BuiltInRegistries.ITEM.getKey(item).getPath() + "_hot")
+                ? ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_hot", ModelTemplates.FLAT_ITEM))
+                : unbaked2;
 
         itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.conditional(new HotComponentProperty(), unbakedHotItem, ItemModelUtils.select(new TrimMaterialProperty(), unbaked2, list)));
     }
@@ -434,9 +433,17 @@ public class ItemModelProvider extends FabricModelProvider {
 
     public final void registerHotItem(Item item, ItemModelGenerators itemModelGenerator) {
         ItemModel.Unbaked unbakedItem = ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, ModelTemplates.FLAT_ITEM));
-        ItemModel.Unbaked unbakedHotItem = ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_hot", ModelTemplates.FLAT_ITEM));
+        // Fall back to the plain model when the heated texture does not exist.
+        ItemModel.Unbaked unbakedHotItem = itemTextureExists(BuiltInRegistries.ITEM.getKey(item).getPath() + "_hot")
+                ? ItemModelUtils.plainModel(itemModelGenerator.createFlatItemModel(item, "_hot", ModelTemplates.FLAT_ITEM))
+                : unbakedItem;
 
         itemModelGenerator.itemModelOutput.accept(item, ItemModelUtils.conditional(new HotComponentProperty(), unbakedHotItem, unbakedItem));
+    }
+
+    private boolean itemTextureExists(String texturePath) {
+        return FabricLoader.getInstance().getModContainer(MiddleEarth.MOD_ID).stream().flatMap(container -> container.getRootPaths().stream())
+                .anyMatch(root -> java.nio.file.Files.exists(root.resolve("assets/" + MiddleEarth.MOD_ID + "/textures/item/" + texturePath + ".png")));
     }
 
 }

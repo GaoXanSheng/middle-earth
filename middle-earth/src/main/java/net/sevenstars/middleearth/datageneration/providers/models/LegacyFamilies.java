@@ -558,6 +558,11 @@ final class LegacyFamilies {
             g.blockStateOutput.accept(MultiVariantGenerator.dispatch(webbing, model(webbing, model)));
             simpleItem(g, webbing, model);
         }
+        if (handled.add(ModNatureBlocks.GLOWWORM_MAIN)) {
+            Identifier mainModel = ModelTemplates.CROSS.create(ModNatureBlocks.GLOWWORM_MAIN,
+                    new TextureMapping().put(TextureSlot.CROSS, new Material(tex(ModNatureBlocks.GLOWWORM_MAIN))), g.modelOutput);
+            g.blockStateOutput.accept(MultiVariantGenerator.dispatch(ModNatureBlocks.GLOWWORM_MAIN, model(ModNatureBlocks.GLOWWORM_MAIN, mainModel)));
+        }
     }
 
     private static void largePlants(BlockModelGenerators g, Set<Block> handled) {
@@ -619,37 +624,39 @@ final class LegacyFamilies {
 
     private static void verticalSlabs(BlockModelGenerators g, Set<Block> handled) {
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.verticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), texResolved(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), texResolved(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.columnVerticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), texResolved(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), texResolved(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.woodVerticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), woodTexture(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), woodTexture(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.strippedVerticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), woodTexture(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), woodTexture(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.plansVerticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), tex(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), tex(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.vanillaVerticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), texResolved(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), texResolved(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.vanillaWoodVerticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), vanillaWoodTexResolved(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), vanillaWoodTexResolved(vs.block()));
         }
         for (SimpleVerticalSlabModel.VerticalSlab vs : SimpleVerticalSlabModel.vanillaStrippedVerticalSlabs) {
-            verticalSlab(g, handled, vs.verticalSlab(), vs.block(), vanillaWoodTexResolved(vs.block()));
+            verticalSlab(g, handled, vs.verticalSlab(), vanillaWoodTexResolved(vs.block()));
         }
     }
 
-    private static void verticalSlab(BlockModelGenerators g, Set<Block> handled, Block verticalSlab, Block origin, Identifier texture) {
+    private static void verticalSlab(BlockModelGenerators g, Set<Block> handled, Block verticalSlab, Identifier texture) {
         if (!handled.add(verticalSlab)) {
             return;
         }
-        Identifier full = ModelLocationUtils.getModelLocation(origin);
+        // 26.2 vanilla no longer ships standalone full-cube models for waxed copper variants,
+        // so the double-slab state uses a self-generated full model instead of the origin's.
         TextureMapping mapping = new TextureMapping().put(TextureSlot.ALL, new Material(texture)).put(TextureSlot.PARTICLE, new Material(texture));
+        Identifier full = ModelTemplates.CUBE_ALL.createWithSuffix(verticalSlab, "_full", mapping, g.modelOutput);
         Identifier regular = MEModels.VERTICAL_SLAB.create(verticalSlab, mapping, g.modelOutput);
         Identifier inner = MEModels.VERTICAL_SLAB_INNER.create(verticalSlab, mapping, g.modelOutput);
         Identifier outer = MEModels.VERTICAL_SLAB_OUTER.create(verticalSlab, mapping, g.modelOutput);
@@ -886,7 +893,11 @@ final class LegacyFamilies {
         Identifier sideAlt = ModelTemplates.STAINED_GLASS_PANE_SIDE_ALT.create(pane, mapping, g.modelOutput);
         Identifier noside = ModelTemplates.STAINED_GLASS_PANE_NOSIDE.create(pane, mapping, g.modelOutput);
         Identifier nosideAlt = ModelTemplates.STAINED_GLASS_PANE_NOSIDE_ALT.create(pane, mapping, g.modelOutput);
-        simpleItem(g, pane, post);
+        Identifier itemId = Identifier.fromNamespaceAndPath(BuiltInRegistries.BLOCK.getKey(pane).getNamespace(),
+                "item/" + BuiltInRegistries.BLOCK.getKey(pane).getPath());
+        // The post model only has top/bottom faces for multipart assembly, so item icons use a flat 2D model like vanilla glass panes.
+        ModelTemplates.FLAT_ITEM.create(itemId, TextureMapping.layer0(new Material(paneTexture)), g.modelOutput);
+        simpleItem(g, pane, itemId);
         var mvPost = model(pane, post);
         var mvSide = model(pane, side);
         var mvSideY90 = yRot(model(pane, side), Quadrant.R90);
@@ -961,7 +972,7 @@ final class LegacyFamilies {
         Identifier blockId = BuiltInRegistries.BLOCK.getKey(block);
         PropertyDispatch.C1<MultiVariant, Integer> dispatch = PropertyDispatch.initial(age);
         for (int stage : stages) {
-            Identifier texture = resolve(blockId.getPath() + "stage" + stage);
+            Identifier texture = resolve(blockId.getPath() + "_stage" + stage);
             Identifier model = ModelTemplates.CROP.create(
                     Identifier.fromNamespaceAndPath(blockId.getNamespace(), "block/" + blockId.getPath() + stage),
                     new TextureMapping().put(TextureSlot.CROP, new Material(texture)), g.modelOutput);

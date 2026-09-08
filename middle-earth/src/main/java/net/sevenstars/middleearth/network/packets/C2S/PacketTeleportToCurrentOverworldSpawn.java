@@ -15,7 +15,7 @@ import net.sevenstars.middleearth.world.dimension.ModDimensions;
 public class PacketTeleportToCurrentOverworldSpawn extends ClientToServerPacket<PacketTeleportToCurrentOverworldSpawn> {
     public static final Type<PacketTeleportToCurrentOverworldSpawn> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "packet_teleport_to_current_overworld_spawn"));
     public static final PacketTeleportToCurrentOverworldSpawn INSTANCE = new PacketTeleportToCurrentOverworldSpawn();
-    public static final StreamCodec<RegistryFriendlyByteBuf, PacketTeleportToCurrentOverworldSpawn> CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketTeleportToCurrentOverworldSpawn> CODEC = StreamCodec.of((buf, packet) -> {}, buf -> INSTANCE);
 
     @Override
     public Type<PacketTeleportToCurrentOverworldSpawn> type() {

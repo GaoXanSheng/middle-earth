@@ -1,9 +1,7 @@
 package net.sevenstars.middleearth.network;
 
-import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.sevenstars.middleearth.network.connections.IConnectionToClient;
 import net.sevenstars.middleearth.network.contexts.ServerPacketContext;
@@ -35,17 +33,17 @@ public class ModServerNetworkHandler {
         PayloadTypeRegistry.serverboundPlay().register(PacketTeleportToCustomCoordinate.ID, PacketTeleportToCustomCoordinate.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(PacketTeleportToDynamicCoordinate.ID, PacketTeleportToDynamicCoordinate.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(PacketTeleportToCurrentSpawn.ID, PacketTeleportToCurrentSpawn.CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(PacketTeleportToCurrentOverworldSpawn.ID, StreamCodec.unit(new PacketTeleportToCurrentOverworldSpawn()));
+        PayloadTypeRegistry.serverboundPlay().register(PacketTeleportToCurrentOverworldSpawn.ID, PacketTeleportToCurrentOverworldSpawn.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(PacketSetSpawnData.ID, PacketSetSpawnData.CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(PacketOnboardingRequest.ID, StreamCodec.unit(new PacketOnboardingRequest()));
+        PayloadTypeRegistry.serverboundPlay().register(PacketOnboardingRequest.ID, PacketOnboardingRequest.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ForgeOutputPacket.ID, ForgeOutputPacket.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ForgeModeSwitchPacket.ID, ForgeModeSwitchPacket.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(InscriptionWordUpdatePacket.ID, InscriptionWordUpdatePacket.CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(InscriptionConfirmationPacket.ID, StreamCodec.unit(new InscriptionConfirmationPacket()));
+        PayloadTypeRegistry.serverboundPlay().register(InscriptionConfirmationPacket.ID, InscriptionConfirmationPacket.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(AnvilIndexPacket.ID, AnvilIndexPacket.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ArtisanIndexPacket.ID, ArtisanIndexPacket.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(ArtisanTableTabPacket.ID, ArtisanTableTabPacket.CODEC);
-        PayloadTypeRegistry.serverboundPlay().register(HoodStateTogglePacket.ID, StreamCodec.unit(new HoodStateTogglePacket()));
+        PayloadTypeRegistry.serverboundPlay().register(HoodStateTogglePacket.ID, HoodStateTogglePacket.CODEC);
 
         // Application [SERVER SIDE]
         ServerPlayNetworking.registerGlobalReceiver(PacketStructureManagerRespawnEntities.ID, wrapServerHandler(connection, PacketStructureManagerRespawnEntities::process));

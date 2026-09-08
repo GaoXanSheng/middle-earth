@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -41,6 +42,14 @@ public class BlockModelProvider extends FabricModelProvider {
             "_log", "_stem", "_block", "_bottom", "_side", "_top"
     };
     private Set<String> modBlockTextures;
+
+    // Vanilla blocks whose texture is not derived from the block name, so the suffix-stripping
+    // lookup below can never find it (26.2 smooth_quartz uses quartz_block_bottom, etc.).
+    private static final Map<String, String> TEXTURE_ALIASES = Map.of(
+            "smooth_quartz", "quartz_block_bottom",
+            "smooth_sandstone", "sandstone_top",
+            "smooth_red_sandstone", "red_sandstone_top"
+    );
 
     public BlockModelProvider(FabricPackOutput output) {
         super(output);
@@ -84,6 +93,15 @@ public class BlockModelProvider extends FabricModelProvider {
     }
 
     private String resolveTexture(String path, int depth) {
+        String alias = TEXTURE_ALIASES.get(path);
+        if (alias != null) {
+            if (modBlockTextures.contains(alias)) {
+                return MiddleEarth.MOD_ID + ":block/" + alias;
+            }
+            if (vanillaBlockTextures.contains(alias)) {
+                return "minecraft:block/" + alias;
+            }
+        }
         if (modBlockTextures.contains(path)) {
             return MiddleEarth.MOD_ID + ":block/" + path;
         }

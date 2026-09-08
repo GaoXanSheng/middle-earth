@@ -16,7 +16,7 @@ import java.util.Objects;
 public class HoodStateTogglePacket extends ClientToServerPacket<HoodStateTogglePacket> {
     public static final Type<HoodStateTogglePacket> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "hood_state_toggle_packet"));
     public static final HoodStateTogglePacket INSTANCE = new HoodStateTogglePacket();
-    public static final StreamCodec<RegistryFriendlyByteBuf, HoodStateTogglePacket> CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, HoodStateTogglePacket> CODEC = StreamCodec.of((buf, packet) -> {}, buf -> INSTANCE);
 
     public HoodStateTogglePacket() {
     }

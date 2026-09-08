@@ -10,7 +10,7 @@ import net.sevenstars.middleearth.network.packets.ClientToServerPacket;
 public class InscriptionConfirmationPacket extends ClientToServerPacket<InscriptionConfirmationPacket> {
     public static final Type<InscriptionConfirmationPacket> ID = new Type<>(MiddleEarth.of("inscription_confirmation_packet"));
     public static final InscriptionConfirmationPacket INSTANCE = new InscriptionConfirmationPacket();
-    public static final StreamCodec<RegistryFriendlyByteBuf, InscriptionConfirmationPacket> CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, InscriptionConfirmationPacket> CODEC = StreamCodec.of((buf, packet) -> {}, buf -> INSTANCE);
 
     public InscriptionConfirmationPacket() {
     }

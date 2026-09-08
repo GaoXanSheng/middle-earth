@@ -1,9 +1,6 @@
 package net.sevenstars.middleearth;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -15,8 +12,7 @@ import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.block.Block;
-import net.sevenstars.middleearth.block.registration.*;
+import net.sevenstars.middleearth.block.registration.ModBlockEntities;
 import net.sevenstars.middleearth.block.special.bellows.BellowsBlockEntityRenderer;
 import net.sevenstars.middleearth.block.special.coffers.*;
 import net.sevenstars.middleearth.block.special.fire_of_orthanc.FireOfOrthancEntityRenderer;
@@ -46,8 +42,6 @@ import net.sevenstars.middleearth.client.renderer.handheld.HeaterShieldModelRend
 import net.sevenstars.middleearth.client.renderer.handheld.HeldBannerModelRenderer;
 import net.sevenstars.middleearth.client.renderer.handheld.KiteShieldModelRenderer;
 import net.sevenstars.middleearth.client.renderer.handheld.RoundShieldModelRenderer;
-import net.sevenstars.middleearth.datageneration.content.models.*;
-import net.sevenstars.middleearth.datageneration.content.tags.Crops;
 import net.sevenstars.middleearth.entity.EntitiesME;
 import net.sevenstars.middleearth.entity.EntityModelsME;
 import net.sevenstars.middleearth.entity.barrel.BarrelEntityRenderer;
@@ -76,7 +70,6 @@ import net.sevenstars.middleearth.gui.structuremanager.StructureManagerScreen;
 import net.sevenstars.middleearth.gui.structuremanager.structurenest.StructureNestScreen;
 import net.sevenstars.middleearth.gui.wood_pile.WoodPileScreen;
 import net.sevenstars.middleearth.item.EquipmentItemsME;
-import net.sevenstars.middleearth.item.ResourceItemsME;
 import net.sevenstars.middleearth.item.items.weapons.HotComponentProperty;
 import net.sevenstars.middleearth.item.items.weapons.SneakAttackProperty;
 import net.sevenstars.middleearth.item.utils.armor.ArmorModelsME;
@@ -221,9 +214,8 @@ public class MiddleEarthClient implements ClientModInitializer {
             ArmorRenderer.register(new BackAttachmentRenderer(), cape);
         });
 
-        ModelLoadingPlugin.register(pluginContext -> {
-            pluginContext.addModel(ExtraModelKey.create(() -> "plate_apple"), SimpleUnbakedExtraModel.blockStateModel(MiddleEarth.ofPath("item", "plate_apple")));
-        });
+        // Removed: the plate_apple extra block-state model had no consumer left and 26.2 rejects
+        // block models that only use item-atlas sprites, so it logged warnings every launch.
 
         ParticleProviderRegistry.getInstance().register(ModParticleTypes.ANVIL_SPARK_PARTICLE, AnvilBonkParticle.Factory::new);
         ParticleProviderRegistry.getInstance().register(ModParticleTypes.BIOME_FOG_PARTICLE, BiomeFogParticle.Factory::new);

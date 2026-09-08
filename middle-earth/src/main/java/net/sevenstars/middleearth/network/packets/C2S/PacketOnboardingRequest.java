@@ -17,7 +17,7 @@ public class PacketOnboardingRequest extends ClientToServerPacket<PacketOnboardi
 {
     public static final Type<PacketOnboardingRequest> ID = new Type<>(Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "packet_onboarding_request"));
     public static final PacketOnboardingRequest INSTANCE = new PacketOnboardingRequest();
-    public static final StreamCodec<RegistryFriendlyByteBuf, PacketOnboardingRequest> CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketOnboardingRequest> CODEC = StreamCodec.of((buf, packet) -> {}, buf -> INSTANCE);
 
     @Override
     public Type<PacketOnboardingRequest> type() {
