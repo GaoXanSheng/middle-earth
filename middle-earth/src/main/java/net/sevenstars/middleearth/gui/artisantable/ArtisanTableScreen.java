@@ -122,8 +122,8 @@ public class ArtisanTableScreen extends AbstractContainerScreen<ArtisanTableScre
 
         this.armorStand = new ArmorStand(this.minecraft.level, 0.0, 0.0, 0.0);
         // 26.2: this dummy entity never joins the world, so it has no auto-assigned ID;
-        // Entity#getId() throws "Tried to access entity ID before ID assignment" without this.
-        this.armorStand.setId(0);
+        // Entity#getId() throws when the ID is 0 (the "unassigned" sentinel), so give it a dummy one.
+        this.armorStand.setId(1);
         this.armorStand.setNoBasePlate(true);
         this.armorStand.setShowArms(true);
         this.armorStand.yBodyRot = 210.0f;
