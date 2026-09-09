@@ -28,4 +28,5 @@ accessible method net/minecraft/client/data/models/BlockModelGenerators createDo
 accessible method net/minecraft/client/data/models/BlockModelGenerators createCropBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/state/properties/Property;[I)V
 accessible method net/minecraft/client/data/models/BlockModelGenerators createMultiface (Lnet/minecraft/world/level/block/Block;)V
 accessible method net/minecraft/client/data/models/BlockModelGenerators createFlowerBed (Lnet/minecraft/world/level/block/Block;)V
-
+accessible method net/minecraft/core/cauldron/CauldronInteraction$Dispatcher put (Lnet/minecraft/world/item/Item;Lnet/minecraft/core/cauldron/CauldronInteraction;)V
+accessible method net/minecraft/core/cauldron/CauldronInteraction$Dispatcher put (Lnet/minecraft/tags/TagKey;Lnet/minecraft/core/cauldron/CauldronInteraction;)V

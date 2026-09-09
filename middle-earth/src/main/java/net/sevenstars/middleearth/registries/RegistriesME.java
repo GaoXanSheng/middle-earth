@@ -3,13 +3,13 @@ package net.sevenstars.middleearth.registries;
 import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.registry.*;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.HoeItem;
@@ -715,47 +715,21 @@ public class RegistriesME {
         LandPathTypeRegistry.register(ModDecorativeBlocks.FIRE_BOWL, PathType.DAMAGING, PathType.DAMAGING);
     }
 
-    public static void registerCauldronBehaviour() {
-        // TODO 26.2: vanilla per-item cauldron interactions are now data-driven
-        //  (net.minecraft.core.cauldron.CauldronInteractions / CauldronInteraction.Dispatcher);
-        //  the old CauldronInteraction.WATER.map().put(...) registration is gone.
-        //  Re-register COOL_DOWN_METAL / CLEAN_EQUIPMENT / CLEAN_ITEM through the new
-        //  datapack/registry mechanism once a mod-side data provider exists.
+    public static final CauldronInteraction CLEAN_EQUIPMENT = (state, world, pos, player, hand, stack) -> {
+        // 26.2 dropped the shared "dyeable" tag this used to gate on; a DYED_COLOR component
+        // is what marks an item (modded or vanilla) as dyed, and dyed items are what's washable.
+        if (!stack.has(DataComponents.DYED_COLOR)) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        } else {
+            if (!world.isClientSide()) {
+                stack.remove(DataComponents.DYED_COLOR);
+                player.awardStat(Stats.CLEAN_ARMOR);
+                LayeredCauldronBlock.lowerFillLevel(state, world, pos);
+            }
 
-        /*
-        HotMetalsModel.items.forEach(item -> {
-            CauldronInteraction.WATER.map().put(item, COOL_DOWN_METAL);
-        });
-
-        HotMetalsModel.ingots.forEach(item -> {
-            CauldronInteraction.WATER.map().put(item, COOL_DOWN_METAL);
-        });
-
-        HotMetalsModel.nuggets.forEach(item -> {
-            CauldronInteraction.WATER.map().put(item, COOL_DOWN_METAL);
-        });
-
-        HotMetalsModel.nuggies.forEach(item -> {
-            CauldronInteraction.WATER.map().put(item, COOL_DOWN_METAL);
-        });
-
-        SimpleDyeableItemModel.items.forEach(item -> {
-            CauldronInteraction.WATER.map().put(item, CLEAN_EQUIPMENT);
-        });
-
-        CauldronInteraction.WATER.map().put(EquipmentItemsME.BROADHOOF_GOAT_PADDED_ARMOR, CLEAN_EQUIPMENT);
-        CauldronInteraction.WATER.map().put(EquipmentItemsME.BROADHOOF_GOAT_ORNAMENTED_PADDED_ARMOR, CLEAN_EQUIPMENT);
-
-        CauldronInteraction.WATER.map().put(EquipmentItemsME.WARG_LEATHER_ARMOR, CLEAN_EQUIPMENT);
-        CauldronInteraction.WATER.map().put(EquipmentItemsME.WARG_REINFORCED_LEATHER_ARMOR, CLEAN_EQUIPMENT);
-
-        CauldronInteraction.WATER.map().put(EquipmentItemsME.GREAT_HORN_LIGHT_ARMOR, CLEAN_EQUIPMENT);
-        CauldronInteraction.WATER.map().put(EquipmentItemsME.GREAT_HORN_LIGHT_GRAY_ARMOR, CLEAN_EQUIPMENT);
-        CauldronInteraction.WATER.map().put(EquipmentItemsME.GREAT_HORN_LIGHT_GREEN_ARMOR, CLEAN_EQUIPMENT);
-
-        CauldronInteraction.WATER.map().put(ResourceItemsME.DIRTY_BONE, CLEAN_ITEM);
-        */
-    }
+            return InteractionResult.SUCCESS;
+        }
+    };
 
     //This not good but will do for now until more cases appear
     public static final CauldronInteraction CLEAN_ITEM = (state, world, pos, player, hand, stack) -> {
@@ -809,19 +783,39 @@ public class RegistriesME {
         return InteractionResult.SUCCESS;
     };
 
-    public static final CauldronInteraction CLEAN_EQUIPMENT = (state, world, pos, player, hand, stack) -> {
-        if (!stack.is(ItemTags.CAULDRON_CAN_REMOVE_DYE)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-        } else if (!stack.has(DataComponents.DYED_COLOR)) {
-            return InteractionResult.TRY_WITH_EMPTY_HAND;
-        } else {
-            if (!world.isClientSide()) {
-                stack.remove(DataComponents.DYED_COLOR);
-                player.awardStat(Stats.CLEAN_ARMOR);
-                LayeredCauldronBlock.lowerFillLevel(state, world, pos);
-            }
+    public static void registerCauldronBehaviour() {
+        // The per-fluid Dispatcher instances are the 26.2 replacement for the old
+        // CauldronInteraction.WATER.map(); Dispatcher.put is opened up in the access widener.
+        HotMetalsModel.items.forEach(item -> {
+            CauldronInteractions.WATER.put(item, COOL_DOWN_METAL);
+        });
 
-            return InteractionResult.SUCCESS;
-        }
-    };
+        HotMetalsModel.ingots.forEach(item -> {
+            CauldronInteractions.WATER.put(item, COOL_DOWN_METAL);
+        });
+
+        HotMetalsModel.nuggets.forEach(item -> {
+            CauldronInteractions.WATER.put(item, COOL_DOWN_METAL);
+        });
+
+        HotMetalsModel.nuggies.forEach(item -> {
+            CauldronInteractions.WATER.put(item, COOL_DOWN_METAL);
+        });
+
+        SimpleDyeableItemModel.items.forEach(item -> {
+            CauldronInteractions.WATER.put(item, CLEAN_EQUIPMENT);
+        });
+
+        CauldronInteractions.WATER.put(EquipmentItemsME.BROADHOOF_GOAT_PADDED_ARMOR, CLEAN_EQUIPMENT);
+        CauldronInteractions.WATER.put(EquipmentItemsME.BROADHOOF_GOAT_ORNAMENTED_PADDED_ARMOR, CLEAN_EQUIPMENT);
+
+        CauldronInteractions.WATER.put(EquipmentItemsME.WARG_LEATHER_ARMOR, CLEAN_EQUIPMENT);
+        CauldronInteractions.WATER.put(EquipmentItemsME.WARG_REINFORCED_LEATHER_ARMOR, CLEAN_EQUIPMENT);
+
+        CauldronInteractions.WATER.put(EquipmentItemsME.GREAT_HORN_LIGHT_ARMOR, CLEAN_EQUIPMENT);
+        CauldronInteractions.WATER.put(EquipmentItemsME.GREAT_HORN_LIGHT_GRAY_ARMOR, CLEAN_EQUIPMENT);
+        CauldronInteractions.WATER.put(EquipmentItemsME.GREAT_HORN_LIGHT_GREEN_ARMOR, CLEAN_EQUIPMENT);
+
+        CauldronInteractions.WATER.put(ResourceItemsME.DIRTY_BONE, CLEAN_ITEM);
+    }
 }
