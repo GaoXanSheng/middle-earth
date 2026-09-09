@@ -1,7 +1,7 @@
 package net.sevenstars.middleearth.event;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
@@ -11,6 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.sevenstars.middleearth.MiddleEarth;
+import net.sevenstars.middleearth.block.special.shapingAnvil.AbstractShapingAnvilBlock;
 import net.sevenstars.middleearth.config.ModServerConfigs;
 import net.sevenstars.middleearth.enchantments.EnchantmentsME;
 import net.sevenstars.middleearth.item.ResourceItemsME;
@@ -136,6 +138,16 @@ public class ModEvents {
                     }
                 }
             }
+        });
+
+        // Vanilla skips Block#attack for creative players, so hammer bonks on shaping anvils
+        // need to be routed through this callback, which fires before that skip.
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+            if (player.getAbilities().instabuild
+                    && world.getBlockState(pos).getBlock() instanceof AbstractShapingAnvilBlock) {
+                return AbstractShapingAnvilBlock.tryBonk(world, pos, player);
+            }
+            return InteractionResult.PASS;
         });
     }
 
