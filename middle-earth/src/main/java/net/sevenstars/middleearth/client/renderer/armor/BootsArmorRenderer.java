@@ -30,7 +30,11 @@ public class BootsArmorRenderer implements ArmorRenderer {
             }
 
             String texture = "textures/models/armor/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".png";
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+
+            ModArmorRenderer.setAllVisible(this.customBootsModel, false);
+            this.customBootsModel.rightLeg.visible = true;
+            this.customBootsModel.leftLeg.visible = true;
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.customBootsModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
         }
     }
 }

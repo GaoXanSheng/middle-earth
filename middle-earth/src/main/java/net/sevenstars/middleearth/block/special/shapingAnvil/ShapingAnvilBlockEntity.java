@@ -1,11 +1,7 @@
 package net.sevenstars.middleearth.block.special.shapingAnvil;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -13,8 +9,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -187,10 +183,13 @@ public class ShapingAnvilBlockEntity extends BlockEntity implements ExtendedMenu
             int maxRandTemperature = 18;
             int value = (int) (Math.random() * (maxRandTemperature - minRandTemperature) + minRandTemperature);
 
-            if ((input.get(DataComponentTypesME.TEMPERATURE_DATA).temperature() - value) <= 0){
-                input.remove(DataComponentTypesME.TEMPERATURE_DATA);
-            } else {
-                input.set(DataComponentTypesME.TEMPERATURE_DATA, new TemperatureDataComponent(input.get(DataComponentTypesME.TEMPERATURE_DATA).temperature() - value));
+            TemperatureDataComponent temperatureData = input.get(DataComponentTypesME.TEMPERATURE_DATA);
+            if (temperatureData != null) {
+                if ((temperatureData.temperature() - value) <= 0) {
+                    input.remove(DataComponentTypesME.TEMPERATURE_DATA);
+                } else {
+                    input.set(DataComponentTypesME.TEMPERATURE_DATA, new TemperatureDataComponent(temperatureData.temperature() - value));
+                }
             }
             HolderLookup.RegistryLookup<TrimMaterial>  armorTrimMaterialRegistry = entity.getLevel().registryAccess().lookupOrThrow(Registries.TRIM_MATERIAL);
             HolderLookup.RegistryLookup<TrimPattern>  armorTrimPatternRegistry = entity.getLevel().registryAccess().lookupOrThrow(Registries.TRIM_PATTERN);

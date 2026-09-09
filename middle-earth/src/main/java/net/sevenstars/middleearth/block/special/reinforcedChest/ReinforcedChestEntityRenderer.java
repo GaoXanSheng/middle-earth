@@ -1,47 +1,51 @@
 package net.sevenstars.middleearth.block.special.reinforcedChest;
 
-import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.world.level.block.*;
-import net.minecraft.client.model.*;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.DoubleBlockCombiner;
+import net.minecraft.client.renderer.blockentity.state.ChestRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.sevenstars.middleearth.MiddleEarth;
+import net.sevenstars.middleearth.entity.EntityModelLayersME;
 
+@Environment(EnvType.CLIENT)
 public class ReinforcedChestEntityRenderer<T extends ChestBlockEntity> extends ChestRenderer<T> {
 
     private static final String BASE = "bottom";
     private static final String LID = "lid";
     private static final String LATCH = "lock";
-    private final ModelPart chestLid;
-    private final ModelPart chestBase;
-    private final ModelPart chestLatch;
+    private static final SpriteId SPRITE = new SpriteId(Sheets.CHEST_SHEET, MiddleEarth.ofPath("model", "reinforced_chest"));
 
-    public ReinforcedChestEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        super(ctx);
-        ModelPart modelPart = ctx.bakeLayer(EntityModelLayersME.REINFORCED_CHEST);
-        this.chestBase = modelPart.getChild(BASE);
-        this.chestLid = modelPart.getChild(LID);
-        this.chestLatch = modelPart.getChild(LATCH);
+    private final SpriteGetter sprites;
+    private final ReinforcedChestModel model;
+
+    public ReinforcedChestEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
+        this.sprites = context.sprites();
+        this.model = new ReinforcedChestModel(context.bakeLayer(EntityModelLayersME.REINFORCED_CHEST));
+    }
+
+    @Override
+    public void submit(ChestRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 0.0D, 0.5D);
+        poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.toYRot()));
+        collector.submitModel(this.model, state, poseStack, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, SPRITE, this.sprites, 0, state.breakProgress);
+        poseStack.popPose();
     }
 
     public static LayerDefinition getTexturedModelData() {
@@ -54,4 +58,23 @@ public class ReinforcedChestEntityRenderer<T extends ChestBlockEntity> extends C
         return LayerDefinition.create(modelData, 64, 64);
     }
 
+    private static class ReinforcedChestModel extends Model<ChestRenderState> {
+        private final ModelPart lid;
+        private final ModelPart latch;
+
+        ReinforcedChestModel(ModelPart root) {
+            super(root, RenderTypes::entityCutout);
+            this.lid = root.getChild(LID);
+            this.latch = root.getChild(LATCH);
+        }
+
+        @Override
+        public void setupAnim(ChestRenderState state) {
+            super.setupAnim(state);
+            float openness = 1.0F - state.open;
+            openness = 1.0F - openness * openness * openness;
+            this.lid.xRot = openness * 1.5707964F;
+            this.latch.xRot = openness * 1.5707964F;
+        }
+    }
 }

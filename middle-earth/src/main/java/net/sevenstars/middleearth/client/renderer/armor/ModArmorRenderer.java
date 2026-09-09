@@ -3,9 +3,9 @@ package net.sevenstars.middleearth.client.renderer.armor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -19,48 +19,73 @@ public class ModArmorRenderer implements ArmorRenderer {
     public ModArmorRenderer() {
     }
 
+    /**
+     * Toggles only the top-level humanoid parts (same as the old HumanoidModel#setVisible):
+     * child parts (hat, cape, extensions) keep their own flag, so an enabled parent still renders them.
+     */
     static void setAllVisible(HumanoidModel<HumanoidRenderState> model, boolean visible) {
-        for (ModelPart part : model.allParts()) {
-            part.visible = visible;
-        }
+        model.head.visible = visible;
+        model.hat.visible = visible;
+        model.body.visible = visible;
+        model.rightArm.visible = visible;
+        model.leftArm.visible = visible;
+        model.rightLeg.visible = visible;
+        model.leftLeg.visible = visible;
     }
 
     static void renderArmor(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
-                            ItemStack stack, HumanoidModel<HumanoidRenderState> model, Identifier texture, boolean dyeable) {
+                            ItemStack stack, HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model, Identifier texture, boolean dyeable) {
         if (dyeable) {
-            renderDyeable(matrices, collector, state, light, stack, model, texture);
+            renderDyeable(matrices, collector, state, light, stack, contextModel, model, texture);
             if (Boolean.TRUE.equals(DyeablePiecesME.dyeablePieces.get(stack.getItem()))) {
-                renderPart(matrices, collector, state, light, model, overlay(texture, "_overlay"));
+                renderPart(matrices, collector, state, light, contextModel, model, overlay(texture, "_overlay"));
             }
         } else {
-            renderPart(matrices, collector, state, light, model, texture);
+            renderPart(matrices, collector, state, light, contextModel, model, texture);
         }
     }
 
     static void renderDyeable(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
-                              ItemStack stack, HumanoidModel<HumanoidRenderState> model, Identifier texture) {
+                              ItemStack stack, HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model, Identifier texture) {
         int color = DyedItemColor.getOrDefault(stack, DyedItemColor.LEATHER_COLOR);
-        renderColored(matrices, collector, state, light, model, texture, color);
+        renderColored(matrices, collector, state, light, contextModel, model, texture, color, false, false);
     }
 
-    static void renderPart(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light, HumanoidModel<HumanoidRenderState> model, Identifier texture) {
-        renderColored(matrices, collector, state, light, model, texture, -1);
+    static void renderPart(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
+                           HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model, Identifier texture) {
+        renderColored(matrices, collector, state, light, contextModel, model, texture, -1, false, false);
     }
 
     static void renderTranslucentPiece(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
-                                       HumanoidModel<HumanoidRenderState> model, Identifier texture) {
-        // 10-arg overload: (model, state, matrices, renderType, light, overlay, tint, sprite, outlineColor, crumbling)
-        collector.submitModel(model, state, matrices, RenderTypes.entityTranslucent(texture),
-                light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
-    }
-    static void renderDyeableAttachment(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
-                                        HumanoidModel<HumanoidRenderState> model, Identifier texture, int color) {
-        renderColored(matrices, collector, state, light, model, texture, color);
+                                       HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model, Identifier texture) {
+        renderColored(matrices, collector, state, light, contextModel, model, texture, -1, true, false);
     }
 
-    private static void renderColored(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light, HumanoidModel<HumanoidRenderState> model, Identifier texture, int color) {
-        // Pass the dye as tintedColor; the 8-arg overload would misroute it into outlineColor.
-        collector.submitModel(model, state, matrices, RenderTypes.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, color, null, 0, null);
+    static void renderDyeableAttachment(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
+                                        HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model, Identifier texture, int color) {
+        renderColored(matrices, collector, state, light, contextModel, model, texture, color, false, false);
+    }
+
+    /**
+     * Cape-style pieces: runs the delegate model's own setupAnim (swing physics) after the transform copy,
+     * matching the old copyTransforms -> setAngles order.
+     */
+    static void renderPartWithAngles(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
+                                     HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model, Identifier texture) {
+        renderColored(matrices, collector, state, light, contextModel, model, texture, -1, false, true);
+    }
+
+    static void renderDyeableAttachmentWithAngles(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
+                                                  HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model, Identifier texture, int color) {
+        renderColored(matrices, collector, state, light, contextModel, model, texture, color, false, true);
+    }
+
+    private static void renderColored(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
+                                      HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model,
+                                      Identifier texture, int color, boolean translucent, boolean setDelegateAngles) {
+        RenderType renderType = translucent ? RenderTypes.entityTranslucent(texture) : RenderTypes.entityCutout(texture);
+        ArmorRenderer.submitTransformCopyingModel(contextModel, state, model, state, setDelegateAngles,
+                collector, matrices, renderType, light, OverlayTexture.NO_OVERLAY, color, null);
     }
 
     private static Identifier overlay(Identifier texture, String suffix) {

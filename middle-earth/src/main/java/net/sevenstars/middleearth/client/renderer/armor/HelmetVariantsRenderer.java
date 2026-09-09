@@ -40,7 +40,14 @@ public class HelmetVariantsRenderer implements ArmorRenderer {
             if (armorVariantDataComponent != null) variant = armorVariantDataComponent.id();
             String texture = "textures/models/armor/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".png";
 
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+            ModArmorRenderer.setAllVisible(this.customHelmetModel, false);
+            this.customHelmetModel.head.visible = true;
+            this.customHelmetModel.hat.visible = true;
+            this.customHelmetModel.body.visible = true;
+            this.customHelmetModel.leftArm.visible = true;
+            this.customHelmetModel.rightArm.visible = true;
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.customHelmetModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+
             if (this.helmetAddonModel != null) {
                 ModArmorRenderer.setAllVisible(this.helmetAddonModel, false);
                 this.helmetAddonModel.head.visible = true;
@@ -48,14 +55,14 @@ public class HelmetVariantsRenderer implements ArmorRenderer {
                 if (texture.contains("_helmet.png")) {
                     if (variant > 0) {
                         String newTex = texture.replaceAll("_helmet.png", "_addition_" + variant + ".png");
-                        ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, this.helmetAddonModel,
+                        ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.helmetAddonModel,
                                 Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, newTex), dyeable);
                     } else {
-                        ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, this.helmetAddonModel,
+                        ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.helmetAddonModel,
                                 Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture.replaceAll("_helmet.png", "_addition.png")), dyeable);
                     }
                 } else {
-                    ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, this.helmetAddonModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture.replaceAll(".png", "_addition.png")), dyeable);
+                    ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.helmetAddonModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture.replaceAll(".png", "_addition.png")), dyeable);
                 }
             }
 
@@ -76,12 +83,12 @@ public class HelmetVariantsRenderer implements ArmorRenderer {
                 helmetAttachmentModel.hat.visible = true;
                 if (DyeablePiecesME.dyeableHelmetAttachments.containsKey(hoodDataComponent.getHelmetAttachment())) {
                     int color = (0xFF << 24) | (hoodDataComponent.helmetAttachmentColor() & 0xFFFFFF);
-                    ModArmorRenderer.renderDyeableAttachment(matrices, collector, humanoidRenderState, light, helmetAttachmentModel, textureHelmetAttachment, color);
+                    ModArmorRenderer.renderDyeableAttachment(matrices, collector, humanoidRenderState, light, contextModel, helmetAttachmentModel, textureHelmetAttachment, color);
                     if (Boolean.TRUE.equals(DyeablePiecesME.dyeableHelmetAttachments.get(hoodDataComponent.helmetAttachment()))) {
-                        ModArmorRenderer.renderTranslucentPiece(matrices, collector, humanoidRenderState, light, helmetAttachmentModel, Identifier.fromNamespaceAndPath(textureHelmetAttachment.getNamespace(), textureHelmetAttachment.getPath().replaceAll(".png", "_overlay.png")));
+                        ModArmorRenderer.renderTranslucentPiece(matrices, collector, humanoidRenderState, light, contextModel, helmetAttachmentModel, Identifier.fromNamespaceAndPath(textureHelmetAttachment.getNamespace(), textureHelmetAttachment.getPath().replaceAll(".png", "_overlay.png")));
                     }
                 } else {
-                    ModArmorRenderer.renderTranslucentPiece(matrices, collector, humanoidRenderState, light, helmetAttachmentModel, textureHelmetAttachment);
+                    ModArmorRenderer.renderTranslucentPiece(matrices, collector, humanoidRenderState, light, contextModel, helmetAttachmentModel, textureHelmetAttachment);
                 }
             }
         }

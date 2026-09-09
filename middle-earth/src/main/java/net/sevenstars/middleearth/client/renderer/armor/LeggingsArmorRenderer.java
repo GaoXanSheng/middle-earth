@@ -30,7 +30,12 @@ public class LeggingsArmorRenderer implements ArmorRenderer {
             }
 
             String texture = "textures/models/armor/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".png";
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+
+            ModArmorRenderer.setAllVisible(this.customLeggingsModel, false);
+            this.customLeggingsModel.body.visible = true;
+            this.customLeggingsModel.rightLeg.visible = true;
+            this.customLeggingsModel.leftLeg.visible = true;
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.customLeggingsModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
         }
     }
 }

@@ -1,44 +1,21 @@
 package net.sevenstars.middleearth.block.special.coffers;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import net.minecraft.world.level.block.*;
-import net.minecraft.client.model.*;
-import net.minecraft.client.model.geom.ModelPart;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.ChestRenderer;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.block.special.reinforcedChest.ReinforcedChestBlock;
 import net.sevenstars.middleearth.entity.EntityModelLayersME;
 
-public class PineCofferEntityRenderer<T extends ChestBlockEntity> extends ChestRenderer<T> {
-    private static final String BASE = "bottom";
+@Environment(EnvType.CLIENT)
+public class PineCofferEntityRenderer<T extends ChestBlockEntity> extends AbstractCofferEntityRenderer<T> {
+
     private static final String LID = "lid";
+    private static final String BASE = "bottom";
 
-    private final ModelPart lid;
-    private final ModelPart bottom;
-
-    public PineCofferEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        super(ctx);
-        ModelPart modelPart = ctx.bakeLayer(EntityModelLayersME.PINE_COFFER);
-        this.bottom = modelPart.getChild(BASE);
-        this.lid = modelPart.getChild(LID);
+    public PineCofferEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context, EntityModelLayersME.PINE_COFFER, "pine_coffer", false);
     }
 
     public static LayerDefinition getTexturedModelData() {
@@ -68,5 +45,4 @@ public class PineCofferEntityRenderer<T extends ChestBlockEntity> extends ChestR
 
         return LayerDefinition.create(modelData, 64, 64);
     }
-
 }

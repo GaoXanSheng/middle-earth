@@ -35,7 +35,14 @@ public class ChestplateArmorRenderer implements ArmorRenderer {
         if (slot == EquipmentSlot.CHEST) {
             boolean dyeable = DyeablePiecesME.dyeablePieces.containsKey(stack.getItem());
             String texture = "textures/models/armor/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".png";
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+
+            ModArmorRenderer.setAllVisible(this.customChestplateModel, false);
+            this.customChestplateModel.body.visible = true;
+            this.customChestplateModel.rightArm.visible = true;
+            this.customChestplateModel.leftArm.visible = true;
+            this.customChestplateModel.rightLeg.visible = true;
+            this.customChestplateModel.leftLeg.visible = true;
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.customChestplateModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
 
             if (this.chestplateAddonModel != null) {
                 ModArmorRenderer.setAllVisible(this.chestplateAddonModel, false);
@@ -43,9 +50,9 @@ public class ChestplateArmorRenderer implements ArmorRenderer {
                 this.chestplateAddonModel.rightArm.visible = true;
                 this.chestplateAddonModel.leftArm.visible = true;
                 if (texture.contains("_chestplate.png")) {
-                    ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, this.chestplateAddonModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture.replaceAll("_chestplate.png", "_addition.png")), dyeable);
+                    ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.chestplateAddonModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture.replaceAll("_chestplate.png", "_addition.png")), dyeable);
                 } else {
-                    ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, this.chestplateAddonModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture.replaceAll(".png", "_addition.png")), dyeable);
+                    ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, this.chestplateAddonModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture.replaceAll(".png", "_addition.png")), dyeable);
                 }
             }
 
@@ -58,16 +65,15 @@ public class ChestplateArmorRenderer implements ArmorRenderer {
                 capeModel.leftArm.visible = true;
                 capeModel.rightLeg.visible = true;
                 capeModel.leftLeg.visible = true;
-                // Cape swing physics run through CloakCapeModel.setupAnim, invoked by submitModel.
 
                 if (DyeablePiecesME.dyeableBackAttachments.containsKey(capeDataComponent.getBackAttachment())) {
                     int color = (0xFF << 24) | (capeDataComponent.backAttachmentColor() & 0xFFFFFF);
-                    ModArmorRenderer.renderDyeableAttachment(matrices, collector, humanoidRenderState, light, capeModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/models/back_attachment/" + capeDataComponent.backAttachment().getName() + ".png"), color);
+                    ModArmorRenderer.renderDyeableAttachmentWithAngles(matrices, collector, humanoidRenderState, light, contextModel, capeModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/models/back_attachment/" + capeDataComponent.backAttachment().getName() + ".png"), color);
                     if (Boolean.TRUE.equals(DyeablePiecesME.dyeableBackAttachments.get(capeDataComponent.getBackAttachment()))) {
-                        ModArmorRenderer.renderPart(matrices, collector, humanoidRenderState, light, capeModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/models/back_attachment/" + capeDataComponent.backAttachment().getName() + "_overlay.png"));
+                        ModArmorRenderer.renderPartWithAngles(matrices, collector, humanoidRenderState, light, contextModel, capeModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/models/back_attachment/" + capeDataComponent.backAttachment().getName() + "_overlay.png"));
                     }
                 } else {
-                    ModArmorRenderer.renderPart(matrices, collector, humanoidRenderState, light, capeModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/models/back_attachment/" + capeDataComponent.backAttachment().getName() + ".png"));
+                    ModArmorRenderer.renderPartWithAngles(matrices, collector, humanoidRenderState, light, contextModel, capeModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "textures/models/back_attachment/" + capeDataComponent.backAttachment().getName() + ".png"));
                 }
             }
         }
