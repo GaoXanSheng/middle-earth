@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.sevenstars.middleearth.MiddleEarth;
@@ -13,7 +15,6 @@ import net.sevenstars.middleearth.entity.EntityModelLayersME;
 import net.sevenstars.middleearth.entity.beasts.warg.WargEntityRenderState;
 import net.sevenstars.middleearth.entity.beasts.warg.WargModel;
 import net.sevenstars.middleearth.item.DataComponentTypesME;
-import net.sevenstars.middleearth.item.EquipmentItemsME;
 import net.sevenstars.middleearth.item.dataComponents.MountArmorAddonComponent;
 
 public class WargArmorSideSkullsFeatureRenderer extends RenderLayer<WargEntityRenderState, WargModel> {
@@ -32,7 +33,13 @@ public class WargArmorSideSkullsFeatureRenderer extends RenderLayer<WargEntityRe
         if(component != null && component.sideArmorAddon()) {
             this.model.setupAnim(state);
             // TODO 26.2: was armorCutoutNoCull + glint vertex pipeline; now generic cutout overlay
-            RenderLayer.renderColoredCutoutModel(this.model, TEXTURE, poseStack, submitNodeCollector, light, state, -1, 0);
+            submitNodeCollector.order(0).submitModel(this.model, state, poseStack, RenderTypes.armorCutoutNoCull(TEXTURE), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
+
+            if (itemStack.hasFoil()) {
+
+                submitNodeCollector.order(1).submitModel(this.model, state, poseStack, RenderTypes.armorEntityGlint(), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
+
+            }
         }
     }
 }

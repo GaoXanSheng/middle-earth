@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.beasts.broadhoof.BroadhoofGoatBeads;
@@ -43,8 +45,7 @@ public class BroadhoofGoatBeadsFeatureRenderer extends RenderLayer<BroadhoofGoat
     ) {
         Identifier identifier = TEXTURES.get(state.beads);
         if (identifier != INVISIBLE_ID && !state.isInvisible) {
-            // TODO 26.2: was translucent entity overlay; rendered as generic cutout overlay
-            RenderLayer.renderColoredCutoutModel(this.getParentModel(), identifier, matrixStack, vertexConsumerProvider, i, state, -1, 0);
+            vertexConsumerProvider.order(0).submitModel(this.getParentModel(), state, matrixStack, RenderTypes.armorTranslucent(identifier), i, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
         }
     }
 }

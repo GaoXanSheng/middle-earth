@@ -7,6 +7,7 @@
   "has_ceiling": false,
   "has_ender_dragon_fight": false,
   "infiniburn": "#minecraft:infiniburn_overworld",
+  "default_clock": "minecraft:overworld",
   "has_raids" : false,
   "respawn_anchor_works": false,
   "bed_works" : true,

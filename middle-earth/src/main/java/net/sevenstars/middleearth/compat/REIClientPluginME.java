@@ -1,8 +1,10 @@
 package net.sevenstars.middleearth.compat;
 
+import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,11 +13,11 @@ import net.sevenstars.middleearth.compat.artisantable.ArtisanTableCategory;
 import net.sevenstars.middleearth.compat.artisantable.ArtisanTableDisplay;
 import net.sevenstars.middleearth.compat.forge.AlloyingCategory;
 import net.sevenstars.middleearth.compat.forge.AlloyingDisplay;
+import net.sevenstars.middleearth.gui.artisantable.ArtisanTableScreen;
+import net.sevenstars.middleearth.gui.forge.ForgeAlloyingScreen;
 import net.sevenstars.middleearth.recipe.AlloyingRecipe;
 import net.sevenstars.middleearth.recipe.ArtisanRecipe;
 
-// TODO (REI compat, 26.2): registerScreens (click areas) needs me.shedaniel.math.Rectangle which is
-// not on the compile classpath; re-enabled once the dependency is declared (main agent owns build.gradle).
 @Environment(EnvType.CLIENT)
 public class REIClientPluginME implements REIClientPlugin {
 
@@ -23,8 +25,8 @@ public class REIClientPluginME implements REIClientPlugin {
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new ArtisanTableCategory());
         registry.add(new AlloyingCategory());
-        // TODO (REI compat, 26.2): addWorkstations resolution requires dev.architectury.fluid.FluidStack
-        // (not on compile classpath) - restore once architectury is declared (main agent owns build.gradle).
+        registry.addWorkstations(REICommonPluginME.ARTISAN_TABLE_CATEGORY, EntryStacks.of(ModDecorativeBlocks.ARTISAN_TABLE));
+        registry.addWorkstations(REICommonPluginME.FORGE_CATEGORY, EntryStacks.of(ModDecorativeBlocks.FORGE));
     }
 
     @Override
@@ -34,5 +36,12 @@ public class REIClientPluginME implements REIClientPlugin {
                 .fill(ArtisanTableDisplay::new);
         registry.beginFiller(AlloyingRecipe.class)
                 .fill(AlloyingDisplay::new);
+    }
+
+    @Override
+    public void registerScreens(ScreenRegistry registry) {
+        REIClientPlugin.super.registerScreens(registry);
+        registry.registerClickArea(screen -> new Rectangle(75, 30, 20, 30), ArtisanTableScreen.class, REICommonPluginME.ARTISAN_TABLE_CATEGORY);
+        registry.registerClickArea(screen -> new Rectangle(75, 30, 20, 30), ForgeAlloyingScreen.class, REICommonPluginME.FORGE_CATEGORY);
     }
 }

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.beasts.cave_troll.CaveTrollEntityModel;
@@ -19,7 +21,7 @@ public class CaveTrollDroolFeatureRenderer extends RenderLayer<CaveTrollEntityRe
     public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, CaveTrollEntityRenderState state, float limbAngle, float limbDistance) {
         if(state.tameness < 50 && state.isTame) {
             // TODO 26.2: was entityCutoutNoCull overlay on parent model; now generic cutout overlay
-            RenderLayer.renderColoredCutoutModel(this.getParentModel(), TEXTURE, poseStack, submitNodeCollector, light, state, -1, 0);
+            submitNodeCollector.order(0).submitModel(this.getParentModel(), state, poseStack, RenderTypes.armorCutoutNoCull(TEXTURE), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
         }
     }
 }

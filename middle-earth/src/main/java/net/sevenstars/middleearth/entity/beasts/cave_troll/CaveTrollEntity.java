@@ -1,7 +1,6 @@
 package net.sevenstars.middleearth.entity.beasts.cave_troll;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Dynamic;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -679,10 +678,9 @@ public class CaveTrollEntity extends AbstractBeastEntity {
         this.entityData.set(ROARING, isRoaring);
     }
 
-    protected Brain<?> makeBrain(Dynamic<?> dynamic) {
-        // TODO 26.2: base brain creation moved to Brain.Provider...makeBrain(entity, Brain.Packed); kept as a
-        // bridge while the CaveTrollBrain activity rework is pending
-        return CaveTrollBrain.create(this);
+    @Override
+    protected Brain<CaveTrollEntity> makeBrain(Brain.Packed packed) {
+        return CaveTrollBrain.create(this, packed);
     }
 
     public Brain<CaveTrollEntity> getBrain() {

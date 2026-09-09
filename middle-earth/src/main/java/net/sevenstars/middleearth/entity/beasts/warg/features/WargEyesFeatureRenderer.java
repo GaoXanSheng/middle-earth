@@ -5,11 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.entity.beasts.warg.WargEyeVariant;
 import net.sevenstars.middleearth.entity.beasts.warg.WargEntityRenderState;
+import net.sevenstars.middleearth.entity.beasts.warg.WargEyeVariant;
 import net.sevenstars.middleearth.entity.beasts.warg.WargModel;
 
 import java.util.Map;
@@ -32,8 +34,7 @@ public class WargEyesFeatureRenderer extends RenderLayer<WargEntityRenderState, 
     public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, WargEntityRenderState state, float limbAngle, float limbDistance) {
         Identifier eyeTexture = LOCATION_BY_VARIANT.get(state.eyeVariant);
         if(eyeTexture != null) {
-            RenderLayer.renderColoredCutoutModel(this.getParentModel(), eyeTexture, poseStack, submitNodeCollector, light, state, -1, 0);
+            submitNodeCollector.order(1).submitModel(this.getParentModel(), state, poseStack, RenderTypes.entityTranslucentEmissive(eyeTexture), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
         }
-        // TODO 26.2: emissive eye layer needs the emissive rendertype; awaiting art pass in the new submit pipeline
     }
 }

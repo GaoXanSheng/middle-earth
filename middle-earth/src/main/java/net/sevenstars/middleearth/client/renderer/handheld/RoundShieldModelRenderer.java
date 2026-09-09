@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.client.resources.model.sprite.SpriteId;
@@ -12,7 +13,6 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.sevenstars.middleearth.MiddleEarthClient;
@@ -21,6 +21,7 @@ import net.sevenstars.middleearth.client.model.hand.shields.RoundShieldEntityMod
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class RoundShieldModelRenderer implements SpecialModelRenderer<DataComponentMap> {
@@ -41,8 +42,22 @@ public class RoundShieldModelRenderer implements SpecialModelRenderer<DataCompon
         matrices.pushPose();
         matrices.scale(1.0F, -1.0F, -1.0F);
         SpriteId sprite = bl ? MEModelLoader.ROUND_SHIELD_BASE : MEModelLoader.ROUND_SHIELD_BASE_NO_PATTERN;
-        collector.submitModel(this.model, Unit.INSTANCE, matrices, light, overlay, -1, sprite, this.sprites, seed, null);
-        // TODO: re-port banner pattern overlay & foil layers to the 26.2 submit pipeline.
+
+        collector.submitModelPart(this.model.getHandle(), matrices, sprite.renderType(this.model.renderType()), light, overlay, this.sprites.get(sprite));
+        collector.submitModelPart(this.model.getPlate(), matrices, sprite.renderType(this.model.renderType()), light, overlay, this.sprites.get(sprite));
+        if (bl) {
+            DyeColor canvasColor = Objects.requireNonNullElse(dyeColor, DyeColor.WHITE);
+            collector.submitModelPart(this.model.getPlate(), matrices,
+                    ShieldPatternLayers.ROUND_CANVAS.renderType(RenderTypes::bannerPattern),
+                    light, overlay, this.sprites.get(ShieldPatternLayers.ROUND_CANVAS),
+                    canvasColor.getTextureDiffuseColor(), null, 0);
+            ShieldPatternLayers.submitCanvas(collector, matrices, light, overlay, this.sprites, this.model.getPlate(),
+                    ShieldPatternLayers.ROUND_CANVAS, ShieldPatternLayers.round(), canvasColor, bannerPatternsComponent);
+        }
+        if (glint) {
+            collector.order(bannerPatternsComponent.layers().size() + 1).submitModel(this.model, Unit.INSTANCE, matrices,
+                    RenderTypes.entityGlint(), light, overlay, -1, this.sprites.get(sprite), 0, null);
+        }
         matrices.popPose();
     }
 

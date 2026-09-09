@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.sevenstars.middleearth.MiddleEarth;
@@ -29,7 +31,13 @@ public class GreatHornSaddleFeatureRenderer extends RenderLayer<GreatHornEntityR
             Identifier texture = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, PATH + (state.blueSaddle ? "_blue.png" : ".png"));
             model.setupAnim(state);
             // TODO 26.2: was armorCutoutNoCull + glint vertex pipeline; now generic cutout overlay
-            RenderLayer.renderColoredCutoutModel(model, texture, poseStack, submitNodeCollector, light, state, -1, 0);
+            submitNodeCollector.order(0).submitModel(model, state, poseStack, RenderTypes.armorCutoutNoCull(texture), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
+
+            if (itemStack.hasFoil()) {
+
+                submitNodeCollector.order(1).submitModel(model, state, poseStack, RenderTypes.armorEntityGlint(), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
+
+            }
         }
     }
 }

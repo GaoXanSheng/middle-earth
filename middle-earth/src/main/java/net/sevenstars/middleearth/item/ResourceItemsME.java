@@ -1,5 +1,14 @@
 package net.sevenstars.middleearth.item;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.registration.ModBlocks;
 import net.sevenstars.middleearth.block.registration.ModNatureBlocks;
@@ -12,20 +21,6 @@ import net.sevenstars.middleearth.item.items.weapons.ranged.PebbleItem;
 import net.sevenstars.middleearth.item.items.weapons.ranged.PineconeItem;
 import net.sevenstars.middleearth.item.utils.BannerPatternTagsME;
 import net.sevenstars.middleearth.item.utils.ItemGroupsME;
-import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.*;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.BoatItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.sevenstars.middleearth.registries.RegistryAliasesME;
 
 import java.util.function.Function;
@@ -229,71 +224,109 @@ public class ResourceItemsME {
     public static final Item DWARVEN_KEY = registerItem("dwarven_key",
             Item::new, new Item.Properties().stacksTo(1));
 
-    // TODO 26.2: banner-pattern-providing items are data-driven now; the custom patterns must be attached
-    // to these items through item/banner-pattern data instead of the removed in-code PROVIDES_BANNER_PATTERNS component.
+    // 26.2: PROVIDES_BANNER_PATTERNS now takes a HolderSet<BannerPattern> (see BannerPatternTagsME,
+    // tag JSONs live in resources/data/middle-earth/tags/banner_pattern/pattern_item/).
     public static final Item PIPEWEED_BANNER_PATTERN = registerItem("pipeweed_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.PIPEWEED_PATTERN_ITEM)));
     public static final Item GONDOR_BANNER_PATTERN = registerItem("gondor_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.GONDOR_PATTERN_ITEM)));
     public static final Item ROHAN_BANNER_PATTERN = registerItem("rohan_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.ROHAN_PATTERN_ITEM)));
     public static final Item LOTHLORIEN_BANNER_PATTERN = registerItem("lothlorien_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.LOTHLORIEN_PATTERN_ITEM)));
     public static final Item MORDOR_BANNER_PATTERN = registerItem("mordor_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.MORDOR_PATTERN_ITEM)));
     public static final Item MISTY_MOUNTAINS_ORCS_BANNER_PATTERN = registerItem("misty_mountains_orcs_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.MISTY_MOUNTAINS_ORCS_PATTERN_ITEM)));
     public static final Item ISENGARD_BANNER_PATTERN = registerItem("isengard_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.ISENGARD_PATTERN_ITEM)));
 
     public static final Item SCREECHING_SKULL_BANNER_PATTERN = registerItem("screeching_skull_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.SCREECHING_SKULL_PATTERN_ITEM)));
     public static final Item GOBLIN_SKULL_BANNER_PATTERN = registerItem("goblin_skull_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.GOBLIN_SKULL_PATTERN_ITEM)));
 
     public static final Item ANVIL_BANNER_PATTERN = registerItem("anvil_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.ANVIL_PATTERN_ITEM)));
     public static final Item BELL_BANNER_PATTERN = registerItem("bell_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.BELL_PATTERN_ITEM)));
     public static final Item BOW_BANNER_PATTERN = registerItem("bow_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.BOW_PATTERN_ITEM)));
 
     public static final Item DWARF_CROWN_BANNER_PATTERN = registerItem("dwarf_crown_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.DWARF_CROWN_PATTERN_ITEM)));
 
     public static final Item SPIDER_BANNER_PATTERN = registerItem("spider_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.SPIDER_PATTERN_ITEM)));
 
     public static final Item GREAT_HORN_BANNER_PATTERN = registerItem("great_horn_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.GREAT_HORN_PATTERN_ITEM)));
     public static final Item OAK_LEAF_BANNER_PATTERN = registerItem("oak_leaf_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.OAK_LEAF_PATTERN_ITEM)));
 
     public static final Item ANTLERS_BANNER_PATTERN = registerItem("antlers_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.ANTLERS_PATTERN_ITEM)));
     public static final Item DRAGON_BANNER_PATTERN = registerItem("dragon_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.DRAGON_PATTERN_ITEM)));
     public static final Item SNAIL_BANNER_PATTERN = registerItem("snail_banner_pattern",
             Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
-                    );
+                    
+                    .delayedComponent(DataComponents.PROVIDES_BANNER_PATTERNS,
+                            context -> context.getOrThrow(BannerPatternTagsME.SNAIL_PATTERN_ITEM)));
 
     public static final Item PTEROSAUR_NUGGET = registerHiddenItem("pterosaur_nugget",
             HotChickenFoodItem::new, new Item.Properties());

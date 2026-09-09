@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -29,7 +30,6 @@ import net.sevenstars.middleearth.item.EquipmentItemsME;
 import net.sevenstars.middleearth.item.ToolItemsME;
 import net.sevenstars.middleearth.item.WeaponItemsME;
 import net.sevenstars.middleearth.network.packets.C2S.ArtisanTableTabPacket;
-import net.sevenstars.middleearth.recipe.ArtisanRecipe;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -121,6 +121,9 @@ public class ArtisanTableScreen extends AbstractContainerScreen<ArtisanTableScre
         changeTab();
 
         this.armorStand = new ArmorStand(this.minecraft.level, 0.0, 0.0, 0.0);
+        // 26.2: this dummy entity never joins the world, so it has no auto-assigned ID;
+        // Entity#getId() throws "Tried to access entity ID before ID assignment" without this.
+        this.armorStand.setId(0);
         this.armorStand.setNoBasePlate(true);
         this.armorStand.setShowArms(true);
         this.armorStand.yBodyRot = 210.0f;
@@ -236,6 +239,15 @@ public class ArtisanTableScreen extends AbstractContainerScreen<ArtisanTableScre
             context.setTooltipForNextFrame(this.font, tab.getTitle(), mouseX, mouseY);
         }
         this.renderTooltip(context, mouseX, mouseY);
+
+        // 3D armor stand preview (centered on the right panel), following the mouse like vanilla
+        if (this.armorStand != null && this.minecraft != null && this.minecraft.level != null) {
+            int centerX = leftPos + 412;
+            int centerY = topPos + 128;
+            InventoryScreen.extractEntityInInventoryFollowsMouse(context,
+                    centerX - 40, centerY - 40, centerX + 40, centerY + 40,
+                    27, 0.0625F, mouseX, mouseY, this.armorStand);
+        }
     }
 
     protected void renderTooltip(GuiGraphicsExtractor context, int x, int y) {

@@ -220,7 +220,8 @@ public class MiddleEarthClient implements ClientModInitializer {
         ParticleProviderRegistry.getInstance().register(ModParticleTypes.ANVIL_SPARK_PARTICLE, AnvilBonkParticle.Factory::new);
         ParticleProviderRegistry.getInstance().register(ModParticleTypes.BIOME_FOG_PARTICLE, BiomeFogParticle.Factory::new);
 
-        // TODO(26.2): block render-layer assignment (fabric BlockRenderLayerMap removed) not yet re-ported.
+        // 26.2: block render layers (cutout/translucent) are derived automatically from each
+        // texture's alpha channel, so the old BlockRenderLayerMap assignments are obsolete.
         BlockColorsME.initializeBlockColors();
     }
 
