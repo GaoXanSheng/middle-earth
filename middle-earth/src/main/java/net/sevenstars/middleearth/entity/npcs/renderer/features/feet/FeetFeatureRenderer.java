@@ -50,7 +50,7 @@ public class FeetFeatureRenderer extends RenderLayer<NpcEntityRenderState, NpcEn
         if(feetId != null){
             TextureAtlasSprite sprite = characterTexturesAtlas.getSprite(feetId);
             if(sprite != null){
-                submitNodeCollector.submitModelPart(feetModel.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, sprite);
+                submitNodeCollector.submitModel(feetModel, state, matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, -1, sprite, 0, null);
             }
         }
     }

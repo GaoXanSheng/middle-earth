@@ -44,25 +44,21 @@ public class HairFeatureRenderer extends RenderLayer<NpcEntityRenderState, NpcEn
         Identifier beardAddonTextureId =  (isSimplified) ? null : MiddleEarth.ofPrefix(state.beardAddonId, AtlasesME.HAIR_PREFIX);
 
         if(hairAddonTextureId == null && beardAddonTextureId == null){
-            entityModel.root().visible = false;
             return;
-        } else if (!entityModel.root().visible){
-            entityModel.root().visible = true;
         }
-        entityModel.setupAnim(state);
 
         int overlay = OverlayTexture.pack(0.0f, state.hasRedOverlay);
 
         if(hairAddonTextureId != null && state.canShowHair){
             TextureAtlasSprite sprite = characterTexturesAtlas.getSprite(hairAddonTextureId);
             if(sprite != null){
-                submitNodeCollector.submitModelPart(entityModel.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, sprite);
+                submitNodeCollector.submitModel(entityModel, state, matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, -1, sprite, 0, null);
             }
         }
         if(beardAddonTextureId != null && state.canShowBeard){
             TextureAtlasSprite sprite = characterTexturesAtlas.getSprite(beardAddonTextureId);
             if(sprite != null){
-                submitNodeCollector.submitModelPart(entityModel.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, sprite);
+                submitNodeCollector.submitModel(entityModel, state, matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, -1, sprite, 0, null);
             }
         }
     }

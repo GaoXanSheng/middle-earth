@@ -47,7 +47,7 @@ public class NoseFeatureRenderer extends RenderLayer<NpcEntityRenderState, NpcEn
         if(noseId != null) {
             TextureAtlasSprite sprite = characterTexturesAtlas.getSprite(noseId);
             if(sprite != null){
-                submitNodeCollector.submitModelPart(noseModel.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, sprite);
+                submitNodeCollector.submitModel(noseModel, state, matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, -1, sprite, 0, null);
             }
         }
     }

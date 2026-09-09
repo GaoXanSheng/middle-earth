@@ -13,32 +13,26 @@ public final class RenderUtil {
     private RenderUtil() {
     }
 
-    public static void renderCutoutTexture(Model<?> model, PoseStack matrices, SubmitNodeCollector collector, int light, int overlay, Identifier texture) {
-        if (texture != null) {
-            collector.submitModelPart(model.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, null);
-        }
-    }
-
-    public static void renderEmissiveTexture(Model<?> model, PoseStack matrices, SubmitNodeCollector collector, int light, int overlay, Identifier texture) {
-        if (texture != null) {
-            collector.submitModelPart(model.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesEmissiveRenderLayer(), light, overlay, null);
-        }
-    }
-
-    public static void renderAtlasTexture(TextureAtlas atlas, Model<?> model, PoseStack matrices, SubmitNodeCollector collector, Identifier textureId, int light, int overlay) {
+    /**
+     * Submits the model via {@code submitModel(model, state, ...)} so the pose is re-computed from
+     * the render state when the submit node is replayed. Submitting a shared {@code ModelPart}
+     * with {@code submitModelPart} instead would freeze/reuse whatever pose the shared model had
+     * last, which desynchronizes the layer from armor rendered by independent models.
+     */
+    public static <S> void renderAtlasTexture(TextureAtlas atlas, Model<S> model, S state, PoseStack matrices, SubmitNodeCollector collector, Identifier textureId, int light, int overlay) {
         if (textureId != null) {
             var sprite = atlas.getSprite(textureId);
             if (sprite != null) {
-                collector.submitModelPart(model.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, sprite);
+                collector.submitModel(model, state, matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, -1, sprite, 0, null);
             }
         }
     }
 
-    public static void renderAtlasEmissiveTexture(TextureAtlas atlas, Model<?> model, PoseStack matrices, SubmitNodeCollector collector, Identifier textureId, int light, int overlay) {
+    public static <S> void renderAtlasEmissiveTexture(TextureAtlas atlas, Model<S> model, S state, PoseStack matrices, SubmitNodeCollector collector, Identifier textureId, int light, int overlay) {
         if (textureId != null) {
             var sprite = atlas.getSprite(textureId);
             if (sprite != null) {
-                collector.submitModelPart(model.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesEmissiveRenderLayer(), light, overlay, sprite);
+                collector.submitModel(model, state, matrices, ModTexturedRenderLayers.getCharacterTexturesEmissiveRenderLayer(), light, overlay, -1, sprite, 0, null);
             }
         }
     }

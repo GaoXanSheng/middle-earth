@@ -48,7 +48,7 @@ public class EarFeatureRenderer extends RenderLayer<NpcEntityRenderState, NpcEnt
         if(earId != null){
             TextureAtlasSprite sprite = characterTexturesAtlas.getSprite(earId);
             if(sprite != null){
-                submitNodeCollector.submitModelPart(earModel.root(), matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, sprite);
+                submitNodeCollector.submitModel(earModel, state, matrices, ModTexturedRenderLayers.getCharacterTexturesRenderLayer(), light, overlay, -1, sprite, 0, null);
             }
         }
     }

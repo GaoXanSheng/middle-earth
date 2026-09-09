@@ -51,7 +51,7 @@ public class NpcEntityRenderer extends HumanoidMobRenderer<NpcEntity, NpcEntityR
         this.layers.removeIf(x -> x.getClass() == WingsLayer.class);
         this.layers.removeIf(x -> x.getClass() == CustomHeadLayer.class);
 
-        this.addLayer(new NpcBodyTextureLayer(this));
+        this.addLayer(new NpcBodyTextureLayer(this, context.getModelSet()));
         this.addLayer(new HumanoidArmorLayer<>(this, ArmorModelSet.bake(ModelLayers.PLAYER_ARMOR, context.getModelSet(), HumanoidModel::new), context.getEquipmentRenderer()));
         this.addLayer(new HairFeatureRenderer(this, context.getModelSet()));
         this.addLayer(new EarFeatureRenderer(this, context.getModelSet()));
