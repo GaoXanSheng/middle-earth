@@ -15,6 +15,8 @@ public class LivingEntityRenderStateMixin extends EntityRenderState implements A
     private ItemStack offHandStack;
     @Unique
     private boolean restrained;
+    @Unique
+    private boolean spearIdle;
 
     @Override
     public ItemStack getMainHandStack() {
@@ -28,6 +30,10 @@ public class LivingEntityRenderStateMixin extends EntityRenderState implements A
     public boolean isRestrained() {
         return restrained;
     }
+    @Override
+    public boolean isSpearIdle() {
+        return spearIdle;
+    }
 
     @Override
     public void setMainHandStack(ItemStack mainHandStack) {
@@ -40,5 +46,9 @@ public class LivingEntityRenderStateMixin extends EntityRenderState implements A
     @Override
     public void setRestrained(boolean restrained) {
         this.restrained = restrained;
+    }
+    @Override
+    public void setSpearIdle(boolean spearIdle) {
+        this.spearIdle = spearIdle;
     }
 }

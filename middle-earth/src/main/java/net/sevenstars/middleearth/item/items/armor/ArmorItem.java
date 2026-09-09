@@ -10,7 +10,8 @@ public class ArmorItem extends Item {
     private final ExtendedArmorMaterial material;
 
     public ArmorItem(ExtendedArmorMaterial material, Properties settings) {
-        super(settings.component(DataComponentTypesME.ARMOR_TIER_DATA, new ArmorTierDataComponent(material.tier())));
+        super(settings.component(DataComponentTypesME.ARMOR_TIER_DATA, new ArmorTierDataComponent(material.tier()))
+                .repairable(material.material().repairIngredient()));
         this.material = material;
     }
 

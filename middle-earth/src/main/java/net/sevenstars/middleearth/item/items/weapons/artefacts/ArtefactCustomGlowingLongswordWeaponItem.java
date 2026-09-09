@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.item.items.weapons.CustomLongswordWeaponItem;
+import net.sevenstars.middleearth.item.items.weapons.utils.ArtefactUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class ArtefactCustomGlowingLongswordWeaponItem extends CustomLongswordWeaponItem {
@@ -40,8 +41,7 @@ public class ArtefactCustomGlowingLongswordWeaponItem extends CustomLongswordWea
     public static boolean shouldBeGlowing(Level world, Entity entity){
         int range = 50;
         if (entity != null){
-            /*return ArtefactUtils.isInBound(world, entity, OrcNpcEntity.class, range)
-                    || ArtefactUtils.isInBound(world, entity, UrukNpcEntity.class, range);*/ //TODO to update
+            return ArtefactUtils.isEvilNpcNearby(world, entity, range);
         }
         return false;
     }

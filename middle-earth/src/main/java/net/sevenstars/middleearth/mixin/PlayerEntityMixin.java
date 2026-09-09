@@ -14,11 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.sevenstars.middleearth.config.ModServerConfigs;
 import net.sevenstars.middleearth.enchantments.EnchantmentsME;
+import net.sevenstars.middleearth.entity.EntityAttributesME;
 import net.sevenstars.middleearth.item.items.weapons.CustomDaggerWeaponItem;
 import net.sevenstars.middleearth.utils.IEntityDataSaver;
 import net.sevenstars.middleearth.utils.PlayerMovementData;
-import net.sevenstars.middleearth.entity.EntityAttributesME;
 import net.sevenstars.middleearth.utils.PlayerUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,10 +38,6 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
     @Shadow protected float hurtDir;
     int climbDistance = 0;
-    //TODO Shield stuff broken, most likely because of new data comps
-    //@Shadow protected abstract void takeShieldHit(LivingEntity attacker);
-
-    //@Shadow public abstract boolean canUseSlot(EquipmentSlot slot);
 
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
         super(entityType, world);
@@ -62,12 +59,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
                 }
             }
         }
-        if(mainStack.getItem() instanceof CustomDaggerWeaponItem) { // TODO config
+        if(mainStack.getItem() instanceof CustomDaggerWeaponItem) {
             if(CustomDaggerWeaponItem.canBackStab(target, this)) {
-                newDamage *= 1.75f;
+                newDamage *= ModServerConfigs.DAGGER_BACKSTAB_MULTIPLIER;
             }
             if(CustomDaggerWeaponItem.canSneakAttack(mainStack)) {
-                newDamage *= 1.5f;
+                newDamage *= ModServerConfigs.DAGGER_SNEAK_ATTACK_MULTIPLIER;
             }
         }
         return newDamage;

@@ -33,7 +33,6 @@ public class WargArmorBackSkullFeatureRenderer extends RenderLayer<WargEntityRen
         MountArmorAddonComponent component = itemStack.get(DataComponentTypesME.MOUNT_ARMOR_DATA);
         if(component != null && component.topArmorAddon() && itemStack.is(EquipmentItemsME.WARG_GUNDABAD_PLATE_ARMOR)) {
             this.model.setupAnim(state);
-            // TODO 26.2: was armorCutoutNoCull + glint vertex pipeline; now generic cutout overlay
             submitNodeCollector.order(0).submitModel(this.model, state, poseStack, RenderTypes.armorCutoutNoCull(TEXTURE), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
 
             if (itemStack.hasFoil()) {

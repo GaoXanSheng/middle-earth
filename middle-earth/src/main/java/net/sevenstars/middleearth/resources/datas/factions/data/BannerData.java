@@ -1,9 +1,6 @@
 package net.sevenstars.middleearth.resources.datas.factions.data;
 
 import com.google.gson.JsonParser;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -13,15 +10,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.entity.BannerPatterns;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class BannerData {
     public static class BannerPatternWithColor {
@@ -166,7 +168,8 @@ public class BannerData {
 
     public static ItemStack formatBanner(ItemStack itemStack, BannerPatternLayers bannerPatternsComponent, Component translationKey) {
         itemStack.set(DataComponents.BANNER_PATTERNS, bannerPatternsComponent);
-        // itemStack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE); // TODO : Not existing
+        itemStack.update(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT,
+                display -> display.withHidden(DataComponents.BANNER_PATTERNS, true));
         itemStack.set(DataComponents.ITEM_NAME, translationKey);
         return itemStack;
     }

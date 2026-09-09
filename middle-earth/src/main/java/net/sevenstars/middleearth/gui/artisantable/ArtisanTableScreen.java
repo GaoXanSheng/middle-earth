@@ -213,8 +213,6 @@ public class ArtisanTableScreen extends AbstractContainerScreen<ArtisanTableScre
 
         this.renderRecipeBackground(context, mouseX, mouseY, l, m, n);
         this.renderRecipeIcons(context, l, m, n);
-
-        // TODO 26.2: ArmorStand preview render (entity) not yet ported.
     }
 
     @Override

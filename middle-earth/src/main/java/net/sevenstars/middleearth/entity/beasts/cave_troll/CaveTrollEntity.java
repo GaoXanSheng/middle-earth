@@ -611,7 +611,7 @@ public class CaveTrollEntity extends AbstractBeastEntity {
 
         this.setSleeping(true);
         this.setDeltaMovement(Vec3.ZERO);
-        // TODO 26.2: removed Entity.hasImpulse; velocity packet sent through normal state sync
+        // Entity.hasImpulse was removed in 26.2; velocity is sent through normal state sync
         // this.hasImpulse = true;
 
         this.brain.eraseMemory(MemoryModuleType.WALK_TARGET);

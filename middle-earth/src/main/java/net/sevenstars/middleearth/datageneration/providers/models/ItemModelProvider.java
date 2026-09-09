@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.item.properties.select.CustomModelDataPrope
 import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.renderer.item.properties.select.TrimMaterialProperty;
 import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -357,16 +358,20 @@ public class ItemModelProvider extends FabricModelProvider {
         return model.create(ModelLocationUtils.getModelLocation(item, suffix), TextureMapping.layer0(TextureMapping.getItemTexture(item)), modelCollector);
     }
 
-    //TODO might need a rework cause of new tint thingy
+    // Mirrors vanilla ItemModelGenerators.generateTwoLayerDyedItem: plain base model when
+    // undyed, base+overlay with the overlay tinted by DYED_COLOR when dyed.
     public final void registerDyeableArmor(Item armor, ItemModelGenerators itemModelGenerator) {
-        Identifier identifier = ModelLocationUtils.getModelLocation(armor);
-        Material identifier2 = TextureMapping.getItemTexture(armor);
-        Material identifier3 = TextureMapping.getItemTexture(armor, "_overlay");
+        Material base = TextureMapping.getItemTexture(armor);
+        Material overlay = TextureMapping.getItemTexture(armor, "_overlay");
 
-        ModelTemplates.TWO_LAYERED_ITEM.create(identifier, TextureMapping.layered(identifier2, identifier3), itemModelGenerator.modelOutput);
-        ItemModel.Unbaked unbaked2 = ItemModelUtils.tintedModel(identifier, new Dye(-6265536));
+        Identifier plainId = ModelTemplates.FLAT_ITEM.create(armor, TextureMapping.layer0(base), itemModelGenerator.modelOutput);
+        Identifier dyedId = ModelLocationUtils.getModelLocation(armor, "_dyed");
+        ModelTemplates.TWO_LAYERED_ITEM.create(dyedId, TextureMapping.layered(base, overlay), itemModelGenerator.modelOutput);
 
-        itemModelGenerator.itemModelOutput.accept(armor, unbaked2);
+        itemModelGenerator.itemModelOutput.accept(armor, ItemModelUtils.conditional(
+                ItemModelUtils.hasComponent(DataComponents.DYED_COLOR),
+                ItemModelUtils.tintedModel(dyedId, ItemModelUtils.constantTint(-1), new Dye(0)),
+                ItemModelUtils.plainModel(plainId)));
     }
 
     public final void registerPalettedItem(Item item, ItemModelGenerators itemModelGenerator) {

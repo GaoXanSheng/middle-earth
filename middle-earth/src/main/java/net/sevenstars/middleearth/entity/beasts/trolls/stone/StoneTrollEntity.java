@@ -6,18 +6,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.ConversionParams;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +26,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.entity.EntitiesME;
-import net.sevenstars.middleearth.entity.beasts.cave_troll.CaveTrollEntity;
 import net.sevenstars.middleearth.entity.beasts.trolls.TrollEntity;
 import net.sevenstars.middleearth.entity.goals.BeastTargetPlayerGoal;
 import net.sevenstars.middleearth.utils.SpawnUtil;
@@ -111,7 +106,7 @@ public class StoneTrollEntity extends TrollEntity {
         return false;
     }
 
-    // TODO 26.2: Mob.isSunBurnTick is private now; kept as a plain child hook for mod burning logic
+    // Mob.isSunBurnTick became private in 26.2; kept as a plain child hook for mod burning logic
     protected boolean isSunBurnTick() {
         if (this.level().isBrightOutside() && !this.level().isClientSide()) {
             if(this.level().getBiome(blockPosition()).is(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, "is_biome_in_darkness")))){

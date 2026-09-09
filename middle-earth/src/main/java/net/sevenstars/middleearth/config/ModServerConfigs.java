@@ -32,6 +32,10 @@ public class ModServerConfigs {
     public static int POWER_MAX_LEVEL;
     /** Global Mob Cap**/
     public static int GLOBAL_MOB_CAP;
+    /** Damage multiplier applied when a dagger back-stabs a target**/
+    public static float DAGGER_BACKSTAB_MULTIPLIER;
+    /** Damage multiplier applied when a dagger sneak-attacks a target**/
+    public static float DAGGER_SNEAK_ATTACK_MULTIPLIER;
 
     public static void registerConfigs() {
         configs = new ModConfigProvider();
@@ -88,6 +92,13 @@ public class ModServerConfigs {
         configs.addKeyValuePair(new Pair<>("sharpnessMaxLevel", 3), "int");
         configs.addDescription("What is the maximum level a power can have in an anvil output");
         configs.addKeyValuePair(new Pair<>("powerMaxLevel", 3), "int");
+
+        // Combat configurations
+        configs.addComment("Combat configurations");
+        configs.addDescription("Damage multiplier applied when a dagger back-stabs a target");
+        configs.addKeyValuePair(new Pair<>("daggerBackStabMultiplier", 1.75), "double");
+        configs.addDescription("Damage multiplier applied when a dagger sneak-attacks a target");
+        configs.addKeyValuePair(new Pair<>("daggerSneakAttackMultiplier", 1.5), "double");
     }
 
     private static void assignServerConfigs() {
@@ -109,6 +120,10 @@ public class ModServerConfigs {
 
         SHARPNESS_MAX_LEVEL = CONFIG.getOrDefault("sharpnessMaxLevel", 3);
         POWER_MAX_LEVEL = CONFIG.getOrDefault("powerMaxLevel", 3);
+
+        // Combat configurations
+        DAGGER_BACKSTAB_MULTIPLIER = (float) CONFIG.getOrDefault("daggerBackStabMultiplier", 1.75);
+        DAGGER_SNEAK_ATTACK_MULTIPLIER = (float) CONFIG.getOrDefault("daggerSneakAttackMultiplier", 1.5);
 
         MiddleEarth.LOGGER.logDebugMsg("All server configs (" + configs.getConfigsList().size() + ") have been set properly");
     }

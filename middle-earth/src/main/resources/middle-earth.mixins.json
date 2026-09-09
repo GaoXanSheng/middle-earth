@@ -42,7 +42,6 @@
     "client.BipedEntityRenderStateMixin",
     "client.GuiRendererMixin",
     "client.HeldItemRendererMixin",
-    "client.InGameHudMixin",
     "client.LivingEntityRendererMixin",
     "client.LivingEntityRenderStateMixin",
     "client.MinecraftClientMixin",

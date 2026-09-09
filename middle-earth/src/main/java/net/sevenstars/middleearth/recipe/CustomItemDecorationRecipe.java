@@ -16,8 +16,6 @@ import net.sevenstars.middleearth.item.items.shields.CustomBannerShieldItem;
 
 public class CustomItemDecorationRecipe extends CustomRecipe {
 
-    //TODO NO WORKY
-
     private static final CustomItemDecorationRecipe INSTANCE = new CustomItemDecorationRecipe();
     public static final MapCodec<CustomItemDecorationRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, CustomItemDecorationRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);

@@ -8,6 +8,7 @@ import net.sevenstars.middleearth.client.renderer.ArmedEntityRenderStateAccess;
 import net.sevenstars.middleearth.item.DecorativeItemsME;
 import net.sevenstars.middleearth.item.WeaponItemsME;
 import net.sevenstars.middleearth.item.items.weapons.ReachWeaponItem;
+import net.sevenstars.middleearth.item.utils.WeaponTypesME;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +33,7 @@ public class BipedEntityModelMixin {
         if(renderStateAccess.isRestrained()) {
             restrainedAnimation();
         } else if(handItem != null) {
-            tryItemAnimation(handItem, true);
+            tryItemAnimation(renderStateAccess, handItem, true);
         }
 
     }
@@ -44,7 +45,7 @@ public class BipedEntityModelMixin {
         if(renderStateAccess.isRestrained()) {
             restrainedAnimation();
         } else if(handItem != null) {
-            tryItemAnimation(handItem, false);
+            tryItemAnimation(renderStateAccess, handItem, false);
         }
     }
 
@@ -55,7 +56,7 @@ public class BipedEntityModelMixin {
         this.leftArm.yRot = 0.0F;
     }
 
-    private void tryItemAnimation(ItemStack itemStack, boolean rightHand) {
+    private void tryItemAnimation(ArmedEntityRenderStateAccess renderStateAccess, ItemStack itemStack, boolean rightHand) {
         if(itemStack.getItem().equals(DecorativeItemsME.FIRE_OF_ORTHANC)) {
             float pitch = this.rightArm.xRot * 0.25F - 0.5F;
             this.rightArm.xRot = pitch;
@@ -68,20 +69,11 @@ public class BipedEntityModelMixin {
             this.leftArm.xRot = pitch - 0.2f;
             this.rightArm.yRot = -0.35f;
             this.leftArm.yRot = 0.8f;
-            // TODO: Fix me later
-        //} else if((itemStack.getItem() instanceof ReachWeaponItem && (((ReachWeaponItem) itemStack.getItem()).type == ModWeaponTypes.SPEAR))) {
-        //    if(!entity.isUsingItem() && entity instanceof PlayerEntity playerEntity) {
-        //        int afkTime = PlayerMovementData.readAFK((IEntityDataSaver) playerEntity);
-        //        if(afkTime > 60) {
-        //            if (rightHand) this.rightArm.pitch = VERTICAL_ANGLE;
-        //            else this.leftArm.pitch = VERTICAL_ANGLE;
-        //        }
-        //    } else if(entity instanceof MobEntity mob) {
-        //        if (mob.isAiDisabled()) {
-        //            if (rightHand) this.rightArm.pitch = VERTICAL_ANGLE;
-        //            else this.leftArm.pitch = VERTICAL_ANGLE;
-        //        }
-        //    }
+        } else if(itemStack.getItem() instanceof ReachWeaponItem && ((ReachWeaponItem) itemStack.getItem()).type == WeaponTypesME.SPEAR) {
+            if(renderStateAccess.isSpearIdle()) {
+                if (rightHand) this.rightArm.xRot = VERTICAL_ANGLE;
+                else this.leftArm.xRot = VERTICAL_ANGLE;
+            }
         } else if (itemStack.getItem() == WeaponItemsME.HELD_BANNER) {
             if (rightHand) this.rightArm.xRot = VERTICAL_ANGLE;
             else this.leftArm.xRot = VERTICAL_ANGLE;

@@ -30,7 +30,6 @@ public class GreatHornSaddleFeatureRenderer extends RenderLayer<GreatHornEntityR
         if(!itemStack.isEmpty()) {
             Identifier texture = Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, PATH + (state.blueSaddle ? "_blue.png" : ".png"));
             model.setupAnim(state);
-            // TODO 26.2: was armorCutoutNoCull + glint vertex pipeline; now generic cutout overlay
             submitNodeCollector.order(0).submitModel(model, state, poseStack, RenderTypes.armorCutoutNoCull(texture), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
 
             if (itemStack.hasFoil()) {

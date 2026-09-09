@@ -31,8 +31,8 @@ public abstract class BlockMixin {
 
     @Inject(at = @At("HEAD"), method = "wasExploded")
     private void onDestroyedByExplosion(ServerLevel world, BlockPos pos, Explosion explosion, CallbackInfo ci) {
-        //TODO fix this
-        //if(!explosion.shouldDestroy()) return;
+        // Non-destroying explosions (e.g. wind charges) must not launch blocks.
+        if(!explosion.shouldAffectBlocklikeEntities()) return;
         Block block = this.asBlock();
 
         if(explosion.getDirectSourceEntity() == null || explosion.getDirectSourceEntity().getType() == EntitiesME.FIRE_OF_ORTHANC) {

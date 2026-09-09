@@ -9,8 +9,6 @@ public class CustomArtefactHelmetItem extends CustomHelmetItem {
         super(material, settings);
     }
 
-    //TODO canRepair gone need to find new thing -> component REPAIRABLE
-
     @Override
     public boolean isBarVisible(ItemStack stack) {
         if(stack.getDamageValue() == stack.getMaxDamage() - 1) {

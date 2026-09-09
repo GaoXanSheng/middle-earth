@@ -29,7 +29,6 @@ public class CaveTrollSaddleFeatureRenderer extends RenderLayer<CaveTrollEntityR
         ItemStack itemStack = state.saddle;
         if(!itemStack.isEmpty()) {
             model.setupAnim(state);
-            // TODO 26.2: was armorCutoutNoCull + glint vertex pipeline; now generic cutout overlay
             submitNodeCollector.order(0).submitModel(model, state, poseStack, RenderTypes.armorCutoutNoCull(SADDLE_TEXTURE), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
 
             if (itemStack.hasFoil()) {

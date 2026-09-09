@@ -21,6 +21,8 @@ public class BannerPatternRegisterMixin {
     )
 
     private static void registerModBannerPatterns(BootstrapContext<BannerPattern> registry, CallbackInfo ci) {
-        BannerPatternsME.register(registry); // TODO fixme
+        // Datagen-only hook: at runtime the banner_pattern registry loads from
+        // data/middle-earth/banner_pattern/*.json shipped in resources.
+        BannerPatternsME.register(registry);
     }
 }
