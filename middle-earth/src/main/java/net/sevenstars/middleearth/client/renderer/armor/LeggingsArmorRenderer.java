@@ -25,17 +25,12 @@ public class LeggingsArmorRenderer implements ArmorRenderer {
         boolean dyeable = false;
 
         if (slot == EquipmentSlot.LEGS) {
-            ModArmorRenderer.setAllVisible(customLeggingsModel, false);
-            customLeggingsModel.body.visible = true;
-            customLeggingsModel.rightLeg.visible = true;
-            customLeggingsModel.leftLeg.visible = true;
-
             if (DyeablePiecesME.dyeablePieces.containsKey(stack.getItem())) {
                 dyeable = true;
             }
 
             String texture = "textures/models/armor/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".png";
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, customLeggingsModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
         }
     }
 }

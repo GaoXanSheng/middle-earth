@@ -53,7 +53,6 @@ public class ModArmorRenderer implements ArmorRenderer {
         collector.submitModel(model, state, matrices, RenderTypes.entityTranslucent(texture),
                 light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
     }
-
     static void renderDyeableAttachment(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light,
                                         HumanoidModel<HumanoidRenderState> model, Identifier texture, int color) {
         renderColored(matrices, collector, state, light, model, texture, color);
@@ -61,7 +60,7 @@ public class ModArmorRenderer implements ArmorRenderer {
 
     private static void renderColored(PoseStack matrices, SubmitNodeCollector collector, HumanoidRenderState state, int light, HumanoidModel<HumanoidRenderState> model, Identifier texture, int color) {
         // Pass the dye as tintedColor; the 8-arg overload would misroute it into outlineColor.
-        collector.submitModel(model, state, matrices, RenderTypes.armorCutoutNoCull(texture), light, OverlayTexture.NO_OVERLAY, color, null, 0, null);
+        collector.submitModel(model, state, matrices, RenderTypes.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, color, null, 0, null);
     }
 
     private static Identifier overlay(Identifier texture, String suffix) {

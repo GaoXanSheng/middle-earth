@@ -25,16 +25,12 @@ public class BootsArmorRenderer implements ArmorRenderer {
         boolean dyeable = false;
 
         if (slot == EquipmentSlot.FEET) {
-            ModArmorRenderer.setAllVisible(customBootsModel, false);
-            customBootsModel.rightLeg.visible = true;
-            customBootsModel.leftLeg.visible = true;
-
             if (DyeablePiecesME.dyeablePieces.containsKey(stack.getItem())) {
                 dyeable = true;
             }
 
             String texture = "textures/models/armor/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".png";
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, customBootsModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
         }
     }
 }

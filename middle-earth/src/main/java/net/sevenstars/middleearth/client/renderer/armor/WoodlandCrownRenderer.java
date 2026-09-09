@@ -30,13 +30,6 @@ public class WoodlandCrownRenderer implements ArmorRenderer {
         boolean dyeable = false;
 
         if (slot == EquipmentSlot.HEAD) {
-            ModArmorRenderer.setAllVisible(customHelmetModel, false);
-            customHelmetModel.head.visible = true;
-            customHelmetModel.hat.visible = true;
-            customHelmetModel.body.visible = true;
-            customHelmetModel.leftArm.visible = true;
-            customHelmetModel.rightArm.visible = true;
-
             if (DyeablePiecesME.dyeablePieces.containsKey(stack.getItem())) {
                 dyeable = true;
             }
@@ -61,7 +54,7 @@ public class WoodlandCrownRenderer implements ArmorRenderer {
 
             texture += ".png";
 
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, customHelmetModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
             if (this.helmetAddonModel != null) {
                 ModArmorRenderer.setAllVisible(this.helmetAddonModel, false);
                 this.helmetAddonModel.head.visible = true;

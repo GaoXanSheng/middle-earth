@@ -32,22 +32,10 @@ public class ChestplateArmorRenderer implements ArmorRenderer {
 
     @Override
     public void render(PoseStack matrices, SubmitNodeCollector collector, ItemStack stack, HumanoidRenderState humanoidRenderState, EquipmentSlot slot, int light, HumanoidModel<HumanoidRenderState> contextModel) {
-        boolean dyeable = false;
-
         if (slot == EquipmentSlot.CHEST) {
-            ModArmorRenderer.setAllVisible(customChestplateModel, false);
-            customChestplateModel.body.visible = true;
-            customChestplateModel.rightArm.visible = true;
-            customChestplateModel.leftArm.visible = true;
-            customChestplateModel.rightLeg.visible = true;
-            customChestplateModel.leftLeg.visible = true;
-
-            if (DyeablePiecesME.dyeablePieces.containsKey(stack.getItem())) {
-                dyeable = true;
-            }
-
+            boolean dyeable = DyeablePiecesME.dyeablePieces.containsKey(stack.getItem());
             String texture = "textures/models/armor/" + BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + ".png";
-            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, customChestplateModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
+            ModArmorRenderer.renderArmor(matrices, collector, humanoidRenderState, light, stack, contextModel, Identifier.fromNamespaceAndPath(MiddleEarth.MOD_ID, texture), dyeable);
 
             if (this.chestplateAddonModel != null) {
                 ModArmorRenderer.setAllVisible(this.chestplateAddonModel, false);
