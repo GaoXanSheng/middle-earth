@@ -20,7 +20,7 @@ public class PlayerMovementData {
     public static int readAFK(IEntityDataSaver player) {
         CompoundTag nbt = player.getPersistentData();
 
-        return nbt.getInt(KEY).get();
+        return nbt.getInt(KEY).orElse(0);
     }
 
     public static void resetAFK(IEntityDataSaver player){
