@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -84,8 +85,11 @@ public class ModArmorRenderer implements ArmorRenderer {
                                       HumanoidModel<HumanoidRenderState> contextModel, HumanoidModel<HumanoidRenderState> model,
                                       Identifier texture, int color, boolean translucent, boolean setDelegateAngles) {
         RenderType renderType = translucent ? RenderTypes.entityTranslucent(texture) : RenderTypes.entityCutout(texture);
+        // The 12-arg overload's int parameter is OUTLINE COLOR, not the dye tint — passing the dye
+        // color there drew a colored glow outline around every piece and dropped the tint entirely.
+        // Use the 14-arg overload: tint goes to tintedColor, outlineColor stays 0 (no outline).
         ArmorRenderer.submitTransformCopyingModel(contextModel, state, model, state, setDelegateAngles,
-                collector, matrices, renderType, light, OverlayTexture.NO_OVERLAY, color, null);
+                collector, matrices, renderType, light, OverlayTexture.NO_OVERLAY, color, (TextureAtlasSprite) null, 0, null);
     }
 
     private static Identifier overlay(Identifier texture, String suffix) {
