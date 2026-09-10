@@ -67,8 +67,6 @@ public class ShapingAnvilBlockEntity extends BlockEntity implements ExtendedMenu
 
     protected final ContainerData propertyDelegate;
 
-    //TODO make work in creative somehow
-
     public ShapingAnvilBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TREATED_ANVIL, pos, state);
 

@@ -16,9 +16,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -88,7 +88,7 @@ public class Faction {
                    Optional<CompoundTag> bannerDataNbt, Optional<CompoundTag> spawnsNbt, Optional<List<String>> joinCommands, Optional<List<String>> leaveCommands, List<InitialDiplomacy> initialDiplomaciesNbt) {
         this.id = MiddleEarth.fetchId(id);
 
-        this.factionSelectionOrderIndex = factionSelectionOrderIndex; // TODO : Validation, rework this part in the future
+        this.factionSelectionOrderIndex = validateSelectionOrderIndex(factionSelectionOrderIndex);
 
         this.translatableKey = "faction.".concat(this.id.toLanguageKey());
         this.joinable = joinable;
@@ -217,6 +217,18 @@ public class Faction {
 
     private String getIdValue() {
         return this.id.toString();
+    }
+
+    private int validateSelectionOrderIndex(Integer index) {
+        if(index == null) {
+            MiddleEarth.LOGGER.logWarn("Faction '" + id + "' has no faction_selection_order_index; sorting it last.");
+            return Integer.MAX_VALUE;
+        }
+        if(index < 0) {
+            MiddleEarth.LOGGER.logWarn("Faction '" + id + "' has a negative faction_selection_order_index (" + index + "); clamping to 0.");
+            return 0;
+        }
+        return index;
     }
 
     public Integer getFactionSelectionOrderIndex() {

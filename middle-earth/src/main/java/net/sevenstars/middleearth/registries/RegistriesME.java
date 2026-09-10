@@ -738,7 +738,8 @@ public class RegistriesME {
             stack.shrink(1);
         }
 
-        //TODO Make sure this works well on server/client, ActionResult.SERVER_SUCCESS if not
+        // Matches the vanilla CauldronInteractions convention: mutations run server-side only,
+        // and SUCCESS is returned unconditionally on both sides.
         return InteractionResult.SUCCESS;
     };
 

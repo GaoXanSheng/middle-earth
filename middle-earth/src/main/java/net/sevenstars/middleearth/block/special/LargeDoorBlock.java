@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,11 +22,7 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DoorHingeSide;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -40,8 +35,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 
 public class LargeDoorBlock extends Block {
-
-    //TODO CLEAN CLASS
 
     public static final IntegerProperty PART = IntegerProperty.create("part", 0, 127);
     public static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -69,7 +62,8 @@ public class LargeDoorBlock extends Block {
         this.registerDefaultState((((this.stateDefinition.any()).setValue(HORIZONTAL_FACING, Direction.NORTH)).setValue(getPart(), 0)).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT));
     }
 
-    //TODO improve this door to door invisibility
+    // Faces are culled only between two blocks of the exact same door type; adjacent
+    // blocks of other door types keep their faces.
     protected boolean skipRendering(BlockState state, BlockState stateFrom, Direction direction) {
         return stateFrom.is(this) || super.skipRendering(state, stateFrom, direction);
     }
@@ -167,14 +161,14 @@ public class LargeDoorBlock extends Block {
             for (int i = 0; i < doorWidth; i++){
                 int partIndex = doorHeight * i;
                 for (int j = 0; j < doorHeight; j++) {
-                    world.setBlock(blockPos, (BlockState)state.setValue(getPart(), partIndex), 3);
+                    world.setBlock(blockPos, state.setValue(getPart(), partIndex), 3);
                     blockPos = blockPos.above();
                     partIndex++;
                 }
                 if(state.getValue(HINGE) == DoorHingeSide.LEFT) {
-                    blockPos = pos.relative((Direction)state.getValue(HORIZONTAL_FACING).getClockWise(), i + 1);
+                    blockPos = pos.relative(state.getValue(HORIZONTAL_FACING).getClockWise(), i + 1);
                 }else {
-                    blockPos = pos.relative((Direction) state.getValue(HORIZONTAL_FACING).getCounterClockWise(), i + 1);
+                    blockPos = pos.relative( state.getValue(HORIZONTAL_FACING).getCounterClockWise(), i + 1);
                 }
             }
         }
@@ -192,11 +186,11 @@ public class LargeDoorBlock extends Block {
                 blockPos = blockPos.above();
             }
             if(state.getValue(OPEN)){
-                blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING), j + 1);
+                blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING), j + 1);
             } else if(state.getValue(HINGE) == DoorHingeSide.LEFT) {
-                blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
+                blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
             }else {
-                blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
+                blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
             }
         }
 
@@ -215,11 +209,11 @@ public class LargeDoorBlock extends Block {
                 blockPos = blockPos.above();
             }
             if(state.getValue(OPEN)){
-                blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING), j + 1);
+                blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING), j + 1);
             } else if(state.getValue(HINGE) == DoorHingeSide.LEFT) {
-                blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
+                blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
             }else {
-                blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
+                blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
             }
         }
 
@@ -241,12 +235,12 @@ public class LargeDoorBlock extends Block {
             }
             if(state.getValue(OPEN)){
                 if(state.getValue(HINGE) == DoorHingeSide.LEFT) {
-                    blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
+                    blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
                 } else {
-                    blockPos = blockPos1.relative((Direction) state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
+                    blockPos = blockPos1.relative( state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
                 }
             } else {
-                blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING), j + 1);
+                blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING), j + 1);
             }
         }
         return true;
@@ -261,16 +255,16 @@ public class LargeDoorBlock extends Block {
             //Remove blocks
             for (int j = 0; j < doorWidth; j++){
                 for (int k = 0; k < doorHeight; k++) {
-                    world.setBlock(blockPos, (BlockState)Blocks.AIR.defaultBlockState(), 3);
+                    world.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
                     blockPos = blockPos.above();
                 }
                 if(state.getValue(OPEN)) {
-                    blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING), j + 1);
+                    blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING), j + 1);
                 }else {
                     if (state.getValue(HINGE) == DoorHingeSide.LEFT) {
-                        blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
+                        blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getClockWise(), j + 1);
                     }else{
-                        blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
+                        blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getCounterClockWise(), j + 1);
                     }
                 }
             }
@@ -290,18 +284,18 @@ public class LargeDoorBlock extends Block {
                     partIndex++;
                 }
                 if(!state.getValue(OPEN)){
-                    blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING), i + 1);
+                    blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING), i + 1);
                 }else{
                     if(state.getValue(HINGE) == DoorHingeSide.LEFT){
-                        blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getClockWise(), i + 1);
+                        blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getClockWise(), i + 1);
 
                     } else {
-                        blockPos = blockPos1.relative((Direction)state.getValue(HORIZONTAL_FACING).getCounterClockWise(), i + 1);
+                        blockPos = blockPos1.relative(state.getValue(HORIZONTAL_FACING).getCounterClockWise(), i + 1);
 
                     }
                 }
             }
-            this.playOpenCloseSound(player, world, pos, (Boolean)state.getValue(OPEN));
+            this.playOpenCloseSound(player, world, pos, state.getValue(OPEN));
             world.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
         } else {
             player.sendOverlayMessage(Component.translatable("alert.%s.large_door.blocked".formatted(MiddleEarth.MOD_ID)));
@@ -315,15 +309,15 @@ public class LargeDoorBlock extends Block {
     }
 
     public boolean isOpen(BlockState state) {
-        return (Boolean)state.getValue(OPEN);
+        return state.getValue(OPEN);
     }
 
     protected BlockState rotate(BlockState state, Rotation rotation) {
-        return (BlockState)state.setValue(HORIZONTAL_FACING, rotation.rotate((Direction)state.getValue(HORIZONTAL_FACING)));
+        return state.setValue(HORIZONTAL_FACING, rotation.rotate(state.getValue(HORIZONTAL_FACING)));
     }
 
     protected BlockState mirror(BlockState state, Mirror mirror) {
-        return mirror == Mirror.NONE ? state : (BlockState)state.rotate(mirror.getRotation((Direction)state.getValue(HORIZONTAL_FACING)));
+        return mirror == Mirror.NONE ? state : state.rotate(mirror.getRotation(state.getValue(HORIZONTAL_FACING)));
     }
 
     public int getDoorHeight() {
@@ -340,14 +334,14 @@ public class LargeDoorBlock extends Block {
 
     protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return switch (type) {
-            case LAND, AIR -> (Boolean) state.getValue(OPEN);
+            case LAND, AIR ->  state.getValue(OPEN);
             case WATER -> false;
             default -> throw new MatchException((String) null, (Throwable) null);
         };
     }
 
     protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        Direction direction = (Direction) state.getValue(HORIZONTAL_FACING);
+        Direction direction =  state.getValue(HORIZONTAL_FACING);
         VoxelShape var10000 = null;
         if (state.getValue(HINGE) == DoorHingeSide.LEFT) {
             if (!state.getValue(OPEN)) {

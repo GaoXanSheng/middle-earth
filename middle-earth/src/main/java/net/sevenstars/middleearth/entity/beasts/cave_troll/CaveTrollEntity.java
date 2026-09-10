@@ -64,7 +64,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-// TODO Add sounds
 public class CaveTrollEntity extends AbstractBeastEntity {
     public LootTable scavengeLootTable;
     public LootParams lootWorldContext;

@@ -31,7 +31,9 @@ import net.sevenstars.middleearth.resources.datas.structure_manager_datas.SpawnN
 import net.sevenstars.middleearth.resources.datas.structure_manager_datas.StructureManagerData;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class StructureManagerBlockEntity extends BlockEntity implements ExtendedMenuProvider<StructureManagerScreenData> {
@@ -261,20 +263,34 @@ public class StructureManagerBlockEntity extends BlockEntity implements Extended
     }
 
     public void fetchBeds(){
-        // TODO : Fetch all beds surrounding the nodes, making sure there's no duplicate
+        // Scans each nest's surroundings for bed heads; a bed claimed by an earlier nest is
+        // dropped from later nests so no bed is assigned twice.
+        if(getLevel() == null || getLevel().isClientSide() || structureNestList == null || structureManagerIdentifier == null)
+            return;
         StructureManagerData managerData = getLevel().registryAccess().lookup(DynamicRegistriesME.STRUCTURE_MANAGER_DATA).get().getValue(structureManagerIdentifier);
+        if(managerData == null)
+            return;
+
+        Set<BlockPos> claimedBeds = new HashSet<>();
         for(SpawnNestManager data : structureNestList.getManagers()) {
             SpawnNestNodeData nodeData = managerData.getNpcSpawnNest(data.getId());
             if(nodeData == null)
                 continue;
 
-            int bedRadius = nodeData.getBedRadius();
-            BlockPos origin = data.getOriginPos();
+            data.refreshBeds(managerData, getLevel());
+            data.getBedPositions().removeIf(claimedBeds::contains);
+            claimedBeds.addAll(data.getBedPositions());
         }
+        updateListeners();
     }
 
     public void redistributeBeds(){
-        // TODO : Redistribute beds to the nest nodes
-        // TODO : Makes sure the beds are still distributed to the correct npcs
+        // Beds were fetched with fetchBeds(); round-robin them to the (still alive) NPCs of each nest.
+        if(getLevel() == null || getLevel().isClientSide() || structureNestList == null)
+            return;
+
+        for(SpawnNestManager data : structureNestList.getManagers()) {
+            data.distributeBeds(getLevel());
+        }
     }
 }

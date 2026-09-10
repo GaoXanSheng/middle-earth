@@ -1,10 +1,5 @@
 package net.sevenstars.middleearth.world.biomes.caves;
 
-import net.sevenstars.middleearth.world.biomes.BiomeColorsDTO;
-import net.sevenstars.middleearth.world.biomes.MEBiomeKeys;
-import net.sevenstars.middleearth.world.biomes.surface.BiomeData;
-import net.sevenstars.middleearth.world.features.underground.CavesPlacedFeatures;
-import net.sevenstars.middleearth.world.features.vegetation.ModVegetationPlacedFeatures;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -13,7 +8,6 @@ import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.data.worldgen.placement.NetherPlacements;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.data.worldgen.features.*;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
@@ -22,6 +16,12 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.phys.Vec2;
+import net.sevenstars.middleearth.world.biomes.BiomeColorsDTO;
+import net.sevenstars.middleearth.world.biomes.MEBiomeKeys;
+import net.sevenstars.middleearth.world.biomes.surface.BiomeData;
+import net.sevenstars.middleearth.world.features.underground.CavesPlacedFeatures;
+import net.sevenstars.middleearth.world.features.vegetation.ModVegetationPlacedFeatures;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -301,19 +301,18 @@ public class ModCaveBiomes {
         undergroundOres.add(CavesPlacedFeatures.DISK_MYCELIUM);
         undergroundOres.add(MiscOverworldPlacements.DISK_GRAVEL);
 
-        // TODO bring back the fungus trees without crashing
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_BROWN_BOLETTE);
+        generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_BROWN_BOLETTE);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_CAVE_AMANITA);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_CAVE_AMANITA_TILLER);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_CAVE_AMANITA);
+        generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_CAVE_AMANITA);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_DEEP_FIRECAP);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_DEEP_FIRECAP_TILLER);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_DEEP_FIRECAP);
+        generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_DEEP_FIRECAP);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_GHOSTSHROOM);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_GHOSTSHROOM_TILLER);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_SKY_FIRECAP);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_SKY_FIRECAP_TILLER);
-        //generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_SKY_FIRECAP);
+        generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.TREE_SKY_FIRECAP);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_TUBESHROOMS);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_TALL_TUBESHROOMS);
         generationSettings.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, CavesPlacedFeatures.PATCH_TRUMPET_SHROOM);

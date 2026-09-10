@@ -20,9 +20,9 @@ import net.sevenstars.middleearth.resources.datas.structure_manager_datas.Struct
 import net.sevenstars.middleearth.resources.datas.structure_manager_datas.StructureSpawnNestPool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class SpawnNestManager {
     public static final Codec<SpawnNestManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -43,7 +43,10 @@ public class SpawnNestManager {
     private BlockPos originPos;
     private int spawnRadius;
 
-    private List<BedBlock> beds = new ArrayList<>();
+    // Head positions of the beds found around the nest origin (transient, re-scanned on demand).
+    private List<BlockPos> bedPositions = new ArrayList<>();
+    // Round-robin assignment of the fetched beds to the living NPCs of this nest.
+    private HashMap<UUID, BlockPos> bedAssignments = new HashMap<>();
 
     public SpawnNestManager(Identifier dataId, List<UUID> dataEntities, long dataRespawnEventTriggerTick, int dataRespawnTickDelay, BlockPos position, int spawnRadius) {
         this.id = dataId;
@@ -184,23 +187,47 @@ public class SpawnNestManager {
     }
 
     public void refreshBeds(StructureManagerData structureManagerData, Level world){
-        // TODO : Connect with the @StructureManagerBlockEntity.fetchBeds() / Redistribute
+        bedPositions.clear();
+        SpawnNestNodeData nodeData = structureManagerData == null ? null : structureManagerData.getNpcSpawnNest(id);
+        int bedRadius = nodeData != null ? nodeData.getBedRadius() : 10;
 
-        BlockPos origin = getOriginPos();
-        int bedRadius = 10;
-        List<BlockPos> bedBlockPositions = new ArrayList<>();
-        BlockPos.findClosestMatch(origin, bedRadius, 5, new Predicate<BlockPos>() {
-            @Override
-            public boolean test(BlockPos blockPos) {
-                var blockState = world.getBlockState(blockPos);
-                if(blockState.getBlock() instanceof BedBlock bedBlock){
-                    if(BedBlock.getBlockType(blockState) == DoubleBlockCombiner.BlockType.FIRST){
-                        bedBlockPositions.add(blockPos);
-                    }
-                }
-                return false;
+        // Only the head block (BlockType.FIRST) of each bed counts as one bed.
+        for (BlockPos pos : BlockPos.betweenClosed(
+                originPos.offset(-bedRadius, -2, -bedRadius),
+                originPos.offset(bedRadius, 3, bedRadius))) {
+            var blockState = world.getBlockState(pos);
+            if(blockState.getBlock() instanceof BedBlock
+                    && BedBlock.getBlockType(blockState) == DoubleBlockCombiner.BlockType.FIRST){
+                bedPositions.add(pos.immutable());
             }
-        });
+        }
+    }
+
+    public List<BlockPos> getBedPositions() {
+        return bedPositions;
+    }
+
+    /**
+     * Round-robins the fetched beds to the living NPCs of this nest. More NPCs than beds
+     * means beds are shared; more beds than NPCs means surplus beds stay unassigned.
+     */
+    public void distributeBeds(Level world) {
+        bedAssignments.clear();
+        if(bedPositions.isEmpty() || entities.isEmpty())
+            return;
+
+        int index = 0;
+        for (UUID uuid : entities) {
+            if (world.getEntity(uuid) instanceof NpcEntity) {
+                bedAssignments.put(uuid, bedPositions.get(index % bedPositions.size()));
+                index++;
+            }
+        }
+        MiddleEarth.LOGGER.logDebugMsg("Spawn nest %s distributed %d bed(s) to %d npc(s)".formatted(id, bedPositions.size(), index));
+    }
+
+    public BlockPos getBedAssignment(UUID entityUuid) {
+        return bedAssignments.get(entityUuid);
     }
 }
 

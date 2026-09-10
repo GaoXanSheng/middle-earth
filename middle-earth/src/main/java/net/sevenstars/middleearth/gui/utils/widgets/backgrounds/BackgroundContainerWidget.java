@@ -14,7 +14,9 @@ public class BackgroundContainerWidget extends ModWidget {
     }
 
     public void draw(GuiGraphicsExtractor context, int startX, int startY, int sizeX, int sizeY){
-        // TODO : Find a fix for looping texture efficiently
+        // Per-tile border blits: efficient single-call tiling (context.blitSprite + "tiles" sprite
+        // scaling) requires standalone edge/corner textures under textures/gui/sprites/, which the
+        // shared 256x256 atlas layout cannot provide. Blits are batched per texture by the renderer.
 
         int size = type.size;
         // NORTH WEST

@@ -114,7 +114,10 @@ public class ModBiomeSource extends BiomeSource {
                 if(j < (height - 20)) processedBiome = getCaveBiome(i, k, biome);
                 else if(height < MiddleEarthChunkGenerator.WATER_HEIGHT) processedBiome = MapBasedBiomePool.deadMarshesWater.getBiomeKey();
                 else processedBiome = MapBasedBiomePool.deadMarshes.getBiomeKey();
-            } else if(height <= biomeHeightData.getWaterHeight() + 1.25f) { // TODO : This is really rough, need to be more dynamic
+            } else if(height <= biomeHeightData.getWaterHeight() + 1.25f) {
+                // Shoreline swap threshold: the 1.25 margin is a fixed tuning value; a
+                // noise-driven margin (e.g. from the subBiome perlin above) would make shore
+                // widths vary, but needs in-game comparison against the reference map first.
                 if(MapBasedBiomePool.coastalBiomes.contains(biomeRegistryKey)){
                     processedBiome = MapBasedBiomePool.oceanCoast.getBiomeKey();
                 } else if(MapBasedBiomePool.wastePondBiomes.contains(biomeRegistryKey)) {

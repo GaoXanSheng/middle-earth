@@ -3,7 +3,6 @@ package net.sevenstars.middleearth.gui.onboarding.onboarding_faction;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -163,7 +162,7 @@ public class OnboardingFactionScreen extends Screen {
         addRenderableWidget(elements.npcRandomizerButton);
 
         // Map Widget
-        elements.mapFocusButton = Button.builder(Component.translatable("screen." + MiddleEarth.MOD_ID + ".button.focus_current"), this::mapFocusToggle).build(); // TODO
+        elements.mapFocusButton = Button.builder(Component.translatable("screen." + MiddleEarth.MOD_ID + ".button.focus_current"), this::mapFocusToggle).build();
         elements.mapFocusButton.setSize(10, 10);
         addRenderableWidget(elements.mapFocusButton);
 

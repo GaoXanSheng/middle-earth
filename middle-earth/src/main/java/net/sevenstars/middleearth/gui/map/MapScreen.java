@@ -149,7 +149,6 @@ public class MapScreen extends Screen {
         startY = MARGIN;
         endY = context.guiHeight() - MARGIN;
 
-        // TODO : Draw dynamic background : context.drawTexture(BACKGROUND_TEXTURE, startX, startY, 0, 0,  WIDTH, HEIGHT);
         backgroundContainerWidget.draw(context, 0, 0, context.guiWidth(), context.guiHeight());
 
         mapWidget.drawFullscreen(context, MARGIN);
@@ -186,9 +185,8 @@ public class MapScreen extends Screen {
         double x = Math.max(startX + margin + 4, Math.min(endX - 4 - ((isFullscreen) ? NORMAL_BUTTON_SIZE.x : MARGIN), playerRatio.x));
         double y = Math.max(startY + margin + 4, Math.min(endY - 4 - margin, playerRatio.y));
 
-        // TODO (?) : show the head?
-        //PlayerSkinDrawer.draw(context, player.getSkinTextures(), (int)x, (int)y, 4);
-        //PlayerSkinDrawer.draw(context, minecraft.getSkinProvider().getSkinTexturesSupplier(new GameProfile(UUID.fromString(this.uuid),this.name)).get(),x,y);
+        // The generic blip is drawn from MAP_UI_TEXTURE; a player-head marker would need the
+        // PlayerSkinRenderCache pipeline (async profile lookup + PIP render).
 
         context.blit(RenderPipelines.GUI_TEXTURED, MAP_UI_TEXTURE,
                 (int)x- 4, (int) y- 4, 154, 1,

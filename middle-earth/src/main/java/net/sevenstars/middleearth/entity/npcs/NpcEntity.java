@@ -74,6 +74,7 @@ import net.sevenstars.middleearth.resources.datas.factions.FactionLookup;
 import net.sevenstars.middleearth.resources.datas.npc_types.NpcType;
 import net.sevenstars.middleearth.resources.datas.npc_types.data.LootData;
 import net.sevenstars.middleearth.resources.persistent_datas.PlayerData;
+import net.sevenstars.middleearth.utils.EntityTypeTagsME;
 import net.sevenstars.middleearth.utils.ItemTagsME;
 import net.sevenstars.middleearth.utils.SpawnUtil;
 import net.sevenstars.of_beasts_and_wild_things.entity.snail.SnailEntity;
@@ -144,12 +145,19 @@ public class NpcEntity extends PathfinderMob implements EquipmentUser, CrossbowA
     public boolean getFighting(){
         return this.entityData.get(IS_FIGHTING);
     }
-    // [IsBlocking] // TODO
-    public void setBlocking(boolean state){
-        //this.dataTracker.set(IS_FIGHTING, state);
+    public static boolean shouldTarget(NpcEntity npcEntity, LivingEntity target){
+        // Always-hostile creatures are data-driven via the npc_always_target entity type tag;
+        // vanilla Monster instances are targeted unconditionally.
+        if(target instanceof Monster || target.getType().builtInRegistryHolder().is(EntityTypeTagsME.NPC_ALWAYS_TARGET))
+            return true;
+        if(!npcEntity.considersEntityAsAlly(target)){
+            return true;
+        }
+        return false;
     }
+
     public boolean getBlocking(){
-        return false; //this.dataTracker.get(IS_FIGHTING);
+        return this.isBlocking();
     }
     // [NpcTextureData]
     public void saveNpcTextureData(NpcTextureData npcTextureData) {
@@ -718,14 +726,17 @@ public class NpcEntity extends PathfinderMob implements EquipmentUser, CrossbowA
         return shouldTarget(this, target) && super.canAttack(target);
     }
 
-    public static boolean shouldTarget(NpcEntity npcEntity, LivingEntity target){
-        // TODO : datadriven
-        if(target instanceof SnailEntity || target instanceof Monster || target instanceof SnowTrollEntity || target instanceof Pouncer)
-            return true;
-        if(!npcEntity.considersEntityAsAlly(target)){
-            return true;
+    // [IsBlocking]
+    // Blocking is driven by actually using the offhand item: vanilla isBlocking() (and the
+    // knockback / shield-disable handling in blockUsingItem) then applies automatically.
+    public void setBlocking(boolean state){
+        if(state) {
+            if(!this.isUsingItem() && this.getOffhandItem().has(DataComponents.BLOCKS_ATTACKS)) {
+                this.startUsingItem(InteractionHand.OFF_HAND);
+            }
+        } else if(this.isUsingItem() && this.getUsedItemHand() == InteractionHand.OFF_HAND) {
+            this.stopUsingItem();
         }
-        return false;
     }
 
     public int getTickAttackSpeedCooldown(){

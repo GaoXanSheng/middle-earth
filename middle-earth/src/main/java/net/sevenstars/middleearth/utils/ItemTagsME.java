@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.sevenstars.middleearth.MiddleEarth;
 
 public class ItemTagsME {
-    //TODO actually gen the tags
+    // Tag JSONs live in data/middle-earth/tags/item/ (hand-written, like the rest of the tag set).
     public static TagKey<Item> REPAIRS_STRAW_ARMOR = TagKey.create(Registries.ITEM, MiddleEarth.of("repairs_straw_armor"));
     public static TagKey<Item> REPAIRS_WOOL_ARMOR = TagKey.create(Registries.ITEM, MiddleEarth.of("repairs_wool_armor"));
     public static TagKey<Item> REPAIRS_BONE_ARMOR = TagKey.create(Registries.ITEM, MiddleEarth.of("repairs_bone_armor"));

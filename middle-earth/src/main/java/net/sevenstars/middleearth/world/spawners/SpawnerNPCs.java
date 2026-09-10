@@ -45,7 +45,6 @@ public class SpawnerNPCs implements CustomSpawner {
 
         this.cooldown += (BASE_COOLDOWN + random.nextInt(COOLDOWN_RANGE)) * 20;
 
-        int i = 0;
         for (Player playerEntity : world.players()) {
             BlockState blockState;
             if (playerEntity.isSpectator()) continue;
@@ -98,17 +97,15 @@ public class SpawnerNPCs implements CustomSpawner {
                         targetBlockPos.subtract(new Vec3i(0, 1, 0)), entitySpawningSettings.getEntity(), blockState)) continue;
 
                 for (int m = 0; m < entityCount; ++m) {
-                    //TODO added spawn reason but needs testing
+                    // Spawn reason NATURAL: matches the custom-spawner context (was added during the 26.2 migration).
                     PathfinderMob entity = (PathfinderMob) entitySpawningSettings.getEntity().create(world, EntitySpawnReason.NATURAL);
                     if (entity == null) continue;
                     entity.snapTo(targetBlockPos, 0.0f, 0.0f);
                     entityData = entity.finalizeSpawn(world, localDifficulty, EntitySpawnReason.NATURAL, entityData);
                     world.addFreshEntityWithPassengers(entity);
-                    ++i;
                 }
             }
         }
-        return; // TODO : Was 1
     }
 
     public static int getHighestYAtXZ(Level world, int x, int z) {

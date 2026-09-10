@@ -1,15 +1,16 @@
 package net.sevenstars.middleearth.resources.datas.texture_presets;
 
-import net.sevenstars.api.dtos.WeightedItem;
-import net.sevenstars.api.dtos.WeightedPool;
-import net.sevenstars.middleearth.resources.datas.common.CharacterMaterialTypes;
-import net.sevenstars.middleearth.resources.datas.common.CharacterPatternTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.sevenstars.api.dtos.WeightedIdentifier;
+import net.sevenstars.api.dtos.WeightedItem;
+import net.sevenstars.api.dtos.WeightedPool;
+import net.sevenstars.middleearth.MiddleEarth;
+import net.sevenstars.middleearth.resources.datas.common.CharacterMaterialTypes;
+import net.sevenstars.middleearth.resources.datas.common.CharacterPatternTypes;
 
-import java.util.*;
+import java.util.List;
 
 public class WeightedTexturePresetHolder extends WeightedItem<TexturePreset> {
     public WeightedTexturePresetHolder(){
@@ -163,7 +164,8 @@ public class WeightedTexturePresetHolder extends WeightedItem<TexturePreset> {
 
     public ClothingSelection getClothingData() {
         if(item.characterClothePresets.isEmpty()){
-            //TODO : add clothes to all : MiddleEarth.LOGGER.logDebugMsg("Couldn't find clothes for " + this.getNbt());
+            // Data gap: presets without clothes fall back to a bare selection.
+            MiddleEarth.LOGGER.logDebugMsg("Texture preset has no clothing presets; falling back to a bare ClothingSelection.");
             return new ClothingSelection(null, null, null);
         }
         WeightedClothingPresetHolder clothePreset = item.characterClothePresets.getRandom();
