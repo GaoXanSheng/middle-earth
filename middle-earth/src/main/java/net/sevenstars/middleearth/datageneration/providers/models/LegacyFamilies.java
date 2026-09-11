@@ -669,7 +669,7 @@ final class LegacyFamilies {
 
         g.blockStateOutput.accept(MultiVariantGenerator.dispatch(verticalSlab).with(PropertyDispatch.initial(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING,
                         VerticalSlabBlock.DOUBLE, VerticalSlabBlock.SHAPE)
-                .select(Direction.EAST, false, VerticalSlabShape.STRAIGHT, regularMv)
+                .select(Direction.EAST, false, VerticalSlabShape.STRAIGHT, yRot(regularMv, Quadrant.R90))
                 .select(Direction.WEST, false, VerticalSlabShape.STRAIGHT, yRot(regularMv, Quadrant.R270))
                 .select(Direction.SOUTH, false, VerticalSlabShape.STRAIGHT, yRot(regularMv, Quadrant.R180))
                 .select(Direction.NORTH, false, VerticalSlabShape.STRAIGHT, regularMv)

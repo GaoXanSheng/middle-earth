@@ -2,14 +2,14 @@ package net.sevenstars.middleearth.datageneration.providers.tags;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
-import net.sevenstars.middleearth.MiddleEarth;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.tags.TagKey;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.registration.*;
 import net.sevenstars.middleearth.block.utils.BlockRecordTypes;
 import net.sevenstars.middleearth.datageneration.content.models.*;
@@ -252,7 +252,6 @@ public class BlockTagProvider extends FabricTagsProvider.BlockTagsProvider {
         });
 
         climbable.add(key(ModDecorativeBlocks.ROPE));
-        climbable.add(key(ModDecorativeBlocks.ROPE_LADDER));
         climbable.add(key(ModBlocks.NET));
         climbable.add(key(ModNatureBlocks.MIRKWOOD_VINES));
         climbable.add(key(ModDecorativeBlocks.REINFORCED_SCAFFOLDING));
