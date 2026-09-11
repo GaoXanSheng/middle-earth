@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.inventory.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,12 +12,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -34,6 +28,7 @@ import net.sevenstars.middleearth.network.packets.S2C.ArtisanRecipePacket;
 import net.sevenstars.middleearth.recipe.ArtisanRecipe;
 import net.sevenstars.middleearth.recipe.RecipesME;
 import net.sevenstars.middleearth.resources.datas.common.DispositionType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -338,9 +333,9 @@ public class ArtisanTableScreenHandler extends AbstractContainerMenu {
             ItemStack originalStack = invSlot.getItem();
             Item item = originalStack.getItem();
             stack = originalStack.copy();
-            if (slot == 6){
+            if (slot == 9){
                 item.onCraftedPostProcess(originalStack, player.level());
-                if (!this.moveItemStackTo(originalStack, 7, this.slots.size(), true)) {
+                if (!this.moveItemStackTo(originalStack, 10, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
                 invSlot.onQuickCraft(originalStack, stack);

@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -146,7 +147,7 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
                 Codec.STRING.fieldOf("category").forGetter(recipe -> recipe.category),
                 BuiltInRegistries.ITEM.byNameCodec().fieldOf("output").forGetter(recipe -> recipe.outputItem),
                 Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(recipe -> recipe.inputs),
-                Codec.STRING.optionalFieldOf("disposition", "").forGetter(recipe -> recipe.disposition),
+                Codec.STRING.optionalFieldOf("disposition", "neutral").forGetter(recipe -> recipe.disposition),
                 Codec.INT.optionalFieldOf("xp", 0).forGetter(recipe -> recipe.xp)
         ).apply(instance, ArtisanRecipe::new));
 
@@ -157,21 +158,16 @@ public class ArtisanRecipe implements Recipe<MultipleStackRecipeInput> {
         private static ArtisanRecipe read(RegistryFriendlyByteBuf buf) {
             String category = buf.readUtf();
             Item outputItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(buf.readUtf()));
-            int i = buf.readVarInt();
-            NonNullList<Ingredient> defaultedList = NonNullList.createWithCapacity(i);
-            defaultedList.replaceAll(empty -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
+            List<Ingredient> inputs = Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buf);
             String disposition = buf.readUtf();
             int xp = buf.readVarInt();
-            return new ArtisanRecipe(category, outputItem, defaultedList, disposition, xp);
+            return new ArtisanRecipe(category, outputItem, inputs, disposition, xp);
         }
 
         private static void write(RegistryFriendlyByteBuf buf, ArtisanRecipe recipe) {
             buf.writeUtf(recipe.category);
             buf.writeUtf(BuiltInRegistries.ITEM.getKey(recipe.outputItem).toString());
-            buf.writeVarInt(recipe.inputs.size());
-            for (Ingredient ingredient : recipe.inputs) {
-                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
-            }
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buf, recipe.inputs);
             buf.writeUtf(recipe.disposition);
             buf.writeVarInt(recipe.xp);
         }
