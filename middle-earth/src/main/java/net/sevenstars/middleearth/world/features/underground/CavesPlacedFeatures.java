@@ -1,8 +1,5 @@
 package net.sevenstars.middleearth.world.features.underground;
 
-import net.sevenstars.middleearth.MiddleEarth;
-import net.sevenstars.middleearth.world.chunkgen.MiddleEarthChunkGenerator;
-import net.sevenstars.middleearth.world.features.tree.MushroomTreeConfiguredFeatures;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -13,28 +10,20 @@ import net.minecraft.data.worldgen.features.NetherFeatures;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.features.VegetationFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.valueproviders.ClampedNormalInt;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.data.worldgen.features.*;
-import net.minecraft.data.worldgen.placement.*;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.CountOnEveryLayerPlacement;
-import net.minecraft.world.level.levelgen.placement.CountPlacement;
-import net.minecraft.world.level.levelgen.placement.EnvironmentScanPlacement;
-import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
-import net.minecraft.world.level.levelgen.placement.RandomOffsetPlacement;
-import net.minecraft.world.level.levelgen.placement.RarityFilter;
-import net.minecraft.world.level.levelgen.placement.SurfaceRelativeThresholdFilter;
+import net.minecraft.world.level.levelgen.placement.*;
+import net.sevenstars.middleearth.MiddleEarth;
+import net.sevenstars.middleearth.world.chunkgen.MiddleEarthChunkGenerator;
+import net.sevenstars.middleearth.world.features.tree.MushroomTreeConfiguredFeatures;
+
 import java.util.List;
 
 public class CavesPlacedFeatures {
@@ -397,17 +386,17 @@ public class CavesPlacedFeatures {
         PlacementUtils.register(featureRegisterable, ORE_MITHRIL, mithrilOre, modifiersWithRarity(1, HeightRangePlacement.triangle(VerticalAnchor.absolute(-62), VerticalAnchor.absolute(MAX_MITHRIL_HEIGHT))));
 
         // region MUSHROOMS
-        PlacementUtils.register(featureRegisterable, TREE_BROWN_BOLETTE, brownBoletteTree, List.of(RarityFilter.onAverageOnceEvery(1), InSquarePlacement.spread(),
+        PlacementUtils.register(featureRegisterable, TREE_BROWN_BOLETTE, brownBoletteTree, List.of(RarityFilter.onAverageOnceEvery(1),
                 CountOnEveryLayerPlacement.of(2), BiomeFilter.biome()));
 
         PlacementUtils.register(featureRegisterable, PATCH_CAVE_AMANITA, caveAmanita, modifiersWithCount(1, mushroomsRange));
         PlacementUtils.register(featureRegisterable, PATCH_CAVE_AMANITA_TILLER, caveAmanitaTiller, modifiersWithCount(1, mushroomsRange ));
-        PlacementUtils.register(featureRegisterable, TREE_CAVE_AMANITA, caveAmanitaTree, List.of(RarityFilter.onAverageOnceEvery(1), InSquarePlacement.spread(),
+        PlacementUtils.register(featureRegisterable, TREE_CAVE_AMANITA, caveAmanitaTree, List.of(RarityFilter.onAverageOnceEvery(1),
                 CountOnEveryLayerPlacement.of(2), BiomeFilter.biome()));
 
         PlacementUtils.register(featureRegisterable, PATCH_DEEP_FIRECAP, deepFirecap, modifiersWithCount(1, mushroomsRange ));
         PlacementUtils.register(featureRegisterable, PATCH_DEEP_FIRECAP_TILLER, deepFirecapTiller, modifiersWithCount(1, mushroomsRange ));
-        PlacementUtils.register(featureRegisterable, TREE_DEEP_FIRECAP, deepFirecapTree, List.of(RarityFilter.onAverageOnceEvery(1), InSquarePlacement.spread(),
+        PlacementUtils.register(featureRegisterable, TREE_DEEP_FIRECAP, deepFirecapTree, List.of(RarityFilter.onAverageOnceEvery(1),
                 CountOnEveryLayerPlacement.of(1), BiomeFilter.biome()));
 
         PlacementUtils.register(featureRegisterable, PATCH_GHOSTSHROOM, ghostshrooms, modifiersWithCount(1, mushroomsRange ));
@@ -415,7 +404,7 @@ public class CavesPlacedFeatures {
 
         PlacementUtils.register(featureRegisterable, PATCH_SKY_FIRECAP, skyFirecap, modifiersWithCount(1, mushroomsRange ));
         PlacementUtils.register(featureRegisterable, PATCH_SKY_FIRECAP_TILLER, skyFirecapTiller, modifiersWithCount(1, mushroomsRange ));
-        PlacementUtils.register(featureRegisterable, TREE_SKY_FIRECAP, skyFirecapTree, List.of(RarityFilter.onAverageOnceEvery(1), InSquarePlacement.spread(),
+        PlacementUtils.register(featureRegisterable, TREE_SKY_FIRECAP, skyFirecapTree, List.of(RarityFilter.onAverageOnceEvery(1),
                 CountOnEveryLayerPlacement.of(1), BiomeFilter.biome()));
 
         PlacementUtils.register(featureRegisterable, PATCH_TUBESHROOMS, tubeshroom, modifiersWithCount(1, mushroomsRange ));
@@ -427,7 +416,7 @@ public class CavesPlacedFeatures {
 
         PlacementUtils.register(featureRegisterable, PATCH_YELLOW_AMANITA, yellowAmanita, modifiersWithCount(1, mushroomsRange ));
         PlacementUtils.register(featureRegisterable, PATCH_YELLOW_AMANITA_TILLER, yellowAmanitaTiller, modifiersWithCount(1, mushroomsRange ));
-        PlacementUtils.register(featureRegisterable, TREE_YELLOW_AMANITA, yellowAmanitaTree, List.of(RarityFilter.onAverageOnceEvery(1), InSquarePlacement.spread(),
+        PlacementUtils.register(featureRegisterable, TREE_YELLOW_AMANITA, yellowAmanitaTree, List.of(RarityFilter.onAverageOnceEvery(1),
                 CountOnEveryLayerPlacement.of(2), BiomeFilter.biome()));
 
         PlacementUtils.register(featureRegisterable, GLOWWORM_WEBBING, glowwormWebbing, CountPlacement.of(47), InSquarePlacement.spread(), HeightRangePlacement.triangle(VerticalAnchor.absolute(-48), VerticalAnchor.absolute(48)),
