@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.sevenstars.middleearth.MiddleEarth;
+import net.sevenstars.middleearth.config.ModClientConfigs;
 import net.sevenstars.middleearth.gui.utils.widgets.ModWidget;
 import net.sevenstars.middleearth.gui.utils.widgets.UiDirections;
 import net.sevenstars.middleearth.world.biomes.surface.MapBasedBiomePool;
@@ -138,6 +139,9 @@ public class MapWidget extends ModWidget {
         drawMapTexture(context, startX, startY);
         if(isOverlayEnabled){
             drawOverlayMapTexture(context, startX, startY);
+        }
+        if (ModClientConfigs.SHOW_MAP_ROADS) {
+            MapRoadOverlay.draw(context, this, startX, startY);
         }
     }
 

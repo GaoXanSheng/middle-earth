@@ -9,6 +9,10 @@ public class ModClientConfigs {
 
     /**Should you see the map overlay button in the middle-earth map gui**/
     public static boolean ENABLE_MAP_OVERLAY;
+    /**Should roads be drawn on the middle-earth map gui**/
+    public static boolean SHOW_MAP_ROADS;
+    /**Should points of interest markers be drawn on the middle-earth map gui**/
+    public static boolean SHOW_MAP_MARKERS;
     /**Should you see the experimental npc visuals, or use the simplified version**/
     public static boolean ENABLE_SIMPLIFIED_CHARACTER_RENDERING;
     /**Distance of rendering armor on NPCs**/
@@ -34,6 +38,10 @@ public class ModClientConfigs {
         configs.addComment("GUI configurations");
         configs.addDescription("Should you see the map overlay button in the middle-earth map gui?");
         configs.addKeyValuePair(new Pair<>("enableMapOverlay", false), "boolean");
+        configs.addDescription("Should roads be drawn on the middle-earth map gui?");
+        configs.addKeyValuePair(new Pair<>("showMapRoads", true), "boolean");
+        configs.addDescription("Should points of interest markers be drawn on the middle-earth map gui?");
+        configs.addKeyValuePair(new Pair<>("showMapMarkers", true), "boolean");
         configs.addLineJump();
         configs.addComment("NPC simplified model");
         configs.addDescription("Should you see the experimental npc visuals, or use the simplified version.");
@@ -52,6 +60,8 @@ public class ModClientConfigs {
 
     private static void assignClientConfigs() {
         ENABLE_MAP_OVERLAY = CONFIG.getOrDefault("enableMapOverlay", false);
+        SHOW_MAP_ROADS = CONFIG.getOrDefault("showMapRoads", true);
+        SHOW_MAP_MARKERS = CONFIG.getOrDefault("showMapMarkers", true);
         ENABLE_SIMPLIFIED_CHARACTER_RENDERING = CONFIG.getOrDefault("enableSimplifiedCharacterRendering", false);
         LOD_NPC_ARMOR_DISTANCE = CONFIG.getOrDefault("npcsArmorDistanceLOD", 48);
         LOD_NPC_FEATURES_DISTANCE = CONFIG.getOrDefault("npcsArmorDistanceLOD", 24);

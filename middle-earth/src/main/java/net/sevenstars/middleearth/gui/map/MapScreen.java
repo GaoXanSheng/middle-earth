@@ -111,14 +111,14 @@ public class MapScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
         if(isFullscreen){
             renderFullscreen(context);
         } else {
             renderNormal(context);
         }
         ModWidget.updateMouse(mouseX, mouseY);
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
         showCursorInformationTooltip(context, mouseX, mouseY);
     }
 
@@ -152,6 +152,7 @@ public class MapScreen extends Screen {
         backgroundContainerWidget.draw(context, 0, 0, context.guiWidth(), context.guiHeight());
 
         mapWidget.drawFullscreen(context, MARGIN);
+        MapPoiMarkers.draw(context, mapWidget, MARGIN, MARGIN, mouseX, mouseY);
         drawFullscreenToggleButton(context);
         drawMapOverlayToggleButton(context);
         drawRecenterButton(context);
@@ -171,6 +172,7 @@ public class MapScreen extends Screen {
                 WIDTH, HEIGHT, 256, 256);
 
         mapWidget.drawCentered(context, centerX, startY + MARGIN);
+        MapPoiMarkers.draw(context, mapWidget, centerX - (WIDTH - MARGIN * 2) / 2, startY + MARGIN, mouseX, mouseY);
         drawFullscreenToggleButton(context);
         drawMapOverlayToggleButton(context);
         drawRecenterButton(context);

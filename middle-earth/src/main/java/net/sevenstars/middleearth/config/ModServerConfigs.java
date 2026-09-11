@@ -20,6 +20,10 @@ public class ModServerConfigs {
     public static boolean ENABLE_RETURN_TO_OVERWORLD;
     /** Allows to generation of procedural structures in Middle-earth**/
     public static boolean ENABLE_PROCEDURAL_STRUCTURES;
+    /** Allows procedural roads to generate between points of interest in Middle-earth**/
+    public static boolean ENABLE_ROADS;
+    /** Width multiplier applied to generated roads**/
+    public static float ROADS_WIDTH_SCALE;
     /** Allows broadhoof goats to be mounted by players and npcs. **/
     public static boolean ENABLE_MOUNT_BROADHOOF_GOAT;
     /** Allows to craft golden carrots and golden apples in Middle-earth**/
@@ -57,6 +61,10 @@ public class ModServerConfigs {
         configs.addKeyValuePair(new Pair<>("enableReturnToOverworld", true), "boolean");
         configs.addDescription("Should procedural structures (such as Orthanc) generate in Middle-earth?");
         configs.addKeyValuePair(new Pair<>("enableProceduralStructures", true), "boolean");
+        configs.addDescription("Should procedural roads generate between points of interest in Middle-earth?");
+        configs.addKeyValuePair(new Pair<>("enableRoads", true), "boolean");
+        configs.addDescription("Width multiplier applied to generated roads");
+        configs.addKeyValuePair(new Pair<>("roadsWidthScale", 1.0), "double");
         configs.addDescription("Maximum amount of non-persistent entity per type in Middle-earth");
         configs.addKeyValuePair(new Pair<>("globalMobCap", true), "int");
         configs.addLineJump();
@@ -106,6 +114,8 @@ public class ModServerConfigs {
         ENABLE_SPAWN_OVERRIDE = CONFIG.getOrDefault("enableSpawnOverride", true);
         ENABLE_RETURN_TO_OVERWORLD = CONFIG.getOrDefault("enableReturnToOverworld", true);
         ENABLE_PROCEDURAL_STRUCTURES = CONFIG.getOrDefault("enableProceduralStructures", true);
+        ENABLE_ROADS = CONFIG.getOrDefault("enableRoads", true);
+        ROADS_WIDTH_SCALE = (float) CONFIG.getOrDefault("roadsWidthScale", 1.0);
         GLOBAL_MOB_CAP = CONFIG.getOrDefault("globalMobCap", 50);
 
         // PlayerFactionPayload configurations

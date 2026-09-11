@@ -10,38 +10,19 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
-
-import net.minecraft.world.*;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.NaturalSpawner;
-import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.Beardifier;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.LegacyRandomSource;
-import net.minecraft.world.level.levelgen.RandomState;
-import net.minecraft.world.level.levelgen.RandomSupport;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
+import net.minecraft.world.level.levelgen.structure.*;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.phys.Vec2;
-import net.sevenstars.middleearth.MiddleEarth;
 import net.sevenstars.middleearth.block.registration.ModBlocks;
 import net.sevenstars.middleearth.block.registration.StoneBlockSets;
 import net.sevenstars.middleearth.config.ModServerConfigs;
@@ -54,11 +35,12 @@ import net.sevenstars.middleearth.world.chunkgen.map.MiddleEarthHeightMap;
 import net.sevenstars.middleearth.world.map.MiddleEarthMapConfigs;
 import net.sevenstars.middleearth.world.map.MiddleEarthMapRuntime;
 import net.sevenstars.middleearth.world.map.MiddleEarthMapUtils;
+import net.sevenstars.middleearth.world.roads.ProceduralRoads;
+import net.sevenstars.middleearth.world.roads.RoadNetwork;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class MiddleEarthChunkGenerator extends ChunkGenerator {
@@ -468,6 +450,11 @@ public class MiddleEarthChunkGenerator extends ChunkGenerator {
                 }
                 height = newHeight;
 
+                RoadNetwork.RoadHit roadHit = ProceduralRoads.queryRoad(posX, posZ);
+                if(roadHit != null) {
+                    height = ProceduralRoads.applyHeightModifier(posX, posZ, height, roadHit);
+                }
+
                 chunk.setBlockState(chunk.getPos().getBlockAt(x, bottomY, z), Blocks.BEDROCK.defaultBlockState(), 0);
                 for(int y = bottomY + 1; y <= LAVA_HEIGHT; y++) {
                     chunk.setBlockState(chunk.getPos().getBlockAt(x, y, z), Blocks.LAVA.defaultBlockState(), 0);
@@ -530,6 +517,11 @@ public class MiddleEarthChunkGenerator extends ChunkGenerator {
                     else underSurfaceBlock = surfaceBlock;
                 }
 
+                if(roadHit != null && roadHit.distance() <= roadHit.width() && DIRT_HEIGHT + height >= waterHeight) {
+                    surfaceBlock = ProceduralRoads.getRoadSurfaceBlock(posX, posZ, roadHit.style());
+                    underSurfaceBlock = Blocks.DIRT.defaultBlockState();
+                }
+
                 chunk.setBlockState(chunk.getPos().getBlockAt(x, (int) (HEIGHT + height - 1), z), underSurfaceBlock);
                 for(int y = (int) (HEIGHT + height); y < DIRT_HEIGHT + height; y++) {
                     chunk.setBlockState(chunk.getPos().getBlockAt(x, y, z), underSurfaceBlock);
@@ -546,6 +538,9 @@ public class MiddleEarthChunkGenerator extends ChunkGenerator {
                 } else {
                     for(int y = (int) (DIRT_HEIGHT + height + 1); y <= waterHeight; y++) {
                         chunk.setBlockState(chunk.getPos().getBlockAt(x, y, z), Blocks.WATER.defaultBlockState());
+                    }
+                    if(roadHit != null && roadHit.bridge() && DIRT_HEIGHT + height < waterHeight + 1) {
+                        chunk.setBlockState(chunk.getPos().getBlockAt(x, waterHeight + 1, z), ProceduralRoads.getRoadBridgeBlock(roadHit.style()), 0);
                     }
                 }
 
